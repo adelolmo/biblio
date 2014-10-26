@@ -1,4 +1,4 @@
-package org.ado.biblio.desktop.booksapi;
+package org.ado.googleapis;
 
 import org.ado.biblio.domain.BookMessageDTO;
 

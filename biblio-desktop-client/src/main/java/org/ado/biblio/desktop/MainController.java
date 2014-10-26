@@ -11,10 +11,10 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import org.ado.biblio.desktop.booksapi.BookInfo;
-import org.ado.biblio.desktop.booksapi.BookInfoLoader;
-import org.ado.biblio.desktop.booksapi.NoBookInfoFoundException;
 import org.ado.biblio.domain.BookMessageDTO;
+import org.ado.googleapis.BookInfo;
+import org.ado.googleapis.BookInfoLoader;
+import org.ado.googleapis.NoBookInfoFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -103,7 +103,6 @@ public class MainController {
 
         tableViewBooks.setOnMouseClicked(event -> {
             Book book = (Book) ((TableView) event.getSource()).getFocusModel().getFocusedItem();
-//            System.out.println(event);
             textFieldTitle.setText(book.getTitle());
             textFieldAuthor.setText(book.getAuthor());
             textFieldIsbn.setText(book.getIsbn());

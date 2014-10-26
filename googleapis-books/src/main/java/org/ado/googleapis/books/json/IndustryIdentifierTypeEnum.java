@@ -1,4 +1,4 @@
-package org.ado.biblio.desktop.booksapi;
+package org.ado.googleapis.books.json;
 
 /**
  * Class description here.

@@ -1,4 +1,4 @@
-package org.ado.biblio.desktop.booksapi;
+package org.ado.googleapis.books.json;
 
 /**
  * Class description here.
@@ -28,7 +28,7 @@ public class IndustryIdentifier {
 
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer("IndustryIdentifier{");
+        final StringBuffer sb = new StringBuffer("org.ado.googleapis.books.json.IndustryIdentifier{");
         sb.append("type=").append(type);
         sb.append(", identifier='").append(identifier).append('\'');
         sb.append('}');

@@ -1,4 +1,4 @@
-package org.ado.biblio.desktop.booksapi;
+package org.ado.googleapis;
 
 /**
  * Class description here.
@@ -61,7 +61,7 @@ public class BookInfo {
 
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer("BookInfo{");
+        final StringBuffer sb = new StringBuffer("org.ado.googleapis.BookInfo{");
         sb.append("author='").append(author).append('\'');
         sb.append(", title='").append(title).append('\'');
         sb.append(", imageUrl='").append(imageUrl).append('\'');

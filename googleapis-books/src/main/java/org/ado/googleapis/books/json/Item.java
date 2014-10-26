@@ -1,4 +1,4 @@
-package org.ado.biblio.desktop.booksapi;
+package org.ado.googleapis.books.json;
 
 /**
  * Class description here.
@@ -56,7 +56,7 @@ public class Item {
 
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer("Item{");
+        final StringBuffer sb = new StringBuffer("org.ado.googleapis.books.json.Item{");
         sb.append("kind='").append(kind).append('\'');
         sb.append(", id='").append(id).append('\'');
         sb.append(", etag='").append(etag).append('\'');

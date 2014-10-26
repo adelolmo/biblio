@@ -1,4 +1,4 @@
-package org.ado.biblio.desktop.booksapi;
+package org.ado.googleapis.books.json;
 
 import java.util.List;
 
@@ -40,7 +40,7 @@ public class Volumes {
 
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer("Volumes{");
+        final StringBuffer sb = new StringBuffer("org.ado.googleapis.books.json.Volumes{");
         sb.append("kind='").append(kind).append('\'');
         sb.append(", totalItems=").append(totalItems);
         sb.append(", items=").append(items);

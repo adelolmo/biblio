@@ -30,8 +30,13 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.ado.domain</groupId>
+            <groupId>org.ado.biblio</groupId>
             <artifactId>domain</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.ado</groupId>
+            <artifactId>googleapis-books</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
@@ -63,11 +68,6 @@
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>4.3.5</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>2.2.2</version>
         </dependency>
 
         <dependency>

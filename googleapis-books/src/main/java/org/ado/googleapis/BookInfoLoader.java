@@ -1,7 +1,8 @@
-package org.ado.biblio.desktop.booksapi;
+package org.ado.googleapis;
 
 import com.google.gson.Gson;
 import org.ado.biblio.domain.BookMessageDTO;
+import org.ado.googleapis.books.json.*;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -44,7 +45,9 @@ public class BookInfoLoader {
         if (volumeInfo != null) {
             StringBuilder authors = new StringBuilder();
             if (!volumeInfo.getAuthors().isEmpty()) {
-                volumeInfo.getAuthors().forEach(authors::append);
+                for (String author : volumeInfo.getAuthors()) {
+                    authors.append(author);
+                }
             }
             bookInfo.setAuthor(authors.toString());
 

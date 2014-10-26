@@ -1,4 +1,4 @@
-package org.ado.biblio.desktop.booksapi;
+package org.ado.googleapis.books.json;
 
 /**
  * Class description here.
@@ -28,7 +28,7 @@ public class ImageLinks {
 
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer("ImageLinks{");
+        final StringBuffer sb = new StringBuffer("org.ado.googleapis.books.json.ImageLinks{");
         sb.append("smallThumbnail='").append(smallThumbnail).append('\'');
         sb.append(", thumbnail='").append(thumbnail).append('\'');
         sb.append('}');

@@ -1,4 +1,4 @@
-package org.ado.biblio.desktop.booksapi;
+package org.ado.googleapis.books.json;
 
 import java.util.List;
 
@@ -165,7 +165,7 @@ public class VolumenInfo {
 
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer("VolumenInfo{");
+        final StringBuffer sb = new StringBuffer("org.ado.googleapis.books.json.VolumenInfo{");
         sb.append("title='").append(title).append('\'');
         sb.append(", authors=").append(authors);
         sb.append(", publisher='").append(publisher).append('\'');

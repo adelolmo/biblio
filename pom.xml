@@ -14,6 +14,7 @@
         <module>biblio-server</module>
         <module>biblio-android-client</module>
         <module>biblio-desktop-client</module>
+        <module>googleapis-books</module>
     </modules>
 
 </project>
