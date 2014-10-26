@@ -1,0 +1,51 @@
+package org.ado.biblio.desktop;
+
+import com.google.gson.Gson;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
+import org.ado.biblio.domain.BookMessageDTO;
+import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * Class description here.
+ *
+ * @author andoni
+ * @since 25.10.2014
+ */
+public class ServerPullingService extends Service<BookMessageDTO[]> {
+
+    private static final String SERVER_PULL_URL = "http://localhost:8080/pull";
+    private final Logger LOGGER = LoggerFactory.getLogger(ServerPullingService.class);
+
+    @Override
+    protected Task<BookMessageDTO[]> createTask() {
+
+        return new Task<BookMessageDTO[]>() {
+            @Override
+            protected BookMessageDTO[] call() throws Exception {
+                try {
+
+                    HttpClient client = HttpClientBuilder.create().build();
+                    HttpGet request = new HttpGet(SERVER_PULL_URL);
+                    HttpResponse response = client.execute(request);
+
+                    LOGGER.info("Response Code : " + response.getStatusLine().getStatusCode());
+
+                    String responseContent = IOUtils.toString(response.getEntity().getContent());
+                    final BookMessageDTO[] bookMessageDTOs = new Gson().fromJson(responseContent, BookMessageDTO[].class);
+                    return bookMessageDTOs;
+
+                } catch (Exception e) {
+                    LOGGER.error(String.format("Unable to pull server %s", SERVER_PULL_URL), e);
+                }
+                return null;
+            }
+        };
+    }
+}
