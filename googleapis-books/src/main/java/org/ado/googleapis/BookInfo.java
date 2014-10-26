@@ -1,5 +1,7 @@
 package org.ado.googleapis;
 
+import java.io.InputStream;
+
 /**
  * Class description here.
  *
@@ -12,6 +14,7 @@ public class BookInfo {
     private String title;
     private String imageUrl;
     private boolean hasImage = false;
+    private InputStream image;
     private String isbn;
 
     public BookInfo() {
@@ -49,6 +52,14 @@ public class BookInfo {
 
     public boolean hasImage() {
         return hasImage;
+    }
+
+    public InputStream getImage() {
+        return image;
+    }
+
+    public void setImage(InputStream image) {
+        this.image = image;
     }
 
     public String getIsbn() {

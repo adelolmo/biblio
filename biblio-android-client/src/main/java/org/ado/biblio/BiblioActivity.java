@@ -2,7 +2,6 @@ package org.ado.biblio;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -11,17 +10,9 @@ import android.view.View;
 import android.widget.Toast;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
 
 public class BiblioActivity extends Activity {
 
-    /**
-     * Send this intent to open the Barcodes app in scanning mode, find a barcode, and return
-     * the results.
-     */
-    public static final String SCAN_ACTION_INTENT = "com.google.zxing.client.android.SCAN";
     private static final String TAG = BiblioActivity.class.getName();
 
     /**
@@ -61,11 +52,22 @@ public class BiblioActivity extends Activity {
             String format = scanResult.getFormatName();
             Log.d(TAG, "Result. content [" + contents + "] format [" + format + "].");
 
-            Toast toast = Toast.makeText(this, "Content:" + contents + " Format:" + format, Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP, 25, 400);
-            toast.show();
+            final Intent bookInfoIntent = new Intent(this, BookInfoActivity.class);
+            bookInfoIntent.putExtra("format", format);
+            bookInfoIntent.putExtra("code", contents);
+            startActivity(bookInfoIntent);
 
-            new PushBarCodeTask().execute(format, contents);
+/*            try {
+                final AsyncTask<BookMessageDTO, Void, BookInfoWrapper> asyncTask = new BookInfoLoaderTask().execute(new BookMessageDTO(format, contents));
+                final BookInfoWrapper bookInfoWrapper = asyncTask.get();
+
+
+            } catch (Exception e) {
+                Log.e(TAG, "Unable to load book details", e);
+            }
+
+
+            new PushBarCodeTask().execute(format, contents);*/
         } else {
             // Handle cancel
             Log.e(TAG, "Scan was cancelled");
@@ -79,24 +81,6 @@ public class BiblioActivity extends Activity {
         IntentIntegrator integrator = new IntentIntegrator(this);
         integrator.addExtra("SCAN_MODE", "PRODUCT_MODE");
         integrator.initiateScan();
-    }
-
-    class PushBarCodeTask extends AsyncTask<String, Void, Void> {
-
-        @Override
-        protected Void doInBackground(String... params) {
-            HttpClient client = new DefaultHttpClient();
-            String url = String.format("http://192.168.178.29:8080/push?format=%s&code=%s", params[0], params[1]);
-            Log.d(TAG, "http request. url [" + url + "].");
-
-            HttpPost httpPost = new HttpPost(url);
-            try {
-                client.execute(httpPost);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
     }
 }
 

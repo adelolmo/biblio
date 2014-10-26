@@ -7,11 +7,11 @@ import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.HttpClientBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -20,13 +20,15 @@ import java.util.List;
  * @author andoni
  * @since 25.10.2014
  */
-public class BookInfoLoader {
+public abstract class AbstractBookInfoLoader {
 
     private static final String GOOGLE_BOOKS_URL = "https://www.googleapis.com/books/v1/volumes?q=%s";
-    private final Logger LOGGER = LoggerFactory.getLogger(BookInfoLoader.class);
+    private final Logger LOGGER = LoggerFactory.getLogger(AbstractBookInfoLoader.class);
+
+    public abstract HttpClient getHttpClient();
 
     public BookInfo getBookInfo(BookMessageDTO bookMessage) throws IOException, NoBookInfoFoundException {
-        HttpClient client = HttpClientBuilder.create().build();
+        HttpClient client = getHttpClient();
         String url = String.format(GOOGLE_BOOKS_URL, bookMessage.getCode());
         LOGGER.info(String.format("Book search url \"%s\"", url));
         HttpResponse response = client.execute(new HttpGet(url));
@@ -56,6 +58,7 @@ public class BookInfoLoader {
             ImageLinks imageLinks = volumeInfo.getImageLinks();
             if (imageLinks != null) {
                 bookInfo.setImageUrl(imageLinks.getThumbnail());
+                bookInfo.setImage(getThumbnail(imageLinks));
             }
 
             List<IndustryIdentifier> industryIdentifiers = volumeInfo.getIndustryIdentifiers();
@@ -67,5 +70,13 @@ public class BookInfoLoader {
         }
 
         return bookInfo;
+    }
+
+    private InputStream getThumbnail(ImageLinks imageLinks) {
+        try {
+            return getHttpClient().execute(new HttpGet(imageLinks.getThumbnail())).getEntity().getContent();
+        } catch (IOException e) {
+            return null;
+        }
     }
 }

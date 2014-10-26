@@ -12,8 +12,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import org.ado.biblio.domain.BookMessageDTO;
+import org.ado.googleapis.AbstractBookInfoLoader;
 import org.ado.googleapis.BookInfo;
-import org.ado.googleapis.BookInfoLoader;
 import org.ado.googleapis.NoBookInfoFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +30,7 @@ public class MainController {
 
     private final Logger LOGGER = LoggerFactory.getLogger(MainController.class);
     private final ObservableList<Book> data = FXCollections.observableArrayList();
+
     @FXML
     private TableView<Book> tableViewBooks;
     @FXML
@@ -46,8 +47,9 @@ public class MainController {
     private ImageView imageViewCover;
     @FXML
     private Label labelSystem;
+
     private ServerPullingService serverPullingService;
-    private BookInfoLoader bookInfoLoader;
+    private AbstractBookInfoLoader bookInfoLoader;
     private HttpImageLoader httpImageLoader;
 
     public MainController() {
