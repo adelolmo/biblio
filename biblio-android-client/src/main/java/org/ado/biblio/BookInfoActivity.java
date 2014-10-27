@@ -33,6 +33,7 @@ public class BookInfoActivity extends Activity {
 
     private AbstractBookInfoLoader bookInfoLoader;
 
+    private String link;
     private String format;
     private String code;
 
@@ -50,6 +51,7 @@ public class BookInfoActivity extends Activity {
         textAuthor = (EditText) findViewById(R.id.textAuthor);
         cover = (ImageView) findViewById(R.id.cover);
 
+        link = getIntent().getStringExtra("link");
         format = getIntent().getStringExtra("format");
         code = getIntent().getStringExtra("code");
 
@@ -66,7 +68,7 @@ public class BookInfoActivity extends Activity {
 
     public void accept(View view) {
         Log.d(TAG, "accept");
-        new PushBarCodeTask().execute(format, code);
+        new PushBarCodeTask().execute(link, format, code);
         finish();
     }
 
@@ -96,7 +98,7 @@ public class BookInfoActivity extends Activity {
         @Override
         protected Void doInBackground(String... params) {
             HttpClient client = new DefaultHttpClient();
-            String url = String.format("http://192.168.178.29:8080/push?format=%s&code=%s", params[0], params[1]);
+            String url = String.format("http://192.168.178.29:8080/push?id=%s&format=%s&code=%s", params[0], params[1], params[2]);
             Log.d(TAG, "http request. url [" + url + "].");
 
             HttpPost httpPost = new HttpPost(url);

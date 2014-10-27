@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * Class description here.
  *
@@ -19,34 +21,35 @@ public class BarCodeController {
     private BarCodeCache barCodeCache;
 
     @RequestMapping(value = "/push", method = RequestMethod.POST)
-    public void greeting(@RequestParam(value = "format") String format,
+    public void greeting(@RequestParam(value = "id") String id,
+                         @RequestParam(value = "format") String format,
                          @RequestParam(value = "code") String code) {
 
         System.out.println("/push  format [" + format + "] code [" + code + "].");
 
-        barCodeCache.add(new BookMessage(format, code));
+        barCodeCache.add(id, new BookMessage(format, code));
     }
 
     @RequestMapping(value = "/pull", method = RequestMethod.GET)
-    public BookMessage[] getBookMessage() {
+    public BookMessage[] getBookMessage(@NotNull @RequestParam(value = "id") String id) {
 
-        System.out.println("/pull");
+        System.out.println("/pull " + id);
 
         boolean pullingActive = true;
         while (pullingActive) {
-            if (!barCodeCache.isEmpty()) {
+            if (!barCodeCache.isEmpty(id)) {
                 pullingActive = false;
             }
             pause(200);
         }
 
-        final BookMessage[] bookMessages = barCodeCache.getBookMessages();
+        final BookMessage[] bookMessages = barCodeCache.getBookMessages(id);
 
         StringBuilder messages = new StringBuilder();
         for (BookMessage bookMessage : bookMessages) {
             messages.append(bookMessage).append(" ");
         }
-        System.out.println("sending -> " + messages);
+        System.out.println(String.format("sending %s -> %s ", id, messages));
 
         return bookMessages;
     }

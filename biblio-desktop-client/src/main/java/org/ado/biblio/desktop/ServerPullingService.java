@@ -20,8 +20,13 @@ import org.slf4j.LoggerFactory;
  */
 public class ServerPullingService extends Service<BookMessageDTO[]> {
 
-    private static final String SERVER_PULL_URL = "http://localhost:8080/pull";
+    private static final String SERVER_PULL_URL = "http://localhost:8080/pull?id=%s";
     private final Logger LOGGER = LoggerFactory.getLogger(ServerPullingService.class);
+    private String hostId;
+
+    public ServerPullingService(String hostId) {
+        this.hostId = hostId;
+    }
 
     @Override
     protected Task<BookMessageDTO[]> createTask() {
@@ -32,7 +37,7 @@ public class ServerPullingService extends Service<BookMessageDTO[]> {
                 try {
 
                     HttpClient client = HttpClientBuilder.create().build();
-                    HttpGet request = new HttpGet(SERVER_PULL_URL);
+                    HttpGet request = new HttpGet(String.format(SERVER_PULL_URL, hostId));
                     HttpResponse response = client.execute(request);
 
                     LOGGER.info("Response Code : " + response.getStatusLine().getStatusCode());

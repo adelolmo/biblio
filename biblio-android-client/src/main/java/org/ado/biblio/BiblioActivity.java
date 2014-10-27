@@ -1,7 +1,9 @@
 package org.ado.biblio;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -15,6 +17,8 @@ public class BiblioActivity extends Activity {
 
     private static final String TAG = BiblioActivity.class.getName();
 
+    private SharedPreferences sharedPreferences;
+
     /**
      * Called when the activity is first created.
      *
@@ -27,6 +31,7 @@ public class BiblioActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Log.d(TAG, "onCreate");
+        sharedPreferences = getApplicationContext().getSharedPreferences("biblio", Context.MODE_PRIVATE);
     }
 
     @Override
@@ -41,6 +46,11 @@ public class BiblioActivity extends Activity {
         callScannerApp();
     }
 
+    public void link(View view) {
+        startActivity(new Intent(this, LinkActivity.class));
+
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         Log.d(TAG, "onActivityResult - requestCode[" + requestCode + "] resultCode[" + resultCode + "] intent[" + intent + "].");
@@ -53,21 +63,11 @@ public class BiblioActivity extends Activity {
             Log.d(TAG, "Result. content [" + contents + "] format [" + format + "].");
 
             final Intent bookInfoIntent = new Intent(this, BookInfoActivity.class);
+            bookInfoIntent.putExtra("link", sharedPreferences.getString("link", null));
             bookInfoIntent.putExtra("format", format);
             bookInfoIntent.putExtra("code", contents);
             startActivity(bookInfoIntent);
 
-/*            try {
-                final AsyncTask<BookMessageDTO, Void, BookInfoWrapper> asyncTask = new BookInfoLoaderTask().execute(new BookMessageDTO(format, contents));
-                final BookInfoWrapper bookInfoWrapper = asyncTask.get();
-
-
-            } catch (Exception e) {
-                Log.e(TAG, "Unable to load book details", e);
-            }
-
-
-            new PushBarCodeTask().execute(format, contents);*/
         } else {
             // Handle cancel
             Log.e(TAG, "Scan was cancelled");

@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
-<SplitPane xmlns:fx="http://javafx.com/fxml/1" dividerPositions="0.35566188197767146, 0.3923444976076555"
-           orientation="VERTICAL" prefHeight="629.0" prefWidth="928.0" xmlns="http://javafx.com/javafx/8"
+<SplitPane dividerPositions="0.35566188197767146, 0.3923444976076555" orientation="VERTICAL" prefHeight="629.0"
+           prefWidth="928.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="org.ado.biblio.desktop.MainController">
     <items>
         <AnchorPane prefHeight="200.0" prefWidth="200.0">
@@ -48,6 +47,8 @@
                         <TextField fx:id="textFieldIsbn" layoutX="50.0" layoutY="60.0"/>
                     </children>
                 </HBox>
+                <ImageView fx:id="imageViewQrCode" fitHeight="150.0" fitWidth="200.0" layoutX="18.0" layoutY="172.0"
+                           pickOnBounds="true" preserveRatio="true"/>
             </children>
         </AnchorPane>
         <Label fx:id="labelSystem" prefHeight="15.0" prefWidth="405.0"/>

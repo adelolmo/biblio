@@ -32,6 +32,14 @@
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
+        <activity
+            android:name=".LinkActivity"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="org.ado.biblio.BookInfoActivity"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

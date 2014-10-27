@@ -1,9 +1,15 @@
 package org.ado.biblio.desktop;
 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
@@ -18,7 +24,10 @@ import org.ado.googleapis.books.NoBookInfoFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 /**
  * Class description here.
@@ -46,14 +55,16 @@ public class MainController {
     @FXML
     private ImageView imageViewCover;
     @FXML
+    private ImageView imageViewQrCode;
+    @FXML
     private Label labelSystem;
 
     private ServerPullingService serverPullingService;
     private AbstractBookInfoLoader bookInfoLoader;
     private HttpImageLoader httpImageLoader;
 
-    public MainController() {
-        serverPullingService = new ServerPullingService();
+    public MainController() throws UnknownHostException {
+        serverPullingService = new ServerPullingService(getHostId());
         bookInfoLoader = new BookInfoLoader();
         httpImageLoader = new HttpImageLoader();
         data.add(new Book("Super Me", "Andoni del Olmo", "12345"));
@@ -62,6 +73,8 @@ public class MainController {
     @FXML
     private void initialize() throws Exception {
         LOGGER.info("initializing...");
+
+        createQrCode();
 
         tableColumnTitle.setCellValueFactory(cellData -> cellData.getValue().titleProperty());
         tableColumnAuthor.setCellValueFactory(cellData -> cellData.getValue().authorProperty());
@@ -113,6 +126,19 @@ public class MainController {
 
     private void addBookToTable(BookInfo bookMessage) {
         data.add(new Book(bookMessage.getTitle(), bookMessage.getAuthor(), bookMessage.getIsbn()));
+    }
+
+    private void createQrCode() throws UnknownHostException, WriterException {
+        final String hostNameId = getHostId();
+        LOGGER.info(String.format("Hostname %s", hostNameId));
+        BitMatrix matrix = new MultiFormatWriter().encode(hostNameId, BarcodeFormat.QR_CODE, 300, 300);
+        final BufferedImage bufferedImage = MatrixToImageWriter.toBufferedImage(matrix);
+
+        imageViewQrCode.setImage(SwingFXUtils.toFXImage(bufferedImage, null));
+    }
+
+    private String getHostId() throws UnknownHostException {
+        return InetAddress.getLocalHost().getHostName();
     }
 
     public class Book {
