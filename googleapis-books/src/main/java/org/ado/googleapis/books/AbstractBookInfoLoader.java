@@ -1,4 +1,4 @@
-package org.ado.googleapis;
+package org.ado.googleapis.books;
 
 import com.google.gson.Gson;
 import org.ado.biblio.domain.BookMessageDTO;
@@ -57,8 +57,8 @@ public abstract class AbstractBookInfoLoader {
 
             ImageLinks imageLinks = volumeInfo.getImageLinks();
             if (imageLinks != null) {
-                bookInfo.setImageUrl(imageLinks.getThumbnail());
-                bookInfo.setImage(getThumbnail(imageLinks));
+                bookInfo.setThumbnail(getThumbnail(imageLinks.getThumbnail()));
+                bookInfo.setSmallThumbnail(getThumbnail(imageLinks.getSmallThumbnail()));
             }
 
             List<IndustryIdentifier> industryIdentifiers = volumeInfo.getIndustryIdentifiers();
@@ -72,10 +72,10 @@ public abstract class AbstractBookInfoLoader {
         return bookInfo;
     }
 
-    private InputStream getThumbnail(ImageLinks imageLinks) {
+    private InputStream getThumbnail(String url) {
         try {
-            return getHttpClient().execute(new HttpGet(imageLinks.getThumbnail())).getEntity().getContent();
-        } catch (IOException e) {
+            return getHttpClient().execute(new HttpGet(url)).getEntity().getContent();
+        } catch (Exception e) {
             return null;
         }
     }

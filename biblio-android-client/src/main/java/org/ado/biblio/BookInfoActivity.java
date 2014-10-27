@@ -9,8 +9,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import org.ado.biblio.domain.BookMessageDTO;
-import org.ado.googleapis.AbstractBookInfoLoader;
-import org.ado.googleapis.NoBookInfoFoundException;
+import org.ado.googleapis.books.AbstractBookInfoLoader;
+import org.ado.googleapis.books.NoBookInfoFoundException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -80,7 +80,7 @@ public class BookInfoActivity extends Activity {
         protected BookInfoWrapper doInBackground(BookMessageDTO... params) {
             try {
                 BookInfoWrapper bookInfoWrapper = new BookInfoWrapper(bookInfoLoader.getBookInfo(params[0]));
-                bookInfoWrapper.setCoverBitmap(BitmapFactory.decodeStream(bookInfoWrapper.getBookInfo().getImage()));
+                bookInfoWrapper.setCoverBitmap(BitmapFactory.decodeStream(bookInfoWrapper.getBookInfo().getThumbnail()));
                 return bookInfoWrapper;
             } catch (IOException e) {
                 e.printStackTrace();

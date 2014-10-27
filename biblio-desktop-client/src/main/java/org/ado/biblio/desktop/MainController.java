@@ -12,9 +12,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import org.ado.biblio.domain.BookMessageDTO;
-import org.ado.googleapis.AbstractBookInfoLoader;
-import org.ado.googleapis.BookInfo;
-import org.ado.googleapis.NoBookInfoFoundException;
+import org.ado.googleapis.books.AbstractBookInfoLoader;
+import org.ado.googleapis.books.BookInfo;
+import org.ado.googleapis.books.NoBookInfoFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -81,8 +81,8 @@ public class MainController {
                     BookInfo bookInfo = bookInfoLoader.getBookInfo(bookMessage);
                     addBookToTable(bookInfo);
                     LOGGER.info(bookInfo.toString());
-                    if (bookInfo.hasImage()) {
-                        imageViewCover.setImage(new Image(httpImageLoader.getImage(bookInfo.getImageUrl())));
+                    if (bookInfo.hasThumbnail()) {
+                        imageViewCover.setImage(new Image(bookInfo.getThumbnail()));
                     } else {
                         imageViewCover.setImage(null);
                     }

@@ -1,6 +1,6 @@
 package org.ado.biblio.desktop;
 
-import org.ado.googleapis.AbstractBookInfoLoader;
+import org.ado.googleapis.books.AbstractBookInfoLoader;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 

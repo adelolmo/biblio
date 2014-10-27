@@ -1,4 +1,4 @@
-package org.ado.googleapis;
+package org.ado.googleapis.books;
 
 import org.ado.biblio.domain.BookMessageDTO;
 

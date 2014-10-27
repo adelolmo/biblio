@@ -1,7 +1,7 @@
 package org.ado.biblio;
 
 import android.graphics.Bitmap;
-import org.ado.googleapis.BookInfo;
+import org.ado.googleapis.books.BookInfo;
 
 /**
  * Class description here.
