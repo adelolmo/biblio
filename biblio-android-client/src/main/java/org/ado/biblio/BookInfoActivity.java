@@ -1,14 +1,15 @@
 package org.ado.biblio;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 import org.ado.biblio.domain.BookMessageDTO;
 import org.ado.googleapis.books.AbstractBookInfoLoader;
@@ -45,8 +46,8 @@ public class BookInfoActivity extends Activity {
         setContentView(R.layout.activity_bookinfo);
         Log.d(TAG, "onCreate");
 
-        EditText textTitle = (EditText) findViewById(R.id.textTitle);
-        EditText textAuthor = (EditText) findViewById(R.id.textAuthor);
+        TextView textTitle = (TextView) findViewById(R.id.textTitle);
+        TextView textAuthor = (TextView) findViewById(R.id.textAuthor);
         ImageView cover = (ImageView) findViewById(R.id.cover);
 
         link = getIntent().getStringExtra("link");
@@ -58,7 +59,10 @@ public class BookInfoActivity extends Activity {
             final BookInfoWrapper bookInfoWrapper = asyncTask.get();
             textTitle.setText(bookInfoWrapper.getBookInfo().getTitle());
             textAuthor.setText(bookInfoWrapper.getBookInfo().getAuthor());
-            cover.setImageBitmap(bookInfoWrapper.getCoverBitmap());
+            final Bitmap coverBitmap = bookInfoWrapper.getCoverBitmap();
+            if (coverBitmap != null) {
+                cover.setImageBitmap(coverBitmap);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

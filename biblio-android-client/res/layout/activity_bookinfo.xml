@@ -9,65 +9,97 @@
         android:id="@+id/layoutBookTitle"
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Title"
-            android:id="@+id/textView"/>
+            android:text="Title:"
+            android:id="@+id/textView"
+            />
 
-        <EditText
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
             android:id="@+id/textTitle"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:layout_marginLeft="5dp"/>
+        <!--
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textTitle"
+                    android:layout_weight="1"/>-->
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/layoutBookAuthor"
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Author"
+            android:text="Author:"
             android:id="@+id/textView2"/>
 
-        <EditText
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
             android:id="@+id/textAuthor"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:layout_marginLeft="5dp"/>
+        <!--
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textAuthor"
+                    android:layout_weight="1"/>-->
     </LinearLayout>
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/cover"/>
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/cover"
+        android:scaleType="fitCenter"
+        android:minHeight="250dp"
+        android:layout_gravity="top"
+        android:adjustViewBounds="false"
+        android:src="@drawable/ic_cover_not_found"
+        android:layout_weight="1"/>
 
     <LinearLayout
         android:id="@+id/layoutAcceptCancel"
         android:orientation="horizontal"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="60dp"
+        android:gravity="top|center"
+        android:layout_gravity="top"
+        android:layout_margin="5dp">
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="150dp"
+            android:layout_height="match_parent"
             android:text="Cancel"
             android:id="@+id/buttonCancel"
-            android:onClick="cancel"/>
+            android:onClick="cancel"
+            android:height="40dp"
+            />
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="150dp"
+            android:layout_height="match_parent"
             android:text="Accept"
             android:id="@+id/buttonAccept"
-            android:onClick="accept"/>
+            android:onClick="accept"
+            android:height="40dp"
+            />
     </LinearLayout>
 </LinearLayout>
