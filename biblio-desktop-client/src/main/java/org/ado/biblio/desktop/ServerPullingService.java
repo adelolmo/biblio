@@ -48,9 +48,18 @@ public class ServerPullingService extends Service<BookMessageDTO[]> {
 
                 } catch (Exception e) {
                     LOGGER.error(String.format("Unable to pull server %s", SERVER_PULL_URL), e);
+                    pause(15);
                 }
                 return null;
             }
         };
+    }
+
+    private void pause(int seconds) {
+        try {
+            Thread.currentThread().sleep(seconds * 1000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
     }
 }

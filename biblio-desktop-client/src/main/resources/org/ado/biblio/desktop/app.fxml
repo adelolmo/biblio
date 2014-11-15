@@ -3,10 +3,30 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
-<SplitPane dividerPositions="0.35566188197767146, 0.3923444976076555" orientation="VERTICAL" prefHeight="629.0"
+<SplitPane dividerPositions="0.35566188197767146, 0.3923444976076555, 0.5" orientation="VERTICAL" prefHeight="629.0"
            prefWidth="928.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="org.ado.biblio.desktop.MainController">
+           fx:controller="org.ado.biblio.desktop.AppPresenter">
     <items>
+        <MenuBar>
+            <menus>
+                <Menu mnemonicParsing="false" text="File">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#linkDropbox" text="Dropbox..."/>
+                        <MenuItem mnemonicParsing="false" text="Close"/>
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Edit">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="Delete"/>
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Help">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="About"/>
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
         <AnchorPane prefHeight="200.0" prefWidth="200.0">
             <children>
                 <TableView fx:id="tableViewBooks" editable="true" prefHeight="274.0" prefWidth="926.0"

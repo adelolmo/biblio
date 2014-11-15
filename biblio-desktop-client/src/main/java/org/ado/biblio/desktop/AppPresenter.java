@@ -11,12 +11,15 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import org.ado.biblio.desktop.dropbox.DropboxException;
+import org.ado.biblio.desktop.dropbox.DropboxManager;
 import org.ado.biblio.domain.BookMessageDTO;
 import org.ado.googleapis.books.AbstractBookInfoLoader;
 import org.ado.googleapis.books.BookInfo;
@@ -24,10 +27,13 @@ import org.ado.googleapis.books.NoBookInfoFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.URL;
 import java.net.UnknownHostException;
+import java.util.ResourceBundle;
 
 /**
  * Class description here.
@@ -35,9 +41,9 @@ import java.net.UnknownHostException;
  * @author andoni
  * @since 25.10.2014
  */
-public class MainController {
+public class AppPresenter implements Initializable {
 
-    private final Logger LOGGER = LoggerFactory.getLogger(MainController.class);
+    private final Logger LOGGER = LoggerFactory.getLogger(AppPresenter.class);
     private final ObservableList<Book> data = FXCollections.observableArrayList();
 
     @FXML
@@ -54,26 +60,28 @@ public class MainController {
     private TextField textFieldIsbn;
     @FXML
     private ImageView imageViewCover;
+
     @FXML
-    private ImageView imageViewQrCode;
+    ImageView imageViewQrCode;
+
     @FXML
     private Label labelSystem;
 
+    @Inject
+    private DropboxManager dropboxManager;
+
     private ServerPullingService serverPullingService;
     private AbstractBookInfoLoader bookInfoLoader;
-    private HttpImageLoader httpImageLoader;
 
-    public MainController() throws UnknownHostException {
+    public AppPresenter() throws UnknownHostException {
         serverPullingService = new ServerPullingService(getHostId());
         bookInfoLoader = new BookInfoLoader();
-        httpImageLoader = new HttpImageLoader();
         data.add(new Book("Super Me", "Andoni del Olmo", "12345"));
     }
 
-    @FXML
-    private void initialize() throws Exception {
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
         LOGGER.info("initializing...");
-
         createQrCode();
 
         tableColumnTitle.setCellValueFactory(cellData -> cellData.getValue().titleProperty());
@@ -84,12 +92,9 @@ public class MainController {
         serverPullingService.setOnSucceeded(event -> {
             LOGGER.info("Succeeded");
             BookMessageDTO[] bookMessages = (BookMessageDTO[]) event.getSource().getValue();
-            for (BookMessageDTO bookMessage : bookMessages) {
-                LOGGER.info("New book: " + bookMessage.toString());
-            }
-            if (bookMessages.length > 0) {
+            if (bookMessages != null && bookMessages.length > 0) {
                 BookMessageDTO bookMessage = bookMessages[0];
-                LOGGER.info("Format [" + bookMessage.getFormat() + "] Code [" + bookMessage.getCode() + "]");
+                LOGGER.info("processing book [%s]", bookMessage);
                 try {
                     BookInfo bookInfo = bookInfoLoader.getBookInfo(bookMessage);
                     addBookToTable(bookInfo);
@@ -124,17 +129,37 @@ public class MainController {
         });
     }
 
+    public void linkDropbox() throws DropboxException {
+        LOGGER.debug("Dropbox...");
+        if (!dropboxManager.isLinked()) {
+            dropboxManager.link(accountName -> {
+                try {
+                    LOGGER.info("Application is linked to Dropbox account [%s]", dropboxManager.getLinkedAccountName());
+                } catch (DropboxException e) {
+                    e.printStackTrace();
+                }
+            });
+
+        } else {
+            dropboxManager.unlink();
+        }
+    }
+
     private void addBookToTable(BookInfo bookMessage) {
         data.add(new Book(bookMessage.getTitle(), bookMessage.getAuthor(), bookMessage.getIsbn()));
     }
 
-    private void createQrCode() throws UnknownHostException, WriterException {
-        final String hostNameId = getHostId();
-        LOGGER.info(String.format("Hostname %s", hostNameId));
-        BitMatrix matrix = new MultiFormatWriter().encode(hostNameId, BarcodeFormat.QR_CODE, 300, 300);
-        final BufferedImage bufferedImage = MatrixToImageWriter.toBufferedImage(matrix);
+    private void createQrCode() {
+        try {
+            final String hostNameId = getHostId();
+            LOGGER.info("Hostname %s", hostNameId);
+            BitMatrix matrix = new MultiFormatWriter().encode(hostNameId, BarcodeFormat.QR_CODE, 300, 300);
+            final BufferedImage bufferedImage = MatrixToImageWriter.toBufferedImage(matrix);
 
-        imageViewQrCode.setImage(SwingFXUtils.toFXImage(bufferedImage, null));
+            imageViewQrCode.setImage(SwingFXUtils.toFXImage(bufferedImage, null));
+        } catch (UnknownHostException | WriterException e) {
+            e.printStackTrace();
+        }
     }
 
     private String getHostId() throws UnknownHostException {
