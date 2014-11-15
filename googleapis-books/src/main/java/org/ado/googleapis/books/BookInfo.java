@@ -83,4 +83,48 @@ public class BookInfo {
         this.isbn = isbn;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        BookInfo bookInfo = (BookInfo) o;
+
+        if (hasSmallThumbnail != bookInfo.hasSmallThumbnail) return false;
+        if (hasThumbnail != bookInfo.hasThumbnail) return false;
+        if (author != null ? !author.equals(bookInfo.author) : bookInfo.author != null) return false;
+        if (isbn != null ? !isbn.equals(bookInfo.isbn) : bookInfo.isbn != null) return false;
+        if (smallThumbnail != null ? !smallThumbnail.equals(bookInfo.smallThumbnail) : bookInfo.smallThumbnail != null)
+            return false;
+        if (thumbnail != null ? !thumbnail.equals(bookInfo.thumbnail) : bookInfo.thumbnail != null) return false;
+        if (title != null ? !title.equals(bookInfo.title) : bookInfo.title != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = author != null ? author.hashCode() : 0;
+        result = 31 * result + (title != null ? title.hashCode() : 0);
+        result = 31 * result + (hasThumbnail ? 1 : 0);
+        result = 31 * result + (thumbnail != null ? thumbnail.hashCode() : 0);
+        result = 31 * result + (hasSmallThumbnail ? 1 : 0);
+        result = 31 * result + (smallThumbnail != null ? smallThumbnail.hashCode() : 0);
+        result = 31 * result + (isbn != null ? isbn.hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuffer sb = new StringBuffer("BookInfo{");
+        sb.append("author='").append(author).append('\'');
+        sb.append(", title='").append(title).append('\'');
+        sb.append(", hasThumbnail=").append(hasThumbnail);
+        sb.append(", thumbnail=").append(thumbnail);
+        sb.append(", hasSmallThumbnail=").append(hasSmallThumbnail);
+        sb.append(", smallThumbnail=").append(smallThumbnail);
+        sb.append(", isbn='").append(isbn).append('\'');
+        sb.append('}');
+        return sb.toString();
+    }
 }
