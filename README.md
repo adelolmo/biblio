@@ -1,4 +1,4 @@
 biblio
 ======
 
-Solution to keep your personal physical library organize 
+Solution to organize your personal physical library 
