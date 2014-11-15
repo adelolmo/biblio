@@ -5,9 +5,11 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 import org.ado.biblio.domain.BookMessageDTO;
 import org.ado.googleapis.books.AbstractBookInfoLoader;
 import org.ado.googleapis.books.NoBookInfoFoundException;
@@ -27,10 +29,6 @@ public class BookInfoActivity extends Activity {
 
     private static final String TAG = BiblioActivity.class.getName();
 
-    private EditText textTitle;
-    private EditText textAuthor;
-    private ImageView cover;
-
     private AbstractBookInfoLoader bookInfoLoader;
 
     private String link;
@@ -47,9 +45,9 @@ public class BookInfoActivity extends Activity {
         setContentView(R.layout.activity_bookinfo);
         Log.d(TAG, "onCreate");
 
-        textTitle = (EditText) findViewById(R.id.textTitle);
-        textAuthor = (EditText) findViewById(R.id.textAuthor);
-        cover = (ImageView) findViewById(R.id.cover);
+        EditText textTitle = (EditText) findViewById(R.id.textTitle);
+        EditText textAuthor = (EditText) findViewById(R.id.textAuthor);
+        ImageView cover = (ImageView) findViewById(R.id.cover);
 
         link = getIntent().getStringExtra("link");
         format = getIntent().getStringExtra("format");
@@ -95,6 +93,8 @@ public class BookInfoActivity extends Activity {
 
     class PushBarCodeTask extends AsyncTask<String, Void, Void> {
 
+        boolean connectionError = false;
+
         @Override
         protected Void doInBackground(String... params) {
             HttpClient client = new DefaultHttpClient();
@@ -105,9 +105,19 @@ public class BookInfoActivity extends Activity {
             try {
                 client.execute(httpPost);
             } catch (Exception e) {
-                e.printStackTrace();
+                Log.e(TAG, "Unable to establish connection with server", e);
+                connectionError = true;
             }
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if (connectionError) {
+                Toast toast = Toast.makeText(getApplicationContext(), "Unable to establish connection with server", Toast.LENGTH_LONG);
+                toast.setGravity(Gravity.TOP, 25, 400);
+                toast.show();
+            }
         }
     }
 }
