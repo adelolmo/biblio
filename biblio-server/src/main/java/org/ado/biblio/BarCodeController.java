@@ -1,5 +1,7 @@
 package org.ado.biblio;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -17,6 +19,8 @@ import javax.validation.constraints.NotNull;
 @RestController
 public class BarCodeController {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(BarCodeController.class);
+
     @Autowired
     private BarCodeCache barCodeCache;
 
@@ -25,7 +29,7 @@ public class BarCodeController {
                          @RequestParam(value = "format") String format,
                          @RequestParam(value = "code") String code) {
 
-        System.out.println("/push  format [" + format + "] code [" + code + "].");
+        LOGGER.info("/push. id[%s] format [%s] code [%s].", id, format, code);
 
         barCodeCache.add(id, new BookMessage(format, code));
     }
@@ -33,7 +37,7 @@ public class BarCodeController {
     @RequestMapping(value = "/pull", method = RequestMethod.GET)
     public BookMessage[] getBookMessage(@NotNull @RequestParam(value = "id") String id) {
 
-        System.out.println("/pull " + id);
+        LOGGER.info("/pull. id[%s]", id);
 
         boolean pullingActive = true;
         while (pullingActive) {
@@ -49,7 +53,7 @@ public class BarCodeController {
         for (BookMessage bookMessage : bookMessages) {
             messages.append(bookMessage).append(" ");
         }
-        System.out.println(String.format("sending %s -> %s ", id, messages));
+        LOGGER.info("sending to [%s] message [%s]", id, messages);
 
         return bookMessages;
     }
