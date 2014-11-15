@@ -4,21 +4,43 @@
               android:orientation="vertical">
 
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Link to Desktop"
-        android:id="@+id/buttonLink"
-        android:onClick="link"/>
+    <!--    <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Link to Desktop"
+            android:id="@+id/buttonLink"
+            android:onClick="link"/>-->
 
-    <Button
+    <!--    <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Scan Barcode"
+            android:id="@+id/buttonScanBarcode"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:onClick="startBarcodeApp"
+            android:layout_gravity="bottom|right"
+            android:visibility="visible"/>-->
+
+    <ImageButton
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Scan Barcode"
+        android:id="@+id/buttonLink"
+        android:layout_gravity="center_horizontal"
+        android:onClick="link"
+        android:src="@drawable/ic_link"
+        android:scaleType="centerCrop"
+        android:minHeight="250dp"
+        android:layout_margin="5dp"/>
+
+    <ImageButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:id="@+id/buttonScanBarcode"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
+        android:layout_gravity="center_horizontal"
         android:onClick="startBarcodeApp"
-        android:layout_gravity="bottom|right"
-        android:visibility="visible"/>
+        android:src="@drawable/ic_barcode_scan"
+        android:scaleType="centerCrop"
+        android:minHeight="250dp"
+        android:layout_margin="5dp"/>
 </LinearLayout>
