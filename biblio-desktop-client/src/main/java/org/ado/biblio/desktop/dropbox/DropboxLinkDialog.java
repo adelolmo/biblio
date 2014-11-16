@@ -84,7 +84,7 @@ public class DropboxLinkDialog {
             if (newState == Worker.State.SUCCEEDED) {
                 try {
                     final String authCode = (String) engine.executeScript("document.getElementById('auth-code').textContent");
-                    LOGGER.debug("Authorization Code [%s]", authCode);
+                    LOGGER.debug("Authorization Code [{}]", authCode);
                     DbxAuthFinish authFinish = webAuth.finish(authCode);
 
                     String accessToken = authFinish.accessToken;
@@ -94,7 +94,7 @@ public class DropboxLinkDialog {
                     DbxClient client = new DbxClient(dropboxConfig, dbxAuthInfo.accessToken, dbxAuthInfo.host);
 
                     final String displayName = client.getAccountInfo().displayName;
-                    LOGGER.info("Linked account [%s]", displayName);
+                    LOGGER.info("Linked account [{}]", displayName);
                     dropboxAccountLinkListener.accountLinked(getAccountInfo(client.getAccountInfo()));
                     stage.close();
                 } catch (Exception e) {
