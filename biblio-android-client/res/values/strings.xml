@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Biblio Book Scanner</string>
-    <string name="hello">Hello my-android-application!</string>
+    <string name="app_name">Biblio</string>
     <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
 
 </resources>
