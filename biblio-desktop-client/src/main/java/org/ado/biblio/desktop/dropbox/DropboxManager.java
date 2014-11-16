@@ -30,7 +30,7 @@ public class DropboxManager {
     private DbxClient dbxClient;
 
     public interface DropboxAccountLinkListener {
-        void accountLinked(String accountName);
+        void accountLinked(AccountInfo accountInfo);
     }
 
     @PostConstruct

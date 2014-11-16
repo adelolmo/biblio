@@ -21,12 +21,12 @@ import javafx.scene.image.ImageView;
 import org.ado.biblio.desktop.dropbox.DropboxException;
 import org.ado.biblio.desktop.dropbox.DropboxManager;
 import org.ado.biblio.domain.BookMessageDTO;
-import org.ado.googleapis.books.AbstractBookInfoLoader;
 import org.ado.googleapis.books.BookInfo;
 import org.ado.googleapis.books.NoBookInfoFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -70,13 +70,19 @@ public class AppPresenter implements Initializable {
     @Inject
     private DropboxManager dropboxManager;
 
-    private ServerPullingService serverPullingService;
-    private AbstractBookInfoLoader bookInfoLoader;
+    @Inject
+    private BookInfoLoader bookInfoLoader;
 
-    public AppPresenter() throws UnknownHostException {
-        serverPullingService = new ServerPullingService(getHostId());
-        bookInfoLoader = new BookInfoLoader();
+    @Inject
+    private ServerPullingService serverPullingService;
+
+    public AppPresenter() {
         data.add(new Book("Super Me", "Andoni del Olmo", "12345"));
+    }
+
+    @PostConstruct
+    public void init() throws UnknownHostException {
+        serverPullingService.setHostId(getHostId());
     }
 
     @Override
@@ -94,7 +100,7 @@ public class AppPresenter implements Initializable {
             BookMessageDTO[] bookMessages = (BookMessageDTO[]) event.getSource().getValue();
             if (bookMessages != null && bookMessages.length > 0) {
                 BookMessageDTO bookMessage = bookMessages[0];
-                LOGGER.info("processing book [%s]", bookMessage);
+                LOGGER.info("processing book [{}]", bookMessage);
                 try {
                     BookInfo bookInfo = bookInfoLoader.getBookInfo(bookMessage);
                     addBookToTable(bookInfo);
@@ -132,13 +138,8 @@ public class AppPresenter implements Initializable {
     public void linkDropbox() throws DropboxException {
         LOGGER.debug("Dropbox...");
         if (!dropboxManager.isLinked()) {
-            dropboxManager.link(accountName -> {
-                try {
-                    LOGGER.info("Application is linked to Dropbox account [%s]", dropboxManager.getLinkedAccountName());
-                } catch (DropboxException e) {
-                    e.printStackTrace();
-                }
-            });
+            dropboxManager.link(accountInfo -> LOGGER.info("Application is linked to Dropbox account [{}] id [{}]",
+                    accountInfo.getDisplayName(), accountInfo.getUserId()));
 
         } else {
             dropboxManager.unlink();
@@ -152,7 +153,7 @@ public class AppPresenter implements Initializable {
     private void createQrCode() {
         try {
             final String hostNameId = getHostId();
-            LOGGER.info("Hostname %s", hostNameId);
+            LOGGER.info("Hostname: {}", hostNameId);
             BitMatrix matrix = new MultiFormatWriter().encode(hostNameId, BarcodeFormat.QR_CODE, 300, 300);
             final BufferedImage bufferedImage = MatrixToImageWriter.toBufferedImage(matrix);
 

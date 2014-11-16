@@ -24,7 +24,7 @@ public class ServerPullingService extends Service<BookMessageDTO[]> {
     private final Logger LOGGER = LoggerFactory.getLogger(ServerPullingService.class);
     private String hostId;
 
-    public ServerPullingService(String hostId) {
+    public void setHostId(String hostId) {
         this.hostId = hostId;
     }
 
@@ -47,7 +47,7 @@ public class ServerPullingService extends Service<BookMessageDTO[]> {
                     return bookMessageDTOs;
 
                 } catch (Exception e) {
-                    LOGGER.error(String.format("Unable to pull server %s", SERVER_PULL_URL), e);
+                    LOGGER.error("Unable to pull server {}", SERVER_PULL_URL, e);
                     pause(15);
                 }
                 return null;

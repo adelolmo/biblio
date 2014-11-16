@@ -29,7 +29,7 @@ public class BarCodeController {
                          @RequestParam(value = "format") String format,
                          @RequestParam(value = "code") String code) {
 
-        LOGGER.info("/push. id[%s] format [%s] code [%s].", id, format, code);
+        LOGGER.info("/push. id[{}] format [{}] code [{}].", id, format, code);
 
         barCodeCache.add(id, new BookMessage(format, code));
     }
@@ -37,7 +37,7 @@ public class BarCodeController {
     @RequestMapping(value = "/pull", method = RequestMethod.GET)
     public BookMessage[] getBookMessage(@NotNull @RequestParam(value = "id") String id) {
 
-        LOGGER.info("/pull. id[%s]", id);
+        LOGGER.info("/pull. id[{}]", id);
 
         boolean pullingActive = true;
         while (pullingActive) {
@@ -53,7 +53,7 @@ public class BarCodeController {
         for (BookMessage bookMessage : bookMessages) {
             messages.append(bookMessage).append(" ");
         }
-        LOGGER.info("sending to [%s] message [%s]", id, messages);
+        LOGGER.info("sending to [{}] message [{}]", id, messages);
 
         return bookMessages;
     }

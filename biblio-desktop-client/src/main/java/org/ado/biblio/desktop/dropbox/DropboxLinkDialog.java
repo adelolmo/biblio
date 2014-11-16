@@ -2,7 +2,6 @@ package org.ado.biblio.desktop.dropbox;
 
 import com.dropbox.core.*;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Worker;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -57,37 +56,7 @@ public class DropboxLinkDialog {
             final WebView browser = new WebView();
             final WebEngine engine = browser.getEngine();
             Stage stage = new Stage();
-            engine.getLoadWorker().stateProperty()
-                    .addListener(
-                            new ChangeListener<Worker.State>() {
-                                @Override
-                                public void changed(ObservableValue<? extends Worker.State> observable, Worker.State oldValue, Worker.State newState) {
-                                    if (newState == Worker.State.SUCCEEDED) {
-                                        try {
-                                            final String authCode = (String) engine.executeScript("document.getElementById('auth-code').textContent");
-                                            LOGGER.debug("Authorization Code [%s]", authCode);
-                                            DbxAuthFinish authFinish = webAuth.finish(authCode);
-
-
-                                            String accessToken = authFinish.accessToken;
-                                            final DbxAuthInfo dbxAuthInfo = new DbxAuthInfo(accessToken, DbxHost.Default);
-                                            DbxAuthInfo.Writer.writeToFile(dbxAuthInfo, accessTokenFile);
-
-                                            DbxClient client = new DbxClient(dropboxConfig, dbxAuthInfo.accessToken, dbxAuthInfo.host);
-
-                                            final String displayName = client.getAccountInfo().displayName;
-                                            LOGGER.info("Linked account [%s]", displayName);
-                                            dropboxAccountLinkListener.accountLinked(displayName);
-                                            stage.close();
-                                        } catch (Exception e) {
-                                            // ignore
-                                        }
-                                    }
-
-                                }
-                            }
-
-                    );
+            engine.getLoadWorker().stateProperty().addListener(getListener(dropboxAccountLinkListener, webAuth, engine, stage));
             String url = webAuth.start();
             LOGGER.debug(url);
             engine.load(url);
@@ -107,6 +76,41 @@ public class DropboxLinkDialog {
             stage.setScene(scene);
             stage.show();
         }
+    }
+
+    private ChangeListener<Worker.State> getListener(final DropboxManager.DropboxAccountLinkListener dropboxAccountLinkListener,
+                                                     final DbxWebAuthNoRedirect webAuth, final WebEngine engine, final Stage stage) {
+        return (observable, oldValue, newState) -> {
+            if (newState == Worker.State.SUCCEEDED) {
+                try {
+                    final String authCode = (String) engine.executeScript("document.getElementById('auth-code').textContent");
+                    LOGGER.debug("Authorization Code [%s]", authCode);
+                    DbxAuthFinish authFinish = webAuth.finish(authCode);
+
+                    String accessToken = authFinish.accessToken;
+                    final DbxAuthInfo dbxAuthInfo = new DbxAuthInfo(accessToken, DbxHost.Default);
+                    DbxAuthInfo.Writer.writeToFile(dbxAuthInfo, accessTokenFile);
+
+                    DbxClient client = new DbxClient(dropboxConfig, dbxAuthInfo.accessToken, dbxAuthInfo.host);
+
+                    final String displayName = client.getAccountInfo().displayName;
+                    LOGGER.info("Linked account [%s]", displayName);
+                    dropboxAccountLinkListener.accountLinked(getAccountInfo(client.getAccountInfo()));
+                    stage.close();
+                } catch (Exception e) {
+                    // ignore
+                }
+            }
+        };
+    }
+
+    private AccountInfo getAccountInfo(DbxAccountInfo dropboxAccountInfo) {
+        final AccountInfo accountInfo = new AccountInfo();
+        accountInfo.setCountry(dropboxAccountInfo.country);
+        accountInfo.setDisplayName(dropboxAccountInfo.displayName);
+        accountInfo.setReferralLink(dropboxAccountInfo.referralLink);
+        accountInfo.setUserId(dropboxAccountInfo.userId);
+        return accountInfo;
     }
 
     public void unlink() {
