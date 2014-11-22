@@ -105,8 +105,6 @@
                         <TextField fx:id="textFieldIsbn" layoutX="50.0" layoutY="60.0"/>
                     </children>
                 </HBox>
-                <ImageView fx:id="imageViewQrCode" fitHeight="150.0" fitWidth="200.0" layoutX="18.0" layoutY="172.0"
-                           pickOnBounds="true" preserveRatio="true"/>
             </children>
         </AnchorPane>
         <Label fx:id="labelSystem" prefHeight="15.0" prefWidth="405.0"/>

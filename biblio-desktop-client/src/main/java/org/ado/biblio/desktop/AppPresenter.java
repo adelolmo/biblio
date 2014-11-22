@@ -1,7 +1,5 @@
 package org.ado.biblio.desktop;
 
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -16,8 +14,11 @@ import javafx.scene.image.ImageView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.ado.biblio.desktop.android.AndroidView;
+import org.ado.biblio.desktop.db.DatabaseConnection;
 import org.ado.biblio.desktop.dropbox.DropboxException;
 import org.ado.biblio.desktop.dropbox.DropboxView;
+import org.ado.biblio.desktop.model.Book;
+import org.ado.biblio.desktop.util.ImageWriter;
 import org.ado.biblio.domain.BookMessageDTO;
 import org.ado.googleapis.books.BookInfo;
 import org.ado.googleapis.books.NoBookInfoFoundException;
@@ -27,9 +28,11 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
-import java.net.UnknownHostException;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 /**
  * Class description here.
@@ -72,13 +75,13 @@ public class AppPresenter implements Initializable {
     @Inject
     private ServerPullingService serverPullingService;
 
+    @Inject
+    private DatabaseConnection databaseConnection;
+
     @PostConstruct
-    public void init() throws UnknownHostException {
+    public void init() throws Exception {
         serverPullingService.setHostId(AppConfiguration.getAppId());
-        data.add(new Book("Super Me", "Someone else", "12345"));
-        data.add(new Book("Melonize Me", "Andoni del Olmo", "12345"));
-        data.add(new Book("The Bible", "God", "666"));
-        data.add(new Book("A-Team", "Anja", "687987987"));
+        data.addAll(databaseConnection.getBookList().stream().collect(Collectors.toList()));
     }
 
     @Override
@@ -98,7 +101,7 @@ public class AppPresenter implements Initializable {
                 LOGGER.info("processing book [{}]", bookMessage);
                 try {
                     BookInfo bookInfo = bookInfoLoader.getBookInfo(bookMessage);
-                    addBookToTable(bookInfo);
+                    addBook(bookInfo);
                     LOGGER.info(bookInfo.toString());
                     if (bookInfo.hasThumbnail()) {
                         imageViewCover.setImage(new Image(bookInfo.getThumbnail()));
@@ -127,6 +130,12 @@ public class AppPresenter implements Initializable {
             textFieldTitle.setText(book.getTitle());
             textFieldAuthor.setText(book.getAuthor());
             textFieldIsbn.setText(book.getIsbn());
+            final InputStream inputStream = ImageWriter.read(book.getIsbn(), ".jpeg");
+            if (inputStream != null) {
+                imageViewCover.setImage(new Image(inputStream));
+            } else {
+                imageViewCover.setImage(null);
+            }
         });
     }
 
@@ -148,79 +157,18 @@ public class AppPresenter implements Initializable {
         stage.show();
     }
 
-    private void addBookToTable(BookInfo bookMessage) {
-        data.add(new Book(bookMessage.getTitle(), bookMessage.getAuthor(), bookMessage.getIsbn()));
-    }
-
-    public class Book {
-        private StringProperty title;
-        private StringProperty author;
-        private StringProperty isbn;
-
-        public Book(String title, String author, String isbn) {
-            this.title = new SimpleStringProperty(title);
-            this.author = new SimpleStringProperty(author);
-            this.isbn = new SimpleStringProperty(isbn);
+    private void addBook(BookInfo bookInfo) {
+        final Book book = new Book(bookInfo.getTitle(), bookInfo.getAuthor(), bookInfo.getIsbn());
+        try {
+            ImageWriter.write(bookInfo.getThumbnail(), bookInfo.getIsbn(), ".jpeg");
+        } catch (IOException e) {
+            LOGGER.error(String.format("Cannot write book's covet to disk. %s", book.toString()), e);
         }
-
-        public String getTitle() {
-            return title.get();
-        }
-
-        public StringProperty titleProperty() {
-            return title;
-        }
-
-        public String getAuthor() {
-            return author.get();
-        }
-
-        public StringProperty authorProperty() {
-            return author;
-        }
-
-        public String getIsbn() {
-            return isbn.get();
-        }
-
-        public void setIsbn(String isbn) {
-            this.isbn.set(isbn);
-        }
-
-        public StringProperty isbnProperty() {
-            return isbn;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-
-            Book book = (Book) o;
-
-            if (author != null ? !author.equals(book.author) : book.author != null) return false;
-            if (isbn != null ? !isbn.equals(book.isbn) : book.isbn != null) return false;
-            if (title != null ? !title.equals(book.title) : book.title != null) return false;
-
-            return true;
-        }
-
-        @Override
-        public int hashCode() {
-            int result = title != null ? title.hashCode() : 0;
-            result = 31 * result + (author != null ? author.hashCode() : 0);
-            result = 31 * result + (isbn != null ? isbn.hashCode() : 0);
-            return result;
-        }
-
-        @Override
-        public String toString() {
-            final StringBuffer sb = new StringBuffer("Book{");
-            sb.append("title=").append(title);
-            sb.append(", author=").append(author);
-            sb.append(", isbn=").append(isbn);
-            sb.append('}');
-            return sb.toString();
+        data.add(book);
+        try {
+            databaseConnection.insertBook(book);
+        } catch (SQLException e) {
+            LOGGER.error(String.format("Cannot insert book into database. %s", book.toString()), e);
         }
     }
 }
