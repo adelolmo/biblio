@@ -27,18 +27,55 @@
                 </Menu>
             </menus>
         </MenuBar>
-        <AnchorPane prefHeight="200.0" prefWidth="200.0">
-            <children>
-                <TableView fx:id="tableViewBooks" editable="true" prefHeight="274.0" prefWidth="926.0"
-                           AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-                           AnchorPane.topAnchor="0.0">
+        <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
+            <tabs>
+                <Tab text="Library">
+                    <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                            <children>
+                                <TableView fx:id="tableViewBooks" editable="true" layoutX="366.0" layoutY="10.0"
+                                           prefHeight="204.0" prefWidth="926.0" AnchorPane.bottomAnchor="0.0"
+                                           AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                                           AnchorPane.topAnchor="0.0">
+                                    <columns>
+                                        <TableColumn fx:id="tableColumnTitle" editable="false" prefWidth="367.0"
+                                                     text="Title"/>
+                                        <TableColumn fx:id="tableColumnAuthor" minWidth="0.0" prefWidth="361.0"
+                                                     text="Author"/>
+                                    </columns>
+                                </TableView>
+                            </children>
+                        </AnchorPane>
+                    </content>
+                </Tab>
+                <Tab text="Lend">
+                    <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                            <children>
+                                <TableView layoutX="363.0" layoutY="2.0" prefHeight="204.0" prefWidth="926.0"
+                                           AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                                           AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <columns>
+                                        <TableColumn prefWidth="75.0" text="C1"/>
+                                        <TableColumn prefWidth="75.0" text="C2"/>
+                                    </columns>
+                                </TableView>
+                            </children>
+                        </AnchorPane>
+                    </content>
+                </Tab>
+                <Tab text="History">
+                    <content>
+                        <TableView prefHeight="200.0" prefWidth="200.0">
                     <columns>
-                        <TableColumn fx:id="tableColumnTitle" prefWidth="367.0" text="Title"/>
-                        <TableColumn fx:id="tableColumnAuthor" minWidth="0.0" prefWidth="361.0" text="Author"/>
+                        <TableColumn prefWidth="75.0" text="C1"/>
+                        <TableColumn prefWidth="75.0" text="C2"/>
                     </columns>
-                </TableView>
-            </children>
-        </AnchorPane>
+                        </TableView>
+                    </content>
+                </Tab>
+            </tabs>
+        </TabPane>
         <AnchorPane prefHeight="200.0" prefWidth="200.0">
             <children>
                 <HBox layoutX="712.0">

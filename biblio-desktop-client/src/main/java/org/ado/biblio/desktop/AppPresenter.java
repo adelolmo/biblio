@@ -12,14 +12,17 @@ import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import org.ado.biblio.desktop.dropbox.DropboxException;
-import org.ado.biblio.desktop.dropbox.DropboxManager;
+import org.ado.biblio.desktop.dropbox.DropboxView;
 import org.ado.biblio.domain.BookMessageDTO;
 import org.ado.googleapis.books.BookInfo;
 import org.ado.googleapis.books.NoBookInfoFoundException;
@@ -48,27 +51,30 @@ public class AppPresenter implements Initializable {
 
     @FXML
     private TableView<Book> tableViewBooks;
+
     @FXML
     private TableColumn<Book, String> tableColumnAuthor;
+
     @FXML
     private TableColumn<Book, String> tableColumnTitle;
+
     @FXML
     private TextField textFieldTitle;
+
     @FXML
     private TextField textFieldAuthor;
+
     @FXML
     private TextField textFieldIsbn;
+
     @FXML
     private ImageView imageViewCover;
 
     @FXML
-    ImageView imageViewQrCode;
+    private ImageView imageViewQrCode;
 
     @FXML
     private Label labelSystem;
-
-    @Inject
-    private DropboxManager dropboxManager;
 
     @Inject
     private BookInfoLoader bookInfoLoader;
@@ -76,18 +82,22 @@ public class AppPresenter implements Initializable {
     @Inject
     private ServerPullingService serverPullingService;
 
-    public AppPresenter() {
-        data.add(new Book("Super Me", "Andoni del Olmo", "12345"));
-    }
+    private DropboxView dropboxView;
 
     @PostConstruct
     public void init() throws UnknownHostException {
         serverPullingService.setHostId(getHostId());
+        data.add(new Book("Super Me", "Someone else", "12345"));
+        data.add(new Book("Melonize Me", "Andoni del Olmo", "12345"));
+        data.add(new Book("The Bible", "God", "666"));
+        data.add(new Book("A-Team", "Anja", "687987987"));
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         LOGGER.info("initializing...");
+
+
         createQrCode();
 
         tableColumnTitle.setCellValueFactory(cellData -> cellData.getValue().titleProperty());
@@ -136,14 +146,11 @@ public class AppPresenter implements Initializable {
     }
 
     public void linkDropbox() throws DropboxException {
-        LOGGER.debug("Dropbox...");
-        if (!dropboxManager.isLinked()) {
-            dropboxManager.link(accountInfo -> LOGGER.info("Application is linked to Dropbox account [{}] id [{}]",
-                    accountInfo.getDisplayName(), accountInfo.getUserId()));
-
-        } else {
-            dropboxManager.unlink();
-        }
+        dropboxView = new DropboxView();
+        Stage stage = new Stage();
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.setScene(new Scene(dropboxView.getView()));
+        stage.show();
     }
 
     private void addBookToTable(BookInfo bookMessage) {
@@ -204,6 +211,38 @@ public class AppPresenter implements Initializable {
 
         public StringProperty isbnProperty() {
             return isbn;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            Book book = (Book) o;
+
+            if (author != null ? !author.equals(book.author) : book.author != null) return false;
+            if (isbn != null ? !isbn.equals(book.isbn) : book.isbn != null) return false;
+            if (title != null ? !title.equals(book.title) : book.title != null) return false;
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = title != null ? title.hashCode() : 0;
+            result = 31 * result + (author != null ? author.hashCode() : 0);
+            result = 31 * result + (isbn != null ? isbn.hashCode() : 0);
+            return result;
+        }
+
+        @Override
+        public String toString() {
+            final StringBuffer sb = new StringBuffer("Book{");
+            sb.append("title=").append(title);
+            sb.append(", author=").append(author);
+            sb.append(", isbn=").append(isbn);
+            sb.append('}');
+            return sb.toString();
         }
     }
 }

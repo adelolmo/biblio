@@ -34,20 +34,22 @@ public class ServerPullingService extends Service<BookMessageDTO[]> {
         return new Task<BookMessageDTO[]>() {
             @Override
             protected BookMessageDTO[] call() throws Exception {
-                try {
 
+                final String requestUrl = String.format(SERVER_PULL_URL, hostId);
+
+                try {
                     HttpClient client = HttpClientBuilder.create().build();
-                    HttpGet request = new HttpGet(String.format(SERVER_PULL_URL, hostId));
+                    HttpGet request = new HttpGet(requestUrl);
                     HttpResponse response = client.execute(request);
 
-                    LOGGER.info("Response Code : " + response.getStatusLine().getStatusCode());
+                    LOGGER.info("Response code [{}]", response.getStatusLine().getStatusCode());
 
                     String responseContent = IOUtils.toString(response.getEntity().getContent());
                     final BookMessageDTO[] bookMessageDTOs = new Gson().fromJson(responseContent, BookMessageDTO[].class);
                     return bookMessageDTOs;
 
                 } catch (Exception e) {
-                    LOGGER.error("Unable to pull server {}", SERVER_PULL_URL, e);
+                    LOGGER.error(String.format("Unable to pull server %s", requestUrl), e);
                     pause(15);
                 }
                 return null;

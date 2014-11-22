@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.Pane?>
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
+      prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.ado.biblio.desktop.dropbox.DropboxPresenter">
+    <children>
+        <Label layoutX="186.0" layoutY="155.0" text="Dropbox"/>
+        <Label layoutX="41.0" layoutY="45.0" text="Linked to:"/>
+        <Label fx:id="labelDropboxLinkedTo" layoutX="106.0" layoutY="45.0" text="not linked"/>
+        <Button fx:id="buttonUnlink" layoutX="460.0" layoutY="342.0" mnemonicParsing="false" onAction="#unlink"
+                text="Unlink"/>
+        <Button fx:id="buttonLink" layoutX="459.0" layoutY="291.0" mnemonicParsing="false" onAction="#link"
+                text="Link"/>
+    </children>
+</Pane>

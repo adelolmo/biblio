@@ -1,4 +1,4 @@
-package org.ado.biblio.desktop;
+package org.ado.biblio.desktop.dropbox;
 
 import com.airhacks.afterburner.views.FXMLView;
 
@@ -6,8 +6,7 @@ import com.airhacks.afterburner.views.FXMLView;
  * Class description here.
  *
  * @author andoni
- * @since 15.11.2014
+ * @since 16.11.2014
  */
-public class AppView extends FXMLView {
-
+public class DropboxView extends FXMLView {
 }

@@ -45,7 +45,7 @@ public class DropboxManager {
 
     public boolean isConnected() {
         try {
-            return ACCESS_TOKEN_FILE.exists() && getClient() == null;
+            return ACCESS_TOKEN_FILE.exists() && getClient() != null;
         } catch (Exception e) {
             return false;
         }
@@ -66,7 +66,7 @@ public class DropboxManager {
         dbxClient = null;
     }
 
-    public boolean isLinked() {
+    public boolean hasLinkedAccount() {
         return ACCESS_TOKEN_FILE.exists();
     }
 
