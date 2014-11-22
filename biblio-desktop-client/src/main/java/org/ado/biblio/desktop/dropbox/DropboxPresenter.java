@@ -30,20 +30,28 @@ public class DropboxPresenter implements Initializable {
     @FXML
     public Label labelDropboxLinkedTo;
 
+    @FXML
+    public Label labelUserId;
+
+    @FXML
+    public Label labelCountry;
+
     @Inject
     private DropboxManager dropboxManager;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         LOGGER.info("initialize...");
-        buttonLink.setVisible(false);
-        buttonUnlink.setVisible(false);
         try {
             if (dropboxManager.hasLinkedAccount()) {
-                buttonUnlink.setVisible(true);
-                labelDropboxLinkedTo.setText(dropboxManager.getLinkedAccountName());
+                buttonLink.setDisable(true);
+                buttonUnlink.setDisable(false);
+                final AccountInfo accountInfo = dropboxManager.getAccountInfo();
+                populateAccountInfoFields(accountInfo);
+
             } else {
-                buttonLink.setVisible(true);
+                buttonLink.setDisable(false);
+                buttonUnlink.setDisable(true);
             }
         } catch (DropboxException e) {
             e.printStackTrace();
@@ -54,8 +62,9 @@ public class DropboxPresenter implements Initializable {
         dropboxManager.link(new DropboxManager.DropboxAccountLinkListener() {
             @Override
             public void accountLinked(AccountInfo accountInfo) {
-                buttonUnlink.setVisible(true);
-                labelDropboxLinkedTo.setText(accountInfo.getDisplayName());
+                buttonLink.setDisable(true);
+                buttonUnlink.setDisable(false);
+                populateAccountInfoFields(accountInfo);
             }
         });
     }
@@ -63,5 +72,15 @@ public class DropboxPresenter implements Initializable {
     public void unlink() throws DropboxException {
         dropboxManager.unlink();
         labelDropboxLinkedTo.setText("Not linked");
+    }
+
+    public void close() {
+
+    }
+
+    private void populateAccountInfoFields(AccountInfo accountInfo) {
+        labelDropboxLinkedTo.setText(accountInfo.getDisplayName());
+        labelUserId.setText(String.valueOf(accountInfo.getUserId()));
+        labelCountry.setText(accountInfo.getCountry());
     }
 }

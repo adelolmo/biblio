@@ -12,6 +12,7 @@
                 <Menu mnemonicParsing="false" text="File">
                     <items>
                         <MenuItem mnemonicParsing="false" onAction="#linkDropbox" text="Dropbox..."/>
+                        <MenuItem mnemonicParsing="false" onAction="#linkAndroid" text="Android"/>
                         <MenuItem mnemonicParsing="false" text="Close"/>
                     </items>
                 </Menu>

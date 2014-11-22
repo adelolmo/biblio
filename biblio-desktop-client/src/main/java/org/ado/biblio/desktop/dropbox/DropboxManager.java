@@ -89,10 +89,9 @@ public class DropboxManager {
         FileUtils.deleteQuietly(ACCESS_TOKEN_FILE);
     }
 
-    public String getLinkedAccountName() throws DropboxException {
+    public AccountInfo getAccountInfo() throws DropboxException {
         try {
-            final DbxClient dbxClient = getClient();
-            return dbxClient.getAccountInfo().displayName;
+            return AccountInfoFactory.getAccountInfo(getClient().getAccountInfo());
         } catch (JsonReader.FileLoadException | DbxException e) {
             throw new DropboxException("Unable to get Account name", e);
         }

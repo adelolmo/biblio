@@ -1,15 +1,9 @@
 package org.ado.biblio.desktop;
 
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.MultiFormatWriter;
-import com.google.zxing.WriterException;
-import com.google.zxing.client.j2se.MatrixToImageWriter;
-import com.google.zxing.common.BitMatrix;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
@@ -21,6 +15,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.ado.biblio.desktop.android.AndroidView;
 import org.ado.biblio.desktop.dropbox.DropboxException;
 import org.ado.biblio.desktop.dropbox.DropboxView;
 import org.ado.biblio.domain.BookMessageDTO;
@@ -31,9 +26,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ResourceBundle;
@@ -71,9 +64,6 @@ public class AppPresenter implements Initializable {
     private ImageView imageViewCover;
 
     @FXML
-    private ImageView imageViewQrCode;
-
-    @FXML
     private Label labelSystem;
 
     @Inject
@@ -82,11 +72,9 @@ public class AppPresenter implements Initializable {
     @Inject
     private ServerPullingService serverPullingService;
 
-    private DropboxView dropboxView;
-
     @PostConstruct
     public void init() throws UnknownHostException {
-        serverPullingService.setHostId(getHostId());
+        serverPullingService.setHostId(AppConfiguration.getAppId());
         data.add(new Book("Super Me", "Someone else", "12345"));
         data.add(new Book("Melonize Me", "Andoni del Olmo", "12345"));
         data.add(new Book("The Bible", "God", "666"));
@@ -96,9 +84,6 @@ public class AppPresenter implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         LOGGER.info("initializing...");
-
-
-        createQrCode();
 
         tableColumnTitle.setCellValueFactory(cellData -> cellData.getValue().titleProperty());
         tableColumnAuthor.setCellValueFactory(cellData -> cellData.getValue().authorProperty());
@@ -145,33 +130,26 @@ public class AppPresenter implements Initializable {
         });
     }
 
+    public void linkAndroid() {
+        final AndroidView androidView = new AndroidView();
+        Stage stage = new Stage();
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.setScene(new Scene(androidView.getView()));
+        stage.setTitle("Android");
+        stage.show();
+    }
+
     public void linkDropbox() throws DropboxException {
-        dropboxView = new DropboxView();
+        DropboxView dropboxView = new DropboxView();
         Stage stage = new Stage();
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.setScene(new Scene(dropboxView.getView()));
+        stage.setTitle("Dropbox");
         stage.show();
     }
 
     private void addBookToTable(BookInfo bookMessage) {
         data.add(new Book(bookMessage.getTitle(), bookMessage.getAuthor(), bookMessage.getIsbn()));
-    }
-
-    private void createQrCode() {
-        try {
-            final String hostNameId = getHostId();
-            LOGGER.info("Hostname: {}", hostNameId);
-            BitMatrix matrix = new MultiFormatWriter().encode(hostNameId, BarcodeFormat.QR_CODE, 300, 300);
-            final BufferedImage bufferedImage = MatrixToImageWriter.toBufferedImage(matrix);
-
-            imageViewQrCode.setImage(SwingFXUtils.toFXImage(bufferedImage, null));
-        } catch (UnknownHostException | WriterException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private String getHostId() throws UnknownHostException {
-        return InetAddress.getLocalHost().getHostName();
     }
 
     public class Book {

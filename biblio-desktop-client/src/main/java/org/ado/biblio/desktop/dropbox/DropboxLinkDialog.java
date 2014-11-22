@@ -3,15 +3,12 @@ package org.ado.biblio.desktop.dropbox;
 import com.dropbox.core.*;
 import javafx.beans.value.ChangeListener;
 import javafx.concurrent.Worker;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import org.ado.biblio.desktop.App;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,33 +46,23 @@ public class DropboxLinkDialog {
 
     public void open(DropboxManager.DropboxAccountLinkListener dropboxAccountLinkListener) throws IOException {
 
-        if (!accessTokenFile.exists()) {
+        final DbxWebAuthNoRedirect webAuth = getDbxWebAuthNoRedirect();
 
-            final DbxWebAuthNoRedirect webAuth = getDbxWebAuthNoRedirect();
+        final WebView browser = new WebView();
+        final WebEngine engine = browser.getEngine();
+        Stage stage = new Stage();
+        engine.getLoadWorker().stateProperty().addListener(getListener(dropboxAccountLinkListener, webAuth, engine, stage));
+        String url = webAuth.start();
+        LOGGER.debug(url);
+        engine.load(url);
 
-            final WebView browser = new WebView();
-            final WebEngine engine = browser.getEngine();
-            Stage stage = new Stage();
-            engine.getLoadWorker().stateProperty().addListener(getListener(dropboxAccountLinkListener, webAuth, engine, stage));
-            String url = webAuth.start();
-            LOGGER.debug(url);
-            engine.load(url);
+        StackPane sp = new StackPane();
+        sp.getChildren().add(browser);
 
-            StackPane sp = new StackPane();
-            sp.getChildren().add(browser);
-
-            stage.initModality(Modality.APPLICATION_MODAL);
-            Scene page2 = new Scene(sp);
-            stage.setScene(page2);
-            stage.show();
-        } else {
-
-            FXMLLoader loader = new FXMLLoader(App.class.getResource("fxml/DropboxUnlinkDialog.fxml"));
-            Parent root = (Parent) loader.load();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
-        }
+        stage.initModality(Modality.APPLICATION_MODAL);
+        Scene page2 = new Scene(sp);
+        stage.setScene(page2);
+        stage.show();
     }
 
     private ChangeListener<Worker.State> getListener(final DropboxManager.DropboxAccountLinkListener dropboxAccountLinkListener,
@@ -95,22 +82,13 @@ public class DropboxLinkDialog {
 
                     final String displayName = client.getAccountInfo().displayName;
                     LOGGER.info("Linked account [{}]", displayName);
-                    dropboxAccountLinkListener.accountLinked(getAccountInfo(client.getAccountInfo()));
+                    dropboxAccountLinkListener.accountLinked(AccountInfoFactory.getAccountInfo(client.getAccountInfo()));
                     stage.close();
                 } catch (Exception e) {
                     // ignore
                 }
             }
         };
-    }
-
-    private AccountInfo getAccountInfo(DbxAccountInfo dropboxAccountInfo) {
-        final AccountInfo accountInfo = new AccountInfo();
-        accountInfo.setCountry(dropboxAccountInfo.country);
-        accountInfo.setDisplayName(dropboxAccountInfo.displayName);
-        accountInfo.setReferralLink(dropboxAccountInfo.referralLink);
-        accountInfo.setUserId(dropboxAccountInfo.userId);
-        return accountInfo;
     }
 
     public void unlink() {
