@@ -27,10 +27,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
@@ -131,17 +131,19 @@ public class AppPresenter implements Initializable {
         serverPullingService.start();
 
         tableViewBooks.setOnMouseClicked(event -> {
-            Book book = (Book) ((TableView) event.getSource()).getFocusModel().getFocusedItem();
-            textFieldTitle.setText(book.getTitle());
-            textFieldAuthor.setText(book.getAuthor());
-            textFieldIsbn.setText(book.getIsbn());
-            final InputStream inputStream = ImageUtils.read(book.getIsbn(), ".jpeg");
-            if (inputStream != null) {
-                imageViewCover.setImage(new Image(inputStream));
-            } else {
-                imageViewCover.setImage(null);
-            }
-        });
+                    Book book = (Book) ((TableView) event.getSource()).getFocusModel().getFocusedItem();
+                    textFieldTitle.setText(book.getTitle());
+                    textFieldAuthor.setText(book.getAuthor());
+                    textFieldIsbn.setText(book.getIsbn());
+                    imageViewCover.setImage(ImageUtils.readCoverOrDefault(book.getIsbn()));
+                }
+        );
+    }
+
+    @PreDestroy
+    private void destroy() {
+        LOGGER.info("destroy");
+        serverPullingService.cancel();
     }
 
     public void linkAndroid() {
@@ -172,10 +174,10 @@ public class AppPresenter implements Initializable {
         }
 
         try {
-            final File file = ImageUtils.write(bookInfo.getThumbnail(), bookInfo.getIsbn(), ".jpeg");
+            final File file = ImageUtils.writeCover(bookInfo.getThumbnail(), bookInfo.getIsbn());
             dropboxManager.uploadCover(bookInfo.getIsbn(), file);
         } catch (IOException e) {
-            LOGGER.error(String.format("Cannot write book's covet to disk. %s", book.toString()), e);
+            LOGGER.error(String.format("Cannot write book's cover into disk. %s", book.toString()), e);
         } catch (DropboxException e) {
             e.printStackTrace();
         }
