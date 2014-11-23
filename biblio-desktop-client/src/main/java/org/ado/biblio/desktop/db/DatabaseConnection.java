@@ -81,7 +81,7 @@ public class DatabaseConnection {
     }
 
     private void initializeDatabase() throws SQLException {
-        executeQuery("CREATE TABLE IF NOT EXISTS [Table 1] (id INTEGER PRIMARY KEY AUTOINCREMENT, 'text column' TEXT, 'int column' INTEGER);");
+//        executeQuery("CREATE TABLE IF NOT EXISTS [Table 1] (id INTEGER PRIMARY KEY AUTOINCREMENT, 'text column' TEXT, 'int column' INTEGER);");
         executeQuery(new StringBuilder().append("CREATE TABLE IF NOT EXISTS [Book]")
                 .append("(id INTEGER PRIMARY KEY AUTOINCREMENT, ")
                 .append("'title' TEXT,")

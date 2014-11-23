@@ -12,15 +12,16 @@ import java.io.*;
  * @author andoni
  * @since 22.11.2014
  */
-public class ImageWriter {
+public class ImageUtils {
 
     private static final File DIRECTORY = new File(AppConfiguration.APP_CONFIG_DIRECTORY, "covers");
 
-    public static void write(InputStream inputStream, String filename, String extension) throws IOException {
+    public static File write(InputStream inputStream, String filename, String extension) throws IOException {
         final File file = new File(DIRECTORY, filename.concat(extension));
         FileUtils.touch(file);
         FileOutputStream out = new FileOutputStream(file);
         IOUtils.copy(inputStream, out);
+        return file;
     }
 
     public static InputStream read(String filename, String extension) {

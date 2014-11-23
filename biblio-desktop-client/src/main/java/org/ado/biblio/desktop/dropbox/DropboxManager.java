@@ -1,9 +1,6 @@
 package org.ado.biblio.desktop.dropbox;
 
-import com.dropbox.core.DbxAuthInfo;
-import com.dropbox.core.DbxClient;
-import com.dropbox.core.DbxException;
-import com.dropbox.core.DbxRequestConfig;
+import com.dropbox.core.*;
 import com.dropbox.core.json.JsonReader;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -12,7 +9,9 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Locale;
 
 /**
@@ -30,7 +29,9 @@ public class DropboxManager {
     private DbxClient dbxClient;
 
     public interface DropboxAccountLinkListener {
+
         void accountLinked(AccountInfo accountInfo);
+
     }
 
     @PostConstruct
@@ -41,6 +42,26 @@ public class DropboxManager {
     @PreDestroy
     public void cleanup() {
         LOGGER.info("Cleaning up!");
+    }
+
+    public void uploadCover(String isbn, File file) throws DropboxException {
+        upload(String.format("/covers/%s.%s", isbn, "jpeg"), file);
+    }
+
+    public void upload(String targetPath, File file) throws DropboxException {
+        try {
+            getClient().uploadFile(targetPath, DbxWriteMode.force(), file.length(), new FileInputStream(file));
+        } catch (DbxException | IOException | JsonReader.FileLoadException e) {
+            throw new DropboxException(String.format("Unable to upload \"%s\" to target path \"%s\".", file.getAbsolutePath(), targetPath), e);
+        }
+    }
+
+    public void upload(String targetPath, InputStream inputStream, long length) throws DropboxException {
+        try {
+            getClient().uploadFile(targetPath, DbxWriteMode.force(), length, inputStream);
+        } catch (DbxException | IOException | JsonReader.FileLoadException e) {
+            throw new DropboxException(String.format("Unable to upload file to target path \"%s\".", targetPath), e);
+        }
     }
 
     public boolean isConnected() {

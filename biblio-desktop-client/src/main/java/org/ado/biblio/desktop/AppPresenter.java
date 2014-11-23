@@ -16,9 +16,10 @@ import javafx.stage.Stage;
 import org.ado.biblio.desktop.android.AndroidView;
 import org.ado.biblio.desktop.db.DatabaseConnection;
 import org.ado.biblio.desktop.dropbox.DropboxException;
+import org.ado.biblio.desktop.dropbox.DropboxManager;
 import org.ado.biblio.desktop.dropbox.DropboxView;
 import org.ado.biblio.desktop.model.Book;
-import org.ado.biblio.desktop.util.ImageWriter;
+import org.ado.biblio.desktop.util.ImageUtils;
 import org.ado.biblio.domain.BookMessageDTO;
 import org.ado.googleapis.books.BookInfo;
 import org.ado.googleapis.books.NoBookInfoFoundException;
@@ -27,6 +28,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -77,6 +79,9 @@ public class AppPresenter implements Initializable {
 
     @Inject
     private DatabaseConnection databaseConnection;
+
+    @Inject
+    private DropboxManager dropboxManager;
 
     @PostConstruct
     public void init() throws Exception {
@@ -130,7 +135,7 @@ public class AppPresenter implements Initializable {
             textFieldTitle.setText(book.getTitle());
             textFieldAuthor.setText(book.getAuthor());
             textFieldIsbn.setText(book.getIsbn());
-            final InputStream inputStream = ImageWriter.read(book.getIsbn(), ".jpeg");
+            final InputStream inputStream = ImageUtils.read(book.getIsbn(), ".jpeg");
             if (inputStream != null) {
                 imageViewCover.setImage(new Image(inputStream));
             } else {
@@ -159,16 +164,20 @@ public class AppPresenter implements Initializable {
 
     private void addBook(BookInfo bookInfo) {
         final Book book = new Book(bookInfo.getTitle(), bookInfo.getAuthor(), bookInfo.getIsbn());
-        try {
-            ImageWriter.write(bookInfo.getThumbnail(), bookInfo.getIsbn(), ".jpeg");
-        } catch (IOException e) {
-            LOGGER.error(String.format("Cannot write book's covet to disk. %s", book.toString()), e);
-        }
         data.add(book);
         try {
             databaseConnection.insertBook(book);
         } catch (SQLException e) {
             LOGGER.error(String.format("Cannot insert book into database. %s", book.toString()), e);
+        }
+
+        try {
+            final File file = ImageUtils.write(bookInfo.getThumbnail(), bookInfo.getIsbn(), ".jpeg");
+            dropboxManager.uploadCover(bookInfo.getIsbn(), file);
+        } catch (IOException e) {
+            LOGGER.error(String.format("Cannot write book's covet to disk. %s", book.toString()), e);
+        } catch (DropboxException e) {
+            e.printStackTrace();
         }
     }
 }
