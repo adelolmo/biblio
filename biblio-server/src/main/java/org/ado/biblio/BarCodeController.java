@@ -40,7 +40,8 @@ public class BarCodeController {
         LOGGER.info("/pull. id[{}]", id);
 
         boolean pullingActive = true;
-        while (pullingActive) {
+        long timeout = System.currentTimeMillis() + (60 * 1000);
+        while (pullingActive && timeout > System.currentTimeMillis()) {
             if (!barCodeCache.isEmpty(id)) {
                 pullingActive = false;
             }
@@ -49,13 +50,18 @@ public class BarCodeController {
 
         final BookMessage[] bookMessages = barCodeCache.getBookMessages(id);
 
-        StringBuilder messages = new StringBuilder();
-        for (BookMessage bookMessage : bookMessages) {
-            messages.append(bookMessage).append(" ");
-        }
-        LOGGER.info("sending to [{}] message [{}]", id, messages);
+        if (bookMessages.length > 0) {
+            StringBuilder messages = new StringBuilder();
+            for (BookMessage bookMessage : bookMessages) {
+                messages.append(bookMessage).append(" ");
+            }
+            LOGGER.info("sending to [{}] message [{}]", id, messages);
 
-        return bookMessages;
+            return bookMessages;
+        } else {
+
+            return null;
+        }
     }
 
     private void pause(int millis) {
