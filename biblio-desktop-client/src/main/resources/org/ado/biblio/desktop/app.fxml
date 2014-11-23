@@ -39,6 +39,7 @@
                                            AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
                                            AnchorPane.topAnchor="0.0">
                                     <columns>
+                                        <TableColumn fx:id="tableColumnId" prefWidth="75.0" text="Id" visible="false"/>
                                         <TableColumn fx:id="tableColumnTitle" editable="false" prefWidth="367.0"
                                                      text="Title"/>
                                         <TableColumn fx:id="tableColumnAuthor" minWidth="0.0" prefWidth="361.0"
@@ -85,24 +86,34 @@
                                    pickOnBounds="true" preserveRatio="true"/>
                     </children>
                 </HBox>
-                <HBox layoutX="13.9619140625" layoutY="9.0">
+                <HBox alignment="CENTER_LEFT" layoutX="13.9619140625" layoutY="9.0" spacing="10.0">
                     <children>
                         <Label layoutX="14.0" layoutY="14.0" text="Title:"/>
                         <TextField fx:id="textFieldTitle" layoutX="62.0" layoutY="9.0" prefHeight="25.0"
                                    prefWidth="651.0"/>
                     </children>
                 </HBox>
-                <HBox layoutX="14.0" layoutY="40.0">
+                <HBox alignment="CENTER_LEFT" layoutX="14.0" layoutY="40.0" spacing="10.0">
                     <children>
                         <Label layoutX="14.0" layoutY="37.0" text="Author:"/>
                         <TextField fx:id="textFieldAuthor" layoutX="62.0" layoutY="32.0" prefHeight="25.0"
                                    prefWidth="353.0"/>
                     </children>
                 </HBox>
-                <HBox layoutX="14.0" layoutY="72.0">
+                <HBox alignment="CENTER_LEFT" layoutX="14.0" layoutY="72.0" spacing="10.0">
                     <children>
                         <Label layoutX="14.0" layoutY="65.0" text="ISBN:"/>
                         <TextField fx:id="textFieldIsbn" layoutX="50.0" layoutY="60.0"/>
+                    </children>
+                </HBox>
+                <HBox layoutX="527.0" layoutY="283.0" spacing="10.0">
+                    <children>
+                        <Button fx:id="buttonDelete" layoutX="539.0" layoutY="283.0" mnemonicParsing="false"
+                                onAction="#delete" text="Delete"/>
+                        <Button fx:id="buttonSave" layoutX="600.0" layoutY="283.0" mnemonicParsing="false"
+                                onAction="#save" text="Save"/>
+                        <Button fx:id="buttonLend" layoutX="650.0" layoutY="283.0" mnemonicParsing="false"
+                                onAction="#lend" text="Lend"/>
                     </children>
                 </HBox>
             </children>

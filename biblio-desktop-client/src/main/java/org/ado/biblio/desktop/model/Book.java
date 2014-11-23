@@ -1,5 +1,7 @@
 package org.ado.biblio.desktop.model;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -10,14 +12,33 @@ import javafx.beans.property.StringProperty;
  * @since 22.11.2014
  */
 public class Book {
+    private IntegerProperty id;
     private StringProperty title;
     private StringProperty author;
     private StringProperty isbn;
 
     public Book(String title, String author, String isbn) {
+        this(null, title, author, isbn);
+    }
+
+    public Book(Integer id, String title, String author, String isbn) {
+        if (id != null) {
+            this.id = new SimpleIntegerProperty(id);
+        }
         this.title = new SimpleStringProperty(title);
         this.author = new SimpleStringProperty(author);
         this.isbn = new SimpleStringProperty(isbn);
+    }
+
+    public Integer getId() {
+        if (id == null) {
+            return null;
+        }
+        return id.get();
+    }
+
+    public IntegerProperty idProperty() {
+        return id;
     }
 
     public String getTitle() {
@@ -56,6 +77,7 @@ public class Book {
         Book book = (Book) o;
 
         if (author != null ? !author.equals(book.author) : book.author != null) return false;
+        if (id != null ? !id.equals(book.id) : book.id != null) return false;
         if (isbn != null ? !isbn.equals(book.isbn) : book.isbn != null) return false;
         if (title != null ? !title.equals(book.title) : book.title != null) return false;
 
@@ -64,7 +86,8 @@ public class Book {
 
     @Override
     public int hashCode() {
-        int result = title != null ? title.hashCode() : 0;
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (title != null ? title.hashCode() : 0);
         result = 31 * result + (author != null ? author.hashCode() : 0);
         result = 31 * result + (isbn != null ? isbn.hashCode() : 0);
         return result;
@@ -73,7 +96,8 @@ public class Book {
     @Override
     public String toString() {
         final StringBuffer sb = new StringBuffer("Book{");
-        sb.append("title=").append(title);
+        sb.append("id=").append(id);
+        sb.append(", title=").append(title);
         sb.append(", author=").append(author);
         sb.append(", isbn=").append(isbn);
         sb.append('}');

@@ -58,6 +58,14 @@ public class ImageUtils {
         }
     }
 
+    public static void deleteCover(String filename) {
+        delete(filename, ".jpeg");
+    }
+
+    private static void delete(String filename, String extension) {
+        FileUtils.deleteQuietly(new File(DIRECTORY, filename.concat(extension)));
+    }
+
     private static Image getDefaulImage() {
         return new Image(ImageUtils.class.getResourceAsStream("cover_not_found.png"));
     }

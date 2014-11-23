@@ -5,10 +5,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -51,6 +48,9 @@ public class AppPresenter implements Initializable {
     private TableView<Book> tableViewBooks;
 
     @FXML
+    private TableColumn<Book, String> tableColumnId;
+
+    @FXML
     private TableColumn<Book, String> tableColumnAuthor;
 
     @FXML
@@ -71,6 +71,15 @@ public class AppPresenter implements Initializable {
     @FXML
     private Label labelSystem;
 
+    @FXML
+    private Button buttonDelete;
+
+    @FXML
+    private Button buttonLend;
+
+    @FXML
+    private Button buttonSave;
+
     @Inject
     private BookInfoLoader bookInfoLoader;
 
@@ -82,6 +91,9 @@ public class AppPresenter implements Initializable {
 
     @Inject
     private DropboxManager dropboxManager;
+
+    private Integer bookId;
+    private int bookFocusedIndex;
 
     @PostConstruct
     public void init() throws Exception {
@@ -125,7 +137,9 @@ public class AppPresenter implements Initializable {
         serverPullingService.start();
 
         tableViewBooks.setOnMouseClicked(event -> {
+                    bookFocusedIndex = ((TableView) event.getSource()).getFocusModel().getFocusedIndex();
                     Book book = (Book) ((TableView) event.getSource()).getFocusModel().getFocusedItem();
+                    bookId = book.getId();
                     textFieldTitle.setText(book.getTitle());
                     textFieldAuthor.setText(book.getAuthor());
                     textFieldIsbn.setText(book.getIsbn());
@@ -150,8 +164,6 @@ public class AppPresenter implements Initializable {
     }
 
     public void linkDropbox() throws DropboxException {
-//        final DropboxPresenter dropboxPresenter = new DropboxPresenter();
-
         Stage stage = new Stage();
         DropboxView dropboxView = new DropboxView();
         final DropboxPresenter dropboxPresenter = (DropboxPresenter) dropboxView.getPresenter();
@@ -162,22 +174,51 @@ public class AppPresenter implements Initializable {
         stage.show();
     }
 
+    public void save() throws SQLException {
+        LOGGER.info("save");
+        if (bookId != null) {
+            final Book book = new Book(bookId, textFieldTitle.getText(), textFieldAuthor.getText(), textFieldIsbn.getText());
+            databaseConnection.updateBook(book);
+            data.set(bookFocusedIndex, book);
+        } else {
+            final Book book = databaseConnection.insertBook(new Book(textFieldTitle.getText(), textFieldAuthor.getText(), textFieldIsbn.getText()));
+            data.add(book);
+        }
+    }
+
+    public void delete() throws SQLException, DropboxException {
+        LOGGER.info("delete");
+        databaseConnection.deleteBook(bookId);
+        data.remove(bookFocusedIndex);
+        ImageUtils.deleteCover(textFieldIsbn.getText());
+        dropboxManager.deleteCover(textFieldIsbn.getText());
+
+        bookId = null;
+        textFieldTitle.setText(null);
+        textFieldAuthor.setText(null);
+        textFieldIsbn.setText(null);
+        imageViewCover.setImage(null);
+    }
+
+    public void lend() {
+        LOGGER.info("lend");
+
+    }
+
     private void addBook(BookInfo bookInfo) {
         LOGGER.info(bookInfo.toString());
-        final Book book = new Book(bookInfo.getTitle(), bookInfo.getAuthor(), bookInfo.getIsbn());
-        data.add(book);
-        imageViewCover.setImage(ImageUtils.getImageOrDefault(bookInfo.getThumbnail()));
         try {
-            databaseConnection.insertBook(book);
+            final Book book = databaseConnection.insertBook(new Book(bookInfo.getTitle(), bookInfo.getAuthor(), bookInfo.getIsbn()));
+            data.add(book);
         } catch (SQLException e) {
-            LOGGER.error(String.format("Cannot insert book into database. %s", book.toString()), e);
+            LOGGER.error(String.format("Cannot insert book into database. %s", bookInfo.toString()), e);
         }
 
         try {
             final File file = ImageUtils.writeCover(bookInfo.getThumbnail(), bookInfo.getIsbn());
             dropboxManager.uploadCover(bookInfo.getIsbn(), file);
         } catch (IOException e) {
-            LOGGER.error(String.format("Cannot write book's cover into disk. %s", book.toString()), e);
+            LOGGER.error(String.format("Cannot write book's cover into disk. %s", bookInfo.toString()), e);
         } catch (DropboxException e) {
             e.printStackTrace();
         }

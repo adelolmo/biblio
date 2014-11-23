@@ -48,33 +48,55 @@ public class DatabaseConnection {
         }
     }
 
-    public void insertBook(Book book) throws SQLException {
+    public Book insertBook(Book book) throws SQLException {
         String query = "INSERT INTO Book (title, author, isbn) VALUES (?,?,?)";
-        final PreparedStatement preparedStatement = connection.prepareStatement(query);
-        preparedStatement.setString(1, book.getTitle());
-        preparedStatement.setString(2, book.getAuthor());
-        preparedStatement.setString(3, book.getIsbn());
-        final int i = preparedStatement.executeUpdate();
-//        System.out.println(i);
+        final PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+        statement.setString(1, book.getTitle());
+        statement.setString(2, book.getAuthor());
+        statement.setString(3, book.getIsbn());
+        final int i = statement.executeUpdate();
+        if (i == 0) {
+            throw new SQLException("Update book failed, no rows affected.");
+        }
+        final ResultSet resultSet = statement.getGeneratedKeys();
+        if (resultSet.next()) {
+            final int id = resultSet.getInt(1);
+            return new Book(id, book.getTitle(), book.getAuthor(), book.getIsbn());
+        }
+        return null;
     }
 
-    public void insertBook(String title, String author) throws SQLException {
-        String query = "INSERT INTO Book (title, author) VALUES (?,?)";
+    public void updateBook(Book book) throws SQLException {
+        String query = "UPDATE Book SET title=?, author=?, isbn=? WHERE id=?";
+        final PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+        statement.setString(1, book.getTitle());
+        statement.setString(2, book.getAuthor());
+        statement.setString(3, book.getIsbn());
+        statement.setInt(4, book.getId());
+        final int i = statement.executeUpdate();
+        if (i == 0) {
+            throw new SQLException("Update book failed, no rows affected.");
+        }
+    }
+
+    public void deleteBook(Integer bookId) throws SQLException {
+        String query = "DELETE FROM Book WHERE id=?";
         final PreparedStatement preparedStatement = connection.prepareStatement(query);
-        preparedStatement.setString(1, title);
-        preparedStatement.setString(2, author);
+        preparedStatement.setInt(1, bookId);
         final int i = preparedStatement.executeUpdate();
-//        System.out.println(i);
     }
 
     public List<Book> getBookList() throws SQLException {
-        String query = "SELECT title, author, isbn FROM Book";
+        String query = "SELECT id, title, author, isbn FROM Book";
         final ArrayList<Book> bookList = new ArrayList<>();
 
         final PreparedStatement preparedStatement = connection.prepareStatement(query);
         final ResultSet resultSet = preparedStatement.executeQuery();
         while (resultSet.next()) {
-            bookList.add(new Book(resultSet.getString("title"), resultSet.getString("author"), resultSet.getString("isbn")));
+            bookList.add(new Book(resultSet.getInt("id"),
+                    resultSet.getString("title"),
+                    resultSet.getString("author"),
+                    resultSet.getString("isbn")));
         }
 
         return bookList;
