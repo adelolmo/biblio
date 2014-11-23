@@ -106,10 +106,11 @@
                         <TextField fx:id="textFieldIsbn" layoutX="50.0" layoutY="60.0"/>
                     </children>
                 </HBox>
-                <HBox layoutX="527.0" layoutY="283.0" spacing="10.0">
+                <HBox layoutX="470.0" layoutY="283.0" spacing="10.0">
                     <children>
                         <Button fx:id="buttonDelete" layoutX="539.0" layoutY="283.0" mnemonicParsing="false"
                                 onAction="#delete" text="Delete"/>
+                        <Button fx:id="buttonNew" mnemonicParsing="false" onAction="#add" text="New"/>
                         <Button fx:id="buttonSave" layoutX="600.0" layoutY="283.0" mnemonicParsing="false"
                                 onAction="#save" text="Save"/>
                         <Button fx:id="buttonLend" layoutX="650.0" layoutY="283.0" mnemonicParsing="false"
