@@ -38,7 +38,7 @@ public class ImageUtils {
         if (inputStream != null) {
             return new Image(inputStream);
         } else {
-            return new Image(ImageUtils.class.getResourceAsStream("cover_not_found.png"));
+            return getDefaulImage();
         }
     }
 
@@ -48,5 +48,17 @@ public class ImageUtils {
         } catch (FileNotFoundException e) {
             return null;
         }
+    }
+
+    public static Image getImageOrDefault(InputStream inputStream) {
+        if (inputStream != null) {
+            return new Image(inputStream);
+        } else {
+            return getDefaulImage();
+        }
+    }
+
+    private static Image getDefaulImage() {
+        return new Image(ImageUtils.class.getResourceAsStream("cover_not_found.png"));
     }
 }

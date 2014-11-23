@@ -9,7 +9,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -85,7 +84,7 @@ public class AppPresenter implements Initializable {
 
     @PostConstruct
     public void init() throws Exception {
-        serverPullingService.setHostId(AppConfiguration.getAppId());
+        serverPullingService.setClientId(AppConfiguration.getAppId());
         data.addAll(databaseConnection.getBookList().stream().collect(Collectors.toList()));
     }
 
@@ -105,14 +104,7 @@ public class AppPresenter implements Initializable {
                 BookMessageDTO bookMessage = bookMessages[0];
                 LOGGER.info("processing book [{}]", bookMessage);
                 try {
-                    BookInfo bookInfo = bookInfoLoader.getBookInfo(bookMessage);
-                    addBook(bookInfo);
-                    LOGGER.info(bookInfo.toString());
-                    if (bookInfo.hasThumbnail()) {
-                        imageViewCover.setImage(new Image(bookInfo.getThumbnail()));
-                    } else {
-                        imageViewCover.setImage(null);
-                    }
+                    addBook(bookInfoLoader.getBookInfo(bookMessage));
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -121,12 +113,13 @@ public class AppPresenter implements Initializable {
                 }
                 labelSystem.setText(null);
 
-            } else {
-                labelSystem.setText("error");
-
             }
             serverPullingService.restart();
 
+        });
+        serverPullingService.setOnFailed(event -> {
+            LOGGER.error(event.getSource().getMessage());
+            labelSystem.setText("error");
         });
         serverPullingService.start();
 
@@ -165,8 +158,10 @@ public class AppPresenter implements Initializable {
     }
 
     private void addBook(BookInfo bookInfo) {
+        LOGGER.info(bookInfo.toString());
         final Book book = new Book(bookInfo.getTitle(), bookInfo.getAuthor(), bookInfo.getIsbn());
         data.add(book);
+        imageViewCover.setImage(ImageUtils.getImageOrDefault(bookInfo.getThumbnail()));
         try {
             databaseConnection.insertBook(book);
         } catch (SQLException e) {

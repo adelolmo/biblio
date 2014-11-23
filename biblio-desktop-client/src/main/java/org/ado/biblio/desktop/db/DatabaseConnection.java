@@ -55,7 +55,7 @@ public class DatabaseConnection {
         preparedStatement.setString(2, book.getAuthor());
         preparedStatement.setString(3, book.getIsbn());
         final int i = preparedStatement.executeUpdate();
-        System.out.println(i);
+//        System.out.println(i);
     }
 
     public void insertBook(String title, String author) throws SQLException {
@@ -64,7 +64,7 @@ public class DatabaseConnection {
         preparedStatement.setString(1, title);
         preparedStatement.setString(2, author);
         final int i = preparedStatement.executeUpdate();
-        System.out.println(i);
+//        System.out.println(i);
     }
 
     public List<Book> getBookList() throws SQLException {

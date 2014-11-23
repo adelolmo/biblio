@@ -22,10 +22,10 @@ public class ServerPullingService extends Service<BookMessageDTO[]> {
 
     private static final String SERVER_PULL_URL = "http://localhost:8080/pull?id=%s";
     private final Logger LOGGER = LoggerFactory.getLogger(ServerPullingService.class);
-    private String hostId;
+    private String clientId;
 
-    public void setHostId(String hostId) {
-        this.hostId = hostId;
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
     }
 
     @Override
@@ -35,7 +35,7 @@ public class ServerPullingService extends Service<BookMessageDTO[]> {
             @Override
             protected BookMessageDTO[] call() throws Exception {
 
-                final String requestUrl = String.format(SERVER_PULL_URL, hostId);
+                final String requestUrl = String.format(SERVER_PULL_URL, clientId);
 
                 try {
                     HttpClient client = HttpClientBuilder.create().build();
