@@ -46,7 +46,7 @@ public abstract class AbstractBookInfoLoader {
 
         if (volumeInfo != null) {
             StringBuilder authors = new StringBuilder();
-            if (!volumeInfo.getAuthors().isEmpty()) {
+            if (volumeInfo.getAuthors() != null && !volumeInfo.getAuthors().isEmpty()) {
                 for (String author : volumeInfo.getAuthors()) {
                     authors.append(author);
                 }
