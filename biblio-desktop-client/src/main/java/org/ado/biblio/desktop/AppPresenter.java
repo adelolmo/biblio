@@ -20,6 +20,8 @@ import org.ado.biblio.desktop.util.ImageUtils;
 import org.ado.biblio.domain.BookMessageDTO;
 import org.ado.googleapis.books.BookInfo;
 import org.ado.googleapis.books.NoBookInfoFoundException;
+import org.controlsfx.control.action.Action;
+import org.controlsfx.dialog.Dialogs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -188,16 +190,24 @@ public class AppPresenter implements Initializable {
 
     public void delete() throws SQLException, DropboxException {
         LOGGER.info("delete");
-        databaseConnection.deleteBook(bookId);
-        data.remove(bookFocusedIndex);
-        ImageUtils.deleteCover(textFieldIsbn.getText());
-        dropboxManager.deleteCover(textFieldIsbn.getText());
 
-        bookId = null;
-        textFieldTitle.setText(null);
-        textFieldAuthor.setText(null);
-        textFieldIsbn.setText(null);
-        imageViewCover.setImage(null);
+        Action response = Dialogs.create()
+                .title("Delete")
+                .message("Do you want to delete the book?")
+                .showConfirm();
+
+        if (response == org.controlsfx.dialog.Dialog.ACTION_YES) {
+            databaseConnection.deleteBook(bookId);
+            data.remove(bookFocusedIndex);
+            ImageUtils.deleteCover(textFieldIsbn.getText());
+            dropboxManager.deleteCover(textFieldIsbn.getText());
+
+            bookId = null;
+            textFieldTitle.setText(null);
+            textFieldAuthor.setText(null);
+            textFieldIsbn.setText(null);
+            imageViewCover.setImage(null);
+        }
     }
 
     public void lend() {
