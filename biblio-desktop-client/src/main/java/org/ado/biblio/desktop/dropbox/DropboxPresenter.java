@@ -1,5 +1,7 @@
 package org.ado.biblio.desktop.dropbox;
 
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -41,31 +43,26 @@ public class DropboxPresenter implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        LOGGER.info("initialize...");
-        try {
-            if (dropboxManager.hasLinkedAccount()) {
+        final LoadAccountInfo loadAccountInfo = new LoadAccountInfo();
+        loadAccountInfo.setOnSucceeded(event -> {
+            final AccountInfo accountInfo = (AccountInfo) event.getSource().getValue();
+            if (accountInfo != null) {
                 buttonLink.setDisable(true);
                 buttonUnlink.setDisable(false);
-                final AccountInfo accountInfo = dropboxManager.getAccountInfo();
                 populateAccountInfoFields(accountInfo);
-
             } else {
                 buttonLink.setDisable(false);
                 buttonUnlink.setDisable(true);
             }
-        } catch (DropboxException e) {
-            e.printStackTrace();
-        }
+        });
+        loadAccountInfo.start();
     }
 
     public void link() throws DropboxException {
-        dropboxManager.link(new DropboxManager.DropboxAccountLinkListener() {
-            @Override
-            public void accountLinked(AccountInfo accountInfo) {
-                buttonLink.setDisable(true);
-                buttonUnlink.setDisable(false);
-                populateAccountInfoFields(accountInfo);
-            }
+        dropboxManager.link(accountInfo -> {
+            buttonLink.setDisable(true);
+            buttonUnlink.setDisable(false);
+            populateAccountInfoFields(accountInfo);
         });
     }
 
@@ -82,5 +79,20 @@ public class DropboxPresenter implements Initializable {
         labelDropboxLinkedTo.setText(accountInfo.getDisplayName());
         labelUserId.setText(String.valueOf(accountInfo.getUserId()));
         labelCountry.setText(accountInfo.getCountry());
+    }
+
+    class LoadAccountInfo extends Service<AccountInfo> {
+        @Override
+        protected Task<AccountInfo> createTask() {
+            return new Task<AccountInfo>() {
+                @Override
+                protected AccountInfo call() throws Exception {
+                    if (dropboxManager.hasLinkedAccount()) {
+                        return dropboxManager.getAccountInfo();
+                    }
+                    return null;
+                }
+            };
+        }
     }
 }
