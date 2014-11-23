@@ -16,6 +16,7 @@ import org.ado.biblio.desktop.android.AndroidView;
 import org.ado.biblio.desktop.db.DatabaseConnection;
 import org.ado.biblio.desktop.dropbox.DropboxException;
 import org.ado.biblio.desktop.dropbox.DropboxManager;
+import org.ado.biblio.desktop.dropbox.DropboxPresenter;
 import org.ado.biblio.desktop.dropbox.DropboxView;
 import org.ado.biblio.desktop.model.Book;
 import org.ado.biblio.desktop.util.ImageUtils;
@@ -149,8 +150,12 @@ public class AppPresenter implements Initializable {
     }
 
     public void linkDropbox() throws DropboxException {
-        DropboxView dropboxView = new DropboxView();
+//        final DropboxPresenter dropboxPresenter = new DropboxPresenter();
+
         Stage stage = new Stage();
+        DropboxView dropboxView = new DropboxView();
+        final DropboxPresenter dropboxPresenter = (DropboxPresenter) dropboxView.getPresenter();
+        dropboxPresenter.setStage(stage);
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.setScene(new Scene(dropboxView.getView()));
         stage.setTitle("Dropbox");

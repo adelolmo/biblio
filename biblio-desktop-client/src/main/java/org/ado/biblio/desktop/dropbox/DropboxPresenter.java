@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,6 +42,8 @@ public class DropboxPresenter implements Initializable {
     @Inject
     private DropboxManager dropboxManager;
 
+    private Stage stage;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         final LoadAccountInfo loadAccountInfo = new LoadAccountInfo();
@@ -58,6 +61,10 @@ public class DropboxPresenter implements Initializable {
         loadAccountInfo.start();
     }
 
+    public void setStage(Stage stage) {
+        this.stage = stage;
+    }
+
     public void link() throws DropboxException {
         dropboxManager.link(accountInfo -> {
             buttonLink.setDisable(true);
@@ -72,7 +79,7 @@ public class DropboxPresenter implements Initializable {
     }
 
     public void close() {
-
+        stage.close();
     }
 
     private void populateAccountInfoFields(AccountInfo accountInfo) {
