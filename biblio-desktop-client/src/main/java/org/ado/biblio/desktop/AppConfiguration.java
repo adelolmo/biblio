@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 import java.util.UUID;
 
@@ -20,27 +21,22 @@ public class AppConfiguration {
     public static final File APP_CONFIG_DIRECTORY = new File(FileUtils.getUserDirectory(), "biblio");
     private static final File CONFIG = new File(APP_CONFIG_DIRECTORY, "biblio-config.properties");
 
+    private static Properties config;
     private static Properties properties;
 
-    private static void init() {
-        properties = new Properties();
-        try {
-            if (!CONFIG.exists()) {
-                FileUtils.touch(CONFIG);
-            }
-            properties.load(new FileInputStream(CONFIG));
-            store();
-        } catch (IOException e) {
-            throw new IllegalStateException("Cannot read application configuration file", e);
+    public static String getProperty(String name) {
+        if (properties == null) {
+            properties = loadFileProperties(AppConfiguration.class.getResourceAsStream("biblio.properties"));
         }
+        return properties.getProperty(name);
     }
 
     public static String getAppId() {
         init();
-        String id = properties.getProperty("id");
+        String id = config.getProperty("id");
         if (StringUtils.isBlank(id)) {
             id = UUID.randomUUID().toString();
-            properties.put("id", id);
+            config.put("id", id);
             store();
         }
         return id;
@@ -48,9 +44,37 @@ public class AppConfiguration {
 
     private static void store() {
         try {
-            properties.store(FileUtils.openOutputStream(CONFIG), "Biblio Configuration");
+            config.store(FileUtils.openOutputStream(CONFIG), "Biblio Configuration");
         } catch (IOException e) {
             throw new IllegalStateException("Cannot save application configuration file", e);
         }
+    }
+
+    private static void init() {
+        config = loadFileProperties(CONFIG);
+        store();
+    }
+
+    private static Properties loadFileProperties(InputStream inputStream) {
+        final Properties prop = new Properties();
+        try {
+            prop.load(inputStream);
+        } catch (IOException e) {
+            throw new IllegalStateException("Cannot read application properties file", e);
+        }
+        return prop;
+    }
+
+    private static Properties loadFileProperties(File file) {
+        Properties prop = new Properties();
+        try {
+            if (!file.exists()) {
+                FileUtils.touch(file);
+            }
+            prop.load(new FileInputStream(file));
+        } catch (IOException e) {
+            throw new IllegalStateException("Cannot read application configuration file", e);
+        }
+        return prop;
     }
 }

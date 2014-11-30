@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ServerPullingService extends Service<BookMessageDTO[]> {
 
-    private static final String SERVER_PULL_URL = "http://localhost:8080/pull/%s";
+    private static final String SERVER_PULL_URL = "%s/pull/%s";
     private final Logger LOGGER = LoggerFactory.getLogger(ServerPullingService.class);
     private String clientId;
 
@@ -35,7 +35,7 @@ public class ServerPullingService extends Service<BookMessageDTO[]> {
             @Override
             protected BookMessageDTO[] call() throws Exception {
 
-                final String requestUrl = String.format(SERVER_PULL_URL, clientId);
+                final String requestUrl = String.format(SERVER_PULL_URL, AppConfiguration.getProperty("server.host"), clientId);
 
                 try {
                     HttpClient client = HttpClientBuilder.create().build();
