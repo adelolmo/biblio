@@ -17,7 +17,7 @@ import java.util.UUID;
  */
 public class AppConfiguration {
 
-    public static final File APP_CONFIG_DIRECTORY = new File(FileUtils.getUserDirectory(), "bilbio");
+    public static final File APP_CONFIG_DIRECTORY = new File(FileUtils.getUserDirectory(), "biblio");
     private static final File CONFIG = new File(APP_CONFIG_DIRECTORY, "biblio-config.properties");
 
     private static Properties properties;

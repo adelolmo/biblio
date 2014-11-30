@@ -15,6 +15,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Locale;
 
+import static org.ado.biblio.desktop.AppConfiguration.APP_CONFIG_DIRECTORY;
+
 /**
  * Class description here.
  *
@@ -25,7 +27,7 @@ public class DropboxManager {
 
     private final Logger LOGGER = LoggerFactory.getLogger(DropboxManager.class);
     private static DbxRequestConfig DROPBOX_CONFIG = new DbxRequestConfig("Biblio Data/1.0", Locale.getDefault().toString());
-    private static final File ACCESS_TOKEN_FILE = new File(FileUtils.getUserDirectoryPath(), ".dropbox_access_token");
+    private static final File ACCESS_TOKEN_FILE = new File(APP_CONFIG_DIRECTORY, ".dropbox_access_token");
     private static final String COVER_PATH = "/covers/%s.%s";
 
     private DbxClient dbxClient;
