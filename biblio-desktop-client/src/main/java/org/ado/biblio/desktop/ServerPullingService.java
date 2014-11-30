@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ServerPullingService extends Service<BookMessageDTO[]> {
 
-    private static final String SERVER_PULL_URL = "%s/pull/%s";
+    private static final String SERVER_PULL_URL = "%s/books/%s";
     private final Logger LOGGER = LoggerFactory.getLogger(ServerPullingService.class);
     private String clientId;
 

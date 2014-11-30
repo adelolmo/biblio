@@ -1,0 +1,32 @@
+#! /bin/sh
+# /etc/init.d/biblio-server
+
+touch /var/lock/biblio-server
+
+case "$1" in
+start)
+echo "Starting biblio-server ... "
+if [ -z "$APP_HOME" ]; then
+    PRGDIR=`dirname "$0"`
+    # echo "$PRGDIR"
+    APP_HOME=`cd "$PRGDIR" ; pwd`
+fi
+
+_CLASSPATH="$APP_HOME"
+for dependency in $APP_HOME/lib/*.jar
+do
+    _CLASSPATH="${_CLASSPATH}:${dependency}"
+done
+
+$JAVA_HOME/bin/java $JAVA_OPTS -Dlog4j.configuration=file:$APP_HOME/log4j.xml -Dfile.encoding=UTF-8 -classpath "${_CLASSPATH}" "org.ado.biblio.Application" > /dev/null &
+;;
+stop)
+echo "Killing biblio-server ..."
+killall java
+;;
+*)
+echo "Usage: /etc/init.d/biblio-server {start|stop}"
+exit 1
+;;
+esac
+exit 0

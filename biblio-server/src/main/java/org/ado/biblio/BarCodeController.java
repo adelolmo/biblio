@@ -22,20 +22,20 @@ public class BarCodeController {
     @Autowired
     private BarCodeCache barCodeCache;
 
-    @RequestMapping(value = "/push/{id}", method = RequestMethod.POST)
-    public void greeting(@PathVariable(value = "id") String id,
-                         @RequestParam(value = "format") String format,
-                         @RequestParam(value = "code") String code) {
+    @RequestMapping(value = "/books/{id}", method = RequestMethod.POST)
+    public void postBooks(@PathVariable(value = "id") String id,
+                          @RequestParam(value = "format") String format,
+                          @RequestParam(value = "code") String code) {
 
-        LOGGER.info("/push/{} - format [{}] code [{}].", id, format, code);
+        LOGGER.info("POST /books/{} - format [{}] code [{}].", id, format, code);
 
         barCodeCache.add(id, new BookMessage(format, code));
     }
 
-    @RequestMapping(value = "/pull/{id}", method = RequestMethod.GET)
-    public BookMessage[] getBookMessage(@NotNull @PathVariable(value = "id") String id) {
+    @RequestMapping(value = "/books/{id}", method = RequestMethod.GET)
+    public BookMessage[] getBooks(@NotNull @PathVariable(value = "id") String id) {
 
-        LOGGER.info("/pull/{}", id);
+        LOGGER.info("GET /books/{}", id);
 
         boolean pullingActive = true;
         long timeout = System.currentTimeMillis() + (60 * 1000);

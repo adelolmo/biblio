@@ -27,9 +27,8 @@ import java.util.Properties;
  */
 public class BookInfoActivity extends Activity {
 
+    public static final String REST_RESOURCE_PUSH_MESSAGE = "%s/books/%s?format=%s&code=%s";
     private static final String TAG = BiblioActivity.class.getName();
-    public static final String REST_RESOURCE_PUSH_MESSAGE = "%s/push/%s?format=%s&code=%s";
-
     private AbstractBookInfoLoader bookInfoLoader;
     private Properties properties;
 
