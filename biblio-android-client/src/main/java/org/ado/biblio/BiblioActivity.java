@@ -43,12 +43,15 @@ public class BiblioActivity extends Activity {
 
     public void startBarcodeApp(View view) {
         Log.d(TAG, "startBarcodeApp");
-        callScannerApp();
+        if (isDeviceLinked()) {
+            callScannerApp();
+        } else {
+            showDeviceNotLinkErrorMessage();
+        }
     }
 
     public void link(View view) {
         startActivity(new Intent(this, LinkActivity.class));
-
     }
 
     @Override
@@ -81,6 +84,16 @@ public class BiblioActivity extends Activity {
         IntentIntegrator integrator = new IntentIntegrator(this);
         integrator.addExtra("SCAN_MODE", "PRODUCT_MODE");
         integrator.initiateScan();
+    }
+
+    private boolean isDeviceLinked() {
+        return sharedPreferences.getString("link", null) != null;
+    }
+
+    private void showDeviceNotLinkErrorMessage() {
+        Toast toast = Toast.makeText(this, "Please link the device to the desktop application first of all!", Toast.LENGTH_LONG);
+        toast.setGravity(Gravity.TOP, 25, 400);
+        toast.show();
     }
 }
 

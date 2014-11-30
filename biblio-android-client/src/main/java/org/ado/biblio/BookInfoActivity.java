@@ -13,12 +13,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import org.ado.biblio.domain.BookMessageDTO;
 import org.ado.googleapis.books.AbstractBookInfoLoader;
-import org.ado.googleapis.books.NoBookInfoFoundException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
-
-import java.io.IOException;
 
 /**
  * Class description here.
@@ -29,6 +26,7 @@ import java.io.IOException;
 public class BookInfoActivity extends Activity {
 
     private static final String TAG = BiblioActivity.class.getName();
+    public static final String REST_RESOURCE_PUSH_MESSAGE = "http://192.168.178.29:8080/push/%s?format=%s&code=%s";
 
     private AbstractBookInfoLoader bookInfoLoader;
 
@@ -86,9 +84,7 @@ public class BookInfoActivity extends Activity {
                 BookInfoWrapper bookInfoWrapper = new BookInfoWrapper(bookInfoLoader.getBookInfo(params[0]));
                 bookInfoWrapper.setCoverBitmap(BitmapFactory.decodeStream(bookInfoWrapper.getBookInfo().getThumbnail()));
                 return bookInfoWrapper;
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (NoBookInfoFoundException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             return null;
@@ -102,7 +98,7 @@ public class BookInfoActivity extends Activity {
         @Override
         protected Void doInBackground(String... params) {
             HttpClient client = new DefaultHttpClient();
-            String url = String.format("http://192.168.178.29:8080/push?id=%s&format=%s&code=%s", params[0], params[1], params[2]);
+            String url = String.format(REST_RESOURCE_PUSH_MESSAGE, params[0], params[1], params[2]);
             Log.d(TAG, "http request. url [" + url + "].");
 
             HttpPost httpPost = new HttpPost(url);

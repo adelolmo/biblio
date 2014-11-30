@@ -3,10 +3,7 @@ package org.ado.biblio;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
 
@@ -17,6 +14,7 @@ import javax.validation.constraints.NotNull;
  * @since 25.10.2014
  */
 @RestController
+@SuppressWarnings("unused")
 public class BarCodeController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BarCodeController.class);
@@ -24,20 +22,20 @@ public class BarCodeController {
     @Autowired
     private BarCodeCache barCodeCache;
 
-    @RequestMapping(value = "/push", method = RequestMethod.POST)
-    public void greeting(@RequestParam(value = "id") String id,
+    @RequestMapping(value = "/push/{id}", method = RequestMethod.POST)
+    public void greeting(@PathVariable(value = "id") String id,
                          @RequestParam(value = "format") String format,
                          @RequestParam(value = "code") String code) {
 
-        LOGGER.info("/push. id[{}] format [{}] code [{}].", id, format, code);
+        LOGGER.info("/push/{} - format [{}] code [{}].", id, format, code);
 
         barCodeCache.add(id, new BookMessage(format, code));
     }
 
-    @RequestMapping(value = "/pull", method = RequestMethod.GET)
-    public BookMessage[] getBookMessage(@NotNull @RequestParam(value = "id") String id) {
+    @RequestMapping(value = "/pull/{id}", method = RequestMethod.GET)
+    public BookMessage[] getBookMessage(@NotNull @PathVariable(value = "id") String id) {
 
-        LOGGER.info("/pull. id[{}]", id);
+        LOGGER.info("/pull/{}", id);
 
         boolean pullingActive = true;
         long timeout = System.currentTimeMillis() + (60 * 1000);
