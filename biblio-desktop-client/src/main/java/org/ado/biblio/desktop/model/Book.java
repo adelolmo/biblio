@@ -1,9 +1,10 @@
 package org.ado.biblio.desktop.model;
 
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
+import javafx.beans.value.ObservableValue;
+import org.ado.biblio.desktop.util.DateUtils;
+
+import java.util.Date;
 
 /**
  * Class description here.
@@ -16,18 +17,20 @@ public class Book {
     private StringProperty title;
     private StringProperty author;
     private StringProperty isbn;
+    private ObservableValue<Date> creation;
 
-    public Book(String title, String author, String isbn) {
-        this(null, title, author, isbn);
+    public Book(String title, String author, String isbn, Date creation) {
+        this(null, title, author, isbn, creation);
     }
 
-    public Book(Integer id, String title, String author, String isbn) {
+    public Book(Integer id, String title, String author, String isbn, Date creation) {
         if (id != null) {
             this.id = new SimpleIntegerProperty(id);
         }
         this.title = new SimpleStringProperty(title);
         this.author = new SimpleStringProperty(author);
         this.isbn = new SimpleStringProperty(isbn);
+        this.creation = new SimpleObjectProperty<>(creation);
     }
 
     public Integer getId() {
@@ -69,6 +72,26 @@ public class Book {
         return isbn;
     }
 
+    public StringProperty creationProperty() {
+        if (creation != null && creation.getValue() != null) {
+            return new SimpleStringProperty(DateUtils.format(creation.getValue()));
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Book{");
+        sb.append("id=").append(id);
+        sb.append(", title=").append(title);
+        sb.append(", author=").append(author);
+        sb.append(", isbn=").append(isbn);
+        sb.append(", creation=").append(creation);
+        sb.append('}');
+        return sb.toString();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -77,6 +100,7 @@ public class Book {
         Book book = (Book) o;
 
         if (author != null ? !author.equals(book.author) : book.author != null) return false;
+        if (creation != null ? !creation.equals(book.creation) : book.creation != null) return false;
         if (id != null ? !id.equals(book.id) : book.id != null) return false;
         if (isbn != null ? !isbn.equals(book.isbn) : book.isbn != null) return false;
         if (title != null ? !title.equals(book.title) : book.title != null) return false;
@@ -90,17 +114,8 @@ public class Book {
         result = 31 * result + (title != null ? title.hashCode() : 0);
         result = 31 * result + (author != null ? author.hashCode() : 0);
         result = 31 * result + (isbn != null ? isbn.hashCode() : 0);
+        result = 31 * result + (creation != null ? creation.hashCode() : 0);
         return result;
     }
 
-    @Override
-    public String toString() {
-        final StringBuffer sb = new StringBuffer("Book{");
-        sb.append("id=").append(id);
-        sb.append(", title=").append(title);
-        sb.append(", author=").append(author);
-        sb.append(", isbn=").append(isbn);
-        sb.append('}');
-        return sb.toString();
-    }
 }

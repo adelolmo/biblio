@@ -1,15 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="128.0"
-      prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+<Pane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+      minWidth="-Infinity" prefHeight="128.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8"
       fx:controller="org.ado.biblio.desktop.dropbox.DropboxPresenter">
     <children>
-        <HBox layoutX="14.0" layoutY="14.0" spacing="10.0">
+        <HBox layoutX="150.0" layoutY="20.0" spacing="10.0">
             <children>
-                <Label layoutX="14.0" layoutY="38.0" text="Display Name:"/>
-                <Label fx:id="labelDropboxLinkedTo" layoutX="119.0" layoutY="38.0" text="not linked"/>
+                <Label layoutX="14.0" layoutY="38.0" text="Display Name:">
+                    <HBox.margin>
+                        <Insets/>
+                    </HBox.margin>
+                </Label>
+                <Label fx:id="labelDropboxLinkedTo" layoutX="119.0" layoutY="38.0" text="not linked">
+                    <HBox.margin>
+                        <Insets/>
+                    </HBox.margin>
+                </Label>
+            </children>
+        </HBox>
+        <HBox layoutX="150.0" layoutY="40.0" spacing="10.0">
+            <children>
+                <Label layoutX="14.0" layoutY="38.0" text="User ID:">
+                    <HBox.margin>
+                        <Insets/>
+                    </HBox.margin>
+                </Label>
+                <Label fx:id="labelUserId" layoutX="70.0" layoutY="38.0" text="user id">
+                    <HBox.margin>
+                        <Insets/>
+                    </HBox.margin>
+                </Label>
+            </children>
+        </HBox>
+        <HBox layoutX="150.0" layoutY="60.0" spacing="10.0">
+            <children>
+                <Label layoutX="14.0" layoutY="38.0" text="Country:">
+                    <HBox.margin>
+                        <Insets/>
+                    </HBox.margin>
+                </Label>
+                <Label fx:id="labelCountry" layoutX="70.0" layoutY="57.0">
+                    <HBox.margin>
+                        <Insets/>
+                    </HBox.margin>
+                </Label>
             </children>
         </HBox>
         <HBox layoutX="408.0" layoutY="89.0" spacing="10.0">
@@ -22,17 +61,10 @@
                         text="Close"/>
             </children>
         </HBox>
-        <HBox layoutX="12.0" layoutY="38.0" spacing="10.0">
-            <children>
-                <Label layoutX="14.0" layoutY="38.0" text="User ID:"/>
-                <Label fx:id="labelUserId" layoutX="70.0" layoutY="38.0" text="user id"/>
-            </children>
-        </HBox>
-        <HBox layoutX="14.0" layoutY="57.0" spacing="10.0">
-            <children>
-                <Label layoutX="14.0" layoutY="38.0" text="Country:"/>
-                <Label fx:id="labelCountry" layoutX="70.0" layoutY="57.0"/>
-            </children>
-        </HBox>
+        <ImageView fitHeight="150.0" fitWidth="200.0" layoutY="-10.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="@dropbox-logos_dropbox-glyph-blue.png"/>
+            </image>
+        </ImageView>
     </children>
 </Pane>

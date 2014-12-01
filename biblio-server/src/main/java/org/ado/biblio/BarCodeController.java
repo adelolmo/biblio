@@ -23,9 +23,9 @@ public class BarCodeController {
     private BarCodeCache barCodeCache;
 
     @RequestMapping(value = "/books/{id}", method = RequestMethod.POST)
-    public void postBooks(@PathVariable(value = "id") String id,
-                          @RequestParam(value = "format") String format,
-                          @RequestParam(value = "code") String code) {
+    public void postBooks(@NotNull @PathVariable(value = "id") String id,
+                          @NotNull @RequestParam(value = "format") String format,
+                          @NotNull @RequestParam(value = "code") String code) {
 
         LOGGER.info("POST /books/{} - format [{}] code [{}].", id, format, code);
 

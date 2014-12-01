@@ -5,7 +5,10 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -32,6 +35,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
@@ -45,7 +49,6 @@ public class AppPresenter implements Initializable {
 
     private final Logger LOGGER = LoggerFactory.getLogger(AppPresenter.class);
     private final ObservableList<Book> data = FXCollections.observableArrayList();
-
     @FXML
     private TableView<Book> tableViewBooks;
 
@@ -57,6 +60,9 @@ public class AppPresenter implements Initializable {
 
     @FXML
     private TableColumn<Book, String> tableColumnTitle;
+
+    @FXML
+    private TableColumn<Book, String> tableColumnCreation;
 
     @FXML
     private TextField textFieldTitle;
@@ -72,15 +78,6 @@ public class AppPresenter implements Initializable {
 
     @FXML
     private Label labelSystem;
-
-    @FXML
-    private Button buttonDelete;
-
-    @FXML
-    private Button buttonLend;
-
-    @FXML
-    private Button buttonSave;
 
     @Inject
     private BookInfoLoader bookInfoLoader;
@@ -109,6 +106,7 @@ public class AppPresenter implements Initializable {
 
         tableColumnTitle.setCellValueFactory(cellData -> cellData.getValue().titleProperty());
         tableColumnAuthor.setCellValueFactory(cellData -> cellData.getValue().authorProperty());
+        tableColumnCreation.setCellValueFactory(cellData -> cellData.getValue().creationProperty());
 
         tableViewBooks.setItems(data);
 
@@ -179,11 +177,12 @@ public class AppPresenter implements Initializable {
     public void save() throws SQLException {
         LOGGER.info("save");
         if (bookId != null) {
-            final Book book = new Book(bookId, textFieldTitle.getText(), textFieldAuthor.getText(), textFieldIsbn.getText());
+            final Book book = new Book(bookId, textFieldTitle.getText(), textFieldAuthor.getText(), textFieldIsbn.getText(), new Date());
             databaseConnection.updateBook(book);
             data.set(bookFocusedIndex, book);
         } else {
-            final Book book = databaseConnection.insertBook(new Book(textFieldTitle.getText(), textFieldAuthor.getText(), textFieldIsbn.getText()));
+            final Book book = databaseConnection
+                    .insertBook(new Book(textFieldTitle.getText(), textFieldAuthor.getText(), textFieldIsbn.getText(), new Date()));
             data.add(book);
         }
     }
@@ -220,7 +219,7 @@ public class AppPresenter implements Initializable {
     private void addBook(BookInfo bookInfo) {
         LOGGER.info(bookInfo.toString());
         try {
-            final Book book = databaseConnection.insertBook(new Book(bookInfo.getTitle(), bookInfo.getAuthor(), bookInfo.getIsbn()));
+            final Book book = databaseConnection.insertBook(new Book(bookInfo.getTitle(), bookInfo.getAuthor(), bookInfo.getIsbn(), new Date()));
             data.add(book);
         } catch (SQLException e) {
             LOGGER.error(String.format("Cannot insert book into database. %s", bookInfo.toString()), e);

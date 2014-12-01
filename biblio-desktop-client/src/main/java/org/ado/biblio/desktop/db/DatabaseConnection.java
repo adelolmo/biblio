@@ -2,6 +2,7 @@ package org.ado.biblio.desktop.db;
 
 import org.ado.biblio.desktop.AppConfiguration;
 import org.ado.biblio.desktop.model.Book;
+import org.ado.biblio.desktop.util.DateUtils;
 import org.apache.commons.io.FileUtils;
 
 import javax.annotation.PostConstruct;
@@ -61,7 +62,7 @@ public class DatabaseConnection {
         final ResultSet resultSet = statement.getGeneratedKeys();
         if (resultSet.next()) {
             final int id = resultSet.getInt(1);
-            return new Book(id, book.getTitle(), book.getAuthor(), book.getIsbn());
+            return new Book(id, book.getTitle(), book.getAuthor(), book.getIsbn(), new java.util.Date());
         }
         return null;
     }
@@ -87,7 +88,7 @@ public class DatabaseConnection {
     }
 
     public List<Book> getBookList() throws SQLException {
-        String query = "SELECT id, title, author, isbn FROM Book";
+        String query = "SELECT id, title, author, ctime, isbn FROM Book";
         final ArrayList<Book> bookList = new ArrayList<>();
 
         final PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -96,7 +97,8 @@ public class DatabaseConnection {
             bookList.add(new Book(resultSet.getInt("id"),
                     resultSet.getString("title"),
                     resultSet.getString("author"),
-                    resultSet.getString("isbn")));
+                    resultSet.getString("isbn"),
+                    DateUtils.parseSqlite(resultSet.getString("ctime"))));
         }
 
         return bookList;
@@ -108,6 +110,7 @@ public class DatabaseConnection {
                 .append("(id INTEGER PRIMARY KEY AUTOINCREMENT, ")
                 .append("'title' TEXT,")
                 .append("'author' TEXT,")
+                .append("'ctime' DATETIME DEFAULT CURRENT_TIMESTAMP,")
                 .append("'isbn' TEXT);")
                 .toString());
     }

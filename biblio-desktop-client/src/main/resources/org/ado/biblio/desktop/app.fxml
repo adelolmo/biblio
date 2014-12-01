@@ -3,8 +3,8 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
-<SplitPane dividerPositions="0.35566188197767146, 0.3923444976076555, 0.5" orientation="VERTICAL" prefHeight="629.0"
-           prefWidth="928.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+<SplitPane xmlns:fx="http://javafx.com/fxml/1" dividerPositions="0.35566188197767146, 0.3923444976076555, 0.5"
+           orientation="VERTICAL" prefHeight="773.0" prefWidth="1189.0" xmlns="http://javafx.com/javafx/8"
            fx:controller="org.ado.biblio.desktop.AppPresenter">
     <items>
         <MenuBar>
@@ -40,10 +40,11 @@
                                            AnchorPane.topAnchor="0.0">
                                     <columns>
                                         <TableColumn fx:id="tableColumnId" prefWidth="75.0" text="Id" visible="false"/>
-                                        <TableColumn fx:id="tableColumnTitle" editable="false" prefWidth="367.0"
+                                        <TableColumn fx:id="tableColumnTitle" editable="false" prefWidth="521.0"
                                                      text="Title"/>
-                                        <TableColumn fx:id="tableColumnAuthor" minWidth="0.0" prefWidth="361.0"
+                                        <TableColumn fx:id="tableColumnAuthor" minWidth="0.0" prefWidth="467.0"
                                                      text="Author"/>
+                                        <TableColumn fx:id="tableColumnCreation" prefWidth="194.0" text="Creation"/>
                                     </columns>
                                 </TableView>
                             </children>
@@ -69,10 +70,10 @@
                 <Tab text="History">
                     <content>
                         <TableView prefHeight="200.0" prefWidth="200.0">
-                    <columns>
-                        <TableColumn prefWidth="75.0" text="C1"/>
-                        <TableColumn prefWidth="75.0" text="C2"/>
-                    </columns>
+                            <columns>
+                                <TableColumn prefWidth="75.0" text="C1"/>
+                                <TableColumn prefWidth="75.0" text="C2"/>
+                            </columns>
                         </TableView>
                     </content>
                 </Tab>
@@ -80,12 +81,7 @@
         </TabPane>
         <AnchorPane prefHeight="200.0" prefWidth="200.0">
             <children>
-                <HBox layoutX="712.0">
-                    <children>
-                        <ImageView fx:id="imageViewCover" fitHeight="322.0" fitWidth="200.0" layoutX="712.0"
-                                   pickOnBounds="true" preserveRatio="true"/>
-                    </children>
-                </HBox>
+                <HBox layoutX="712.0"/>
                 <HBox alignment="CENTER_LEFT" layoutX="13.9619140625" layoutY="9.0" spacing="10.0">
                     <children>
                         <Label layoutX="14.0" layoutY="14.0" text="Title:"/>
@@ -106,17 +102,17 @@
                         <TextField fx:id="textFieldIsbn" layoutX="50.0" layoutY="60.0"/>
                     </children>
                 </HBox>
-                <HBox layoutX="470.0" layoutY="283.0" spacing="10.0">
+                <HBox layoutX="712.0" layoutY="339.0" spacing="10.0">
                     <children>
-                        <Button fx:id="buttonDelete" layoutX="539.0" layoutY="283.0" mnemonicParsing="false"
-                                onAction="#delete" text="Delete"/>
-                        <Button fx:id="buttonNew" mnemonicParsing="false" onAction="#add" text="New"/>
-                        <Button fx:id="buttonSave" layoutX="600.0" layoutY="283.0" mnemonicParsing="false"
-                                onAction="#save" text="Save"/>
-                        <Button fx:id="buttonLend" layoutX="650.0" layoutY="283.0" mnemonicParsing="false"
-                                onAction="#lend" text="Lend"/>
+                        <Button layoutX="539.0" layoutY="283.0" mnemonicParsing="false" onAction="#delete"
+                                text="Delete"/>
+                        <Button mnemonicParsing="false" onAction="#add" text="New"/>
+                        <Button layoutX="600.0" layoutY="283.0" mnemonicParsing="false" onAction="#save" text="Save"/>
+                        <Button layoutX="650.0" layoutY="283.0" mnemonicParsing="false" onAction="#lend" text="Lend"/>
                     </children>
                 </HBox>
+                <ImageView fx:id="imageViewCover" fitHeight="341.0" fitWidth="217.0" layoutX="956.0" layoutY="19.0"
+                           pickOnBounds="true" preserveRatio="true"/>
             </children>
         </AnchorPane>
         <Label fx:id="labelSystem" prefHeight="15.0" prefWidth="405.0"/>
