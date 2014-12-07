@@ -37,8 +37,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
-import java.util.Date;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -79,6 +78,9 @@ public class AppPresenter implements Initializable {
 
     @FXML
     private TextField textFieldIsbn;
+
+    @FXML
+    private TextField textFieldTags;
 
     @FXML
     private ImageView imageViewCover;
@@ -150,6 +152,7 @@ public class AppPresenter implements Initializable {
                     textFieldTitle.setText(book.getTitle());
                     textFieldAuthor.setText(book.getAuthor());
                     textFieldIsbn.setText(book.getIsbn());
+                    textFieldTags.setText(book.getTags());
                     imageViewCover.setImage(ImageUtils.readCoverOrDefault(book.getIsbn()));
                 }
         );
@@ -195,7 +198,8 @@ public class AppPresenter implements Initializable {
                 public boolean test(Book book) {
 
                     final boolean containsMatch = book.getTitle().toLowerCase().contains(searchSequence)
-                            || book.getAuthor().toLowerCase().contains(searchSequence);
+                            || book.getAuthor().toLowerCase().contains(searchSequence)
+                            || book.getTags().toLowerCase().contains(searchSequence);
 
                     return !containsMatch;
                 }
@@ -205,13 +209,15 @@ public class AppPresenter implements Initializable {
 
     public void save() throws SQLException {
         LOGGER.info("save");
+        final List<String> tagList = new ArrayList<>();
+        Collections.addAll(tagList, textFieldTags.getText().split(","));
         if (bookId != null) {
-            final Book book = new Book(bookId, textFieldTitle.getText(), textFieldAuthor.getText(), textFieldIsbn.getText(), new Date());
+            final Book book = new Book(bookId, textFieldTitle.getText(), textFieldAuthor.getText(), textFieldIsbn.getText(), new Date(), textFieldTags.getText());
             databaseConnection.updateBook(book);
             data.set(bookFocusedIndex, book);
         } else {
             final Book book = databaseConnection
-                    .insertBook(new Book(textFieldTitle.getText(), textFieldAuthor.getText(), textFieldIsbn.getText(), new Date()));
+                    .insertBook(new Book(textFieldTitle.getText(), textFieldAuthor.getText(), textFieldIsbn.getText(), new Date(), textFieldTags.getText()));
             data.add(book);
         }
     }
@@ -248,7 +254,7 @@ public class AppPresenter implements Initializable {
     private void addBook(BookInfo bookInfo) {
         LOGGER.info(bookInfo.toString());
         try {
-            final Book book = databaseConnection.insertBook(new Book(bookInfo.getTitle(), bookInfo.getAuthor(), bookInfo.getIsbn(), new Date()));
+            final Book book = databaseConnection.insertBook(new Book(bookInfo.getTitle(), bookInfo.getAuthor(), bookInfo.getIsbn(), new Date(), ""));
             data.add(book);
         } catch (SQLException e) {
             LOGGER.error(String.format("Cannot insert book into database. %s", bookInfo.toString()), e);

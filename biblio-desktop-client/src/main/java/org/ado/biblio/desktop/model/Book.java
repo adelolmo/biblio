@@ -18,12 +18,13 @@ public class Book {
     private StringProperty author;
     private StringProperty isbn;
     private ObservableValue<Date> creation;
+    private String tags;
 
-    public Book(String title, String author, String isbn, Date creation) {
-        this(null, title, author, isbn, creation);
+    public Book(String title, String author, String isbn, Date creation, String tags) {
+        this(null, title, author, isbn, creation, tags);
     }
 
-    public Book(Integer id, String title, String author, String isbn, Date creation) {
+    public Book(Integer id, String title, String author, String isbn, Date creation, String tags) {
         if (id != null) {
             this.id = new SimpleIntegerProperty(id);
         }
@@ -31,6 +32,7 @@ public class Book {
         this.author = new SimpleStringProperty(author);
         this.isbn = new SimpleStringProperty(isbn);
         this.creation = new SimpleObjectProperty<>(creation);
+        this.tags = tags;
     }
 
     public Integer getId() {
@@ -72,24 +74,8 @@ public class Book {
         return isbn;
     }
 
-    public StringProperty creationProperty() {
-        if (creation != null && creation.getValue() != null) {
-            return new SimpleStringProperty(DateUtils.format(creation.getValue()));
-        } else {
-            return null;
-        }
-    }
-
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder("Book{");
-        sb.append("id=").append(id);
-        sb.append(", title=").append(title);
-        sb.append(", author=").append(author);
-        sb.append(", isbn=").append(isbn);
-        sb.append(", creation=").append(creation);
-        sb.append('}');
-        return sb.toString();
+    public String getTags() {
+        return tags;
     }
 
     @Override
@@ -103,6 +89,7 @@ public class Book {
         if (creation != null ? !creation.equals(book.creation) : book.creation != null) return false;
         if (id != null ? !id.equals(book.id) : book.id != null) return false;
         if (isbn != null ? !isbn.equals(book.isbn) : book.isbn != null) return false;
+        if (tags != null ? !tags.equals(book.tags) : book.tags != null) return false;
         if (title != null ? !title.equals(book.title) : book.title != null) return false;
 
         return true;
@@ -115,7 +102,29 @@ public class Book {
         result = 31 * result + (author != null ? author.hashCode() : 0);
         result = 31 * result + (isbn != null ? isbn.hashCode() : 0);
         result = 31 * result + (creation != null ? creation.hashCode() : 0);
+        result = 31 * result + (tags != null ? tags.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Book{");
+        sb.append("id=").append(id);
+        sb.append(", title=").append(title);
+        sb.append(", author=").append(author);
+        sb.append(", isbn=").append(isbn);
+        sb.append(", creation=").append(creation);
+        sb.append(", tags='").append(tags).append('\'');
+        sb.append('}');
+        return sb.toString();
+    }
+
+    public StringProperty creationProperty() {
+        if (creation != null && creation.getValue() != null) {
+            return new SimpleStringProperty(DateUtils.format(creation.getValue()));
+        } else {
+            return null;
+        }
     }
 
 }

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
@@ -111,6 +110,12 @@
                             <children>
                                 <Label layoutX="14.0" layoutY="65.0" text="ISBN:"/>
                                 <TextField fx:id="textFieldIsbn" layoutX="50.0" layoutY="60.0"/>
+                            </children>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" layoutX="14.0" layoutY="100.0" spacing="10.0">
+                            <children>
+                                <Label layoutX="14.0" layoutY="65.0" text="Tags:"/>
+                                <TextField fx:id="textFieldTags" layoutX="50.0" layoutY="60.0"/>
                             </children>
                         </HBox>
                         <HBox layoutX="712.0" layoutY="339.0" spacing="10.0">

@@ -10,6 +10,7 @@ import javax.annotation.PreDestroy;
 import java.io.File;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -50,11 +51,12 @@ public class DatabaseConnection {
     }
 
     public Book insertBook(Book book) throws SQLException {
-        String query = "INSERT INTO Book (title, author, isbn) VALUES (?,?,?)";
+        String query = "INSERT INTO Book (title, author, isbn, tags) VALUES (?,?,?,?)";
         final PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
         statement.setString(1, book.getTitle());
         statement.setString(2, book.getAuthor());
         statement.setString(3, book.getIsbn());
+        statement.setString(4, book.getTags());
         final int i = statement.executeUpdate();
         if (i == 0) {
             throw new SQLException("Update book failed, no rows affected.");
@@ -62,18 +64,19 @@ public class DatabaseConnection {
         final ResultSet resultSet = statement.getGeneratedKeys();
         if (resultSet.next()) {
             final int id = resultSet.getInt(1);
-            return new Book(id, book.getTitle(), book.getAuthor(), book.getIsbn(), new java.util.Date());
+            return new Book(id, book.getTitle(), book.getAuthor(), book.getIsbn(), new java.util.Date(), book.getTags());
         }
         return null;
     }
 
     public void updateBook(Book book) throws SQLException {
-        String query = "UPDATE Book SET title=?, author=?, isbn=? WHERE id=?";
+        String query = "UPDATE Book SET title=?, author=?, isbn=?, tags=? WHERE id=?";
         final PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
         statement.setString(1, book.getTitle());
         statement.setString(2, book.getAuthor());
         statement.setString(3, book.getIsbn());
-        statement.setInt(4, book.getId());
+        statement.setString(4, book.getTags());
+        statement.setInt(5, book.getId());
         final int i = statement.executeUpdate();
         if (i == 0) {
             throw new SQLException("Update book failed, no rows affected.");
@@ -88,8 +91,8 @@ public class DatabaseConnection {
     }
 
     public List<Book> getBookList() throws SQLException {
-        String query = "SELECT id, title, author, ctime, isbn FROM Book";
-        final ArrayList<Book> bookList = new ArrayList<>();
+        String query = "SELECT id, title, author, ctime, isbn, tags FROM Book";
+        final List<Book> bookList = new ArrayList<>();
 
         final PreparedStatement preparedStatement = connection.prepareStatement(query);
         final ResultSet resultSet = preparedStatement.executeQuery();
@@ -98,7 +101,8 @@ public class DatabaseConnection {
                     resultSet.getString("title"),
                     resultSet.getString("author"),
                     resultSet.getString("isbn"),
-                    DateUtils.parseSqlite(resultSet.getString("ctime"))));
+                    DateUtils.parseSqlite(resultSet.getString("ctime")),
+                    resultSet.getString("tags")));
         }
 
         return bookList;
@@ -111,7 +115,8 @@ public class DatabaseConnection {
                 .append("'title' TEXT,")
                 .append("'author' TEXT,")
                 .append("'ctime' DATETIME DEFAULT CURRENT_TIMESTAMP,")
-                .append("'isbn' TEXT);")
+                .append("'isbn' TEXT,")
+                .append("'tags' TEXT DEFAULT '');")
                 .toString());
     }
 
@@ -119,5 +124,18 @@ public class DatabaseConnection {
         Statement stmt = connection.createStatement();
         stmt.executeUpdate(sql);
         stmt.close();
+    }
+
+    private List<String> getTagList(String tagsString) {
+        return Arrays.asList(tagsString.split(","));
+    }
+
+    private String getTagListString(List<String> tagList) {
+
+        final StringBuilder stringBuilder = new StringBuilder();
+        for (String tag : tagList) {
+            stringBuilder.append(tag).append(",");
+        }
+        return stringBuilder.toString();
     }
 }
