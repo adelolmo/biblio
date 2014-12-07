@@ -7,6 +7,9 @@ import org.apache.commons.io.IOUtils;
 
 import java.io.*;
 
+import static org.apache.commons.lang3.Validate.notBlank;
+import static org.apache.commons.lang3.Validate.notNull;
+
 /**
  * Class description here.
  *
@@ -20,10 +23,17 @@ public class ImageUtils {
     private static final String COVER_NOT_FOUND_PNG = "cover_not_found.png";
 
     public static File writeCover(InputStream inputStream, String filename) throws IOException {
+        notNull(inputStream, "inputStream cannot be null");
+        notBlank(filename, "filename cannot be empty");
+
         return write(inputStream, filename, JPEG_EXTENSION);
     }
 
     public static File write(InputStream inputStream, String filename, String extension) throws IOException {
+        notNull(inputStream, "inputStream cannot be null");
+        notBlank(filename, "filename cannot be empty");
+        notBlank(extension, "extension cannot be empty");
+
         final File file = new File(DIRECTORY, filename.concat(extension));
         FileUtils.touch(file);
         FileOutputStream out = new FileOutputStream(file);
@@ -32,10 +42,15 @@ public class ImageUtils {
     }
 
     public static Image readCoverOrDefault(String filename) {
+        notBlank(filename, "filename cannot be empty");
+
         return readOrDefault(filename, JPEG_EXTENSION);
     }
 
     public static Image readOrDefault(String filename, String extension) {
+        notBlank(filename, "filename cannot be empty");
+        notBlank(extension, "extension cannot be empty");
+
         final InputStream inputStream = read(filename, extension);
         if (inputStream != null) {
             return new Image(inputStream);
@@ -45,6 +60,9 @@ public class ImageUtils {
     }
 
     public static InputStream read(String filename, String extension) {
+        notBlank(filename, "filename cannot be empty");
+        notBlank(extension, "extension cannot be empty");
+
         try {
             return new FileInputStream(new File(DIRECTORY, filename.concat(extension)));
         } catch (Exception e) {
@@ -61,10 +79,14 @@ public class ImageUtils {
     }
 
     public static void deleteCover(String filename) {
+        notBlank(filename, "filename cannot be empty");
+
         delete(filename, JPEG_EXTENSION);
     }
 
     private static void delete(String filename, String extension) {
+        notBlank(filename, "filename cannot be empty");
+
         FileUtils.deleteQuietly(new File(DIRECTORY, filename.concat(extension)));
     }
 

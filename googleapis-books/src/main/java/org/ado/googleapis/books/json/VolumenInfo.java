@@ -1,5 +1,6 @@
 package org.ado.googleapis.books.json;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,6 +27,11 @@ public class VolumenInfo {
     private String previewLink;
     private String infoLink;
     private String canonicalVolumeLink;
+
+    public VolumenInfo() {
+        industryIdentifiers = new ArrayList<>();
+        categories = new ArrayList<>();
+    }
 
     public String getTitle() {
         return title;

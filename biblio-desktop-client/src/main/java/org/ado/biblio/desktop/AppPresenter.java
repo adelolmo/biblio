@@ -122,19 +122,21 @@ public class AppPresenter implements Initializable {
         serverPullingService.setOnSucceeded(event -> {
             LOGGER.info("Succeeded");
             BookMessageDTO[] bookMessages = (BookMessageDTO[]) event.getSource().getValue();
-            if (bookMessages != null && bookMessages.length > 0) {
-                BookMessageDTO bookMessage = bookMessages[0];
-                LOGGER.info("processing book [{}]", bookMessage);
-                try {
-                    addBook(bookInfoLoader.getBookInfo(bookMessage));
+            if (bookMessages != null) {
+                for (BookMessageDTO bookMessage : bookMessages) {
+                    LOGGER.info("processing book [{}]", bookMessage);
+                    try {
+                        addBook(bookInfoLoader.getBookInfo(bookMessage));
+                        labelSystem.setText(null);
 
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (NoBookInfoFoundException e) {
-                    LOGGER.error(e.getMessage());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        labelSystem.setText(e.getMessage());
+                    } catch (NoBookInfoFoundException e) {
+                        LOGGER.error(e.getMessage());
+                        labelSystem.setText(e.getMessage());
+                    }
                 }
-                labelSystem.setText(null);
-
             }
             serverPullingService.restart();
 
@@ -260,13 +262,16 @@ public class AppPresenter implements Initializable {
             LOGGER.error(String.format("Cannot insert book into database. %s", bookInfo.toString()), e);
         }
 
-        try {
-            final File file = ImageUtils.writeCover(bookInfo.getThumbnail(), bookInfo.getIsbn());
-            dropboxManager.uploadCover(bookInfo.getIsbn(), file);
-        } catch (IOException e) {
-            LOGGER.error(String.format("Cannot write book's cover into disk. %s", bookInfo.toString()), e);
-        } catch (DropboxException e) {
-            e.printStackTrace();
+        if (bookInfo.getThumbnail() != null && StringUtils.isNotBlank(bookInfo.getIsbn())) {
+            try {
+                final File file = ImageUtils.writeCover(bookInfo.getThumbnail(), bookInfo.getIsbn());
+                dropboxManager.uploadCover(bookInfo.getIsbn(), file);
+
+            } catch (IOException e) {
+                LOGGER.error(String.format("Cannot write book's cover into disk. %s", bookInfo.toString()), e);
+            } catch (DropboxException e) {
+                e.printStackTrace();
+            }
         }
     }
 

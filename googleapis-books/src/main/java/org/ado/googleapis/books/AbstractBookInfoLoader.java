@@ -30,11 +30,11 @@ public abstract class AbstractBookInfoLoader {
     public BookInfo getBookInfo(BookMessageDTO bookMessage) throws IOException, NoBookInfoFoundException {
         HttpClient client = getHttpClient();
         String url = String.format(GOOGLE_BOOKS_URL, bookMessage.getCode());
-        LOGGER.info(String.format("Book search url [%s]", url));
+        LOGGER.info("Book search url [{}]", url);
         HttpResponse response = client.execute(new HttpGet(url));
 
         Volumes volumes = new Gson().fromJson(IOUtils.toString(response.getEntity().getContent()), Volumes.class);
-        if (volumes == null || volumes.getItems() == null) {
+        if (volumes == null || volumes.getTotalItems() == 0 || volumes.getItems() == null) {
             throw new NoBookInfoFoundException(bookMessage);
         }
         return getBookInfo(volumes.getItems().get(0));
