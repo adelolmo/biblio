@@ -2,6 +2,7 @@ package org.ado.biblio.desktop;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
@@ -23,6 +24,7 @@ import org.ado.biblio.desktop.util.ImageUtils;
 import org.ado.biblio.domain.BookMessageDTO;
 import org.ado.googleapis.books.BookInfo;
 import org.ado.googleapis.books.NoBookInfoFoundException;
+import org.apache.commons.lang3.StringUtils;
 import org.controlsfx.control.action.Action;
 import org.controlsfx.dialog.Dialogs;
 import org.slf4j.Logger;
@@ -37,6 +39,7 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.ResourceBundle;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -49,6 +52,10 @@ public class AppPresenter implements Initializable {
 
     private final Logger LOGGER = LoggerFactory.getLogger(AppPresenter.class);
     private final ObservableList<Book> data = FXCollections.observableArrayList();
+
+    @FXML
+    private TextField textFieldSearch;
+
     @FXML
     private TableView<Book> tableViewBooks;
 
@@ -174,6 +181,28 @@ public class AppPresenter implements Initializable {
         stage.show();
     }
 
+    public void search(Event event) throws SQLException {
+        LOGGER.info("search");
+        String searchSequence = textFieldSearch.getCharacters().toString();
+        LOGGER.debug(searchSequence);
+        if (StringUtils.isBlank(searchSequence)) {
+            data.clear();
+            data.addAll(databaseConnection.getBookList().stream().collect(Collectors.toList()));
+
+        } else {
+            data.removeIf(new Predicate<Book>() {
+                @Override
+                public boolean test(Book book) {
+
+                    final boolean containsMatch = book.getTitle().toLowerCase().contains(searchSequence)
+                            || book.getAuthor().toLowerCase().contains(searchSequence);
+
+                    return !containsMatch;
+                }
+            });
+        }
+    }
+
     public void save() throws SQLException {
         LOGGER.info("save");
         if (bookId != null) {
@@ -188,7 +217,7 @@ public class AppPresenter implements Initializable {
     }
 
     public void add() {
-        LOGGER.info("new");
+        LOGGER.info("add");
         resetBookView();
         textFieldTitle.requestFocus();
     }

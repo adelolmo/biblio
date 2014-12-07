@@ -31,7 +31,7 @@
     <dependencies>
         <dependency>
             <groupId>org.ado.biblio</groupId>
-            <artifactId>domain</artifactId>
+            <artifactId>biblio-domain</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
