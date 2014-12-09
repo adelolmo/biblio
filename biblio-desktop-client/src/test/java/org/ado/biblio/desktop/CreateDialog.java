@@ -36,15 +36,15 @@ public class CreateDialog extends Application {
         return new DbxWebAuthNoRedirect(config, appInfo);
     }
 
-    public void openLinkAndroidAppDialog() {
-        System.out.println("Link Android App");
-    }
-
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
         Application.launch(args);
+    }
+
+    public void openLinkAndroidAppDialog() {
+        System.out.println("Link Android App");
     }
 
     @Override

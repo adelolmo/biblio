@@ -11,6 +11,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.ado.biblio.desktop.android.AndroidView;
@@ -37,7 +38,10 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.ResourceBundle;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -148,14 +152,7 @@ public class AppPresenter implements Initializable {
         serverPullingService.start();
 
         tableViewBooks.setOnMouseClicked(event -> {
-                    bookFocusedIndex = ((TableView) event.getSource()).getFocusModel().getFocusedIndex();
-                    Book book = (Book) ((TableView) event.getSource()).getFocusModel().getFocusedItem();
-                    bookId = book.getId();
-                    textFieldTitle.setText(book.getTitle());
-                    textFieldAuthor.setText(book.getAuthor());
-                    textFieldIsbn.setText(book.getIsbn());
-                    textFieldTags.setText(book.getTags());
-                    imageViewCover.setImage(ImageUtils.readCoverOrDefault(book.getIsbn()));
+                    loadBookDetails(event);
                 }
         );
     }
@@ -211,8 +208,7 @@ public class AppPresenter implements Initializable {
 
     public void save() throws SQLException {
         LOGGER.info("save");
-        final List<String> tagList = new ArrayList<>();
-        Collections.addAll(tagList, textFieldTags.getText().split(","));
+        Collections.addAll(new ArrayList<>(), textFieldTags.getText().split(","));
         if (bookId != null) {
             final Book book = new Book(bookId, textFieldTitle.getText(), textFieldAuthor.getText(), textFieldIsbn.getText(), new Date(), textFieldTags.getText());
             databaseConnection.updateBook(book);
@@ -251,6 +247,21 @@ public class AppPresenter implements Initializable {
     public void lend() {
         LOGGER.info("lend");
 
+    }
+
+    private void loadBookDetails(MouseEvent event) {
+        bookFocusedIndex = ((TableView) event.getSource()).getFocusModel().getFocusedIndex();
+        Book book = (Book) ((TableView) event.getSource()).getFocusModel().getFocusedItem();
+        bookId = book.getId();
+        textFieldTitle.setText(book.getTitle());
+        textFieldAuthor.setText(book.getAuthor());
+        textFieldIsbn.setText(book.getIsbn());
+        textFieldTags.setText(book.getTags());
+        if (StringUtils.isNotBlank(book.getIsbn())) {
+            imageViewCover.setImage(ImageUtils.readCoverOrDefault(book.getIsbn()));
+        } else {
+            imageViewCover.setImage(null);
+        }
     }
 
     private void addBook(BookInfo bookInfo) {
