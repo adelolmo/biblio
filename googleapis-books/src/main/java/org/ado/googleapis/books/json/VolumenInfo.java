@@ -29,8 +29,8 @@ public class VolumenInfo {
     private String canonicalVolumeLink;
 
     public VolumenInfo() {
-        industryIdentifiers = new ArrayList<>();
-        categories = new ArrayList<>();
+        industryIdentifiers = new ArrayList<IndustryIdentifier>();
+        categories = new ArrayList<String>();
     }
 
     public String getTitle() {

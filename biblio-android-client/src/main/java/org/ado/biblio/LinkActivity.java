@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -16,6 +17,7 @@ import com.google.zxing.integration.android.IntentResult;
  */
 public class LinkActivity extends Activity {
 
+    private static final String TAG = LinkActivity.class.getName();
     private SharedPreferences sharedPreferences;
 
     @Override
@@ -33,9 +35,35 @@ public class LinkActivity extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if (scanResult != null) {
-            String contents = scanResult.getContents();
-            sharedPreferences.edit().putString("link", contents).commit();
+            Code code = getCode(scanResult.getContents());
+            final SharedPreferences.Editor preferences = sharedPreferences.edit();
+            preferences.putString("link", code.getLink()).commit();
+            preferences.putString("server", code.getServerHost()).commit();
         }
         finish();
+    }
+
+    private Code getCode(String contents) {
+        return new Code(contents);
+    }
+
+    private class Code {
+        private String link;
+        private String serverHost;
+
+        public Code(String contents) {
+            Log.d(TAG, String.format("contents [%s]", contents));
+            final String[] message = contents.split("\\+");
+            link = message[0];
+            serverHost = message[1];
+        }
+
+        public String getLink() {
+            return link;
+        }
+
+        public String getServerHost() {
+            return serverHost;
+        }
     }
 }

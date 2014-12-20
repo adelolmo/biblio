@@ -24,11 +24,22 @@ public class AppConfiguration {
     private static Properties config;
     private static Properties properties;
 
-    public static String getProperty(String name) {
+    public static String getApplicationProperty(String name) {
         if (properties == null) {
             properties = loadFileProperties(AppConfiguration.class.getResourceAsStream("biblio.properties"));
         }
         return properties.getProperty(name);
+    }
+
+    public static void setConfigurationProperty(String property, String value) {
+        init();
+        config.put(property, value);
+        store();
+    }
+
+    public static String getConfigurationProperty(String property) {
+        init();
+        return config.getProperty(property);
     }
 
     public static String getAppId() {

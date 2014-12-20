@@ -22,7 +22,7 @@ $JAVA_HOME/bin/java $JAVA_OPTS -Dlog4j.configuration=file:$APP_HOME/log4j.xml -D
 ;;
 stop)
 echo "Killing biblio-server ..."
-killall java
+killall biblio-server
 ;;
 *)
 echo "Usage: /etc/init.d/biblio-server {start|stop}"

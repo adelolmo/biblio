@@ -35,7 +35,7 @@ public class ServerPullingService extends Service<BookMessageDTO[]> {
             @Override
             protected BookMessageDTO[] call() throws Exception {
 
-                final String requestUrl = String.format(SERVER_PULL_URL, AppConfiguration.getProperty("server.host"), clientId);
+                final String requestUrl = String.format(SERVER_PULL_URL, AppConfiguration.getConfigurationProperty("server.host"), clientId);
 
                 try {
                     HttpClient client = HttpClientBuilder.create().build();

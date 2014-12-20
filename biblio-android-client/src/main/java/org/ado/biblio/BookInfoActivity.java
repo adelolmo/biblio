@@ -1,6 +1,8 @@
 package org.ado.biblio;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -17,8 +19,6 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-import java.util.Properties;
-
 /**
  * Class description here.
  *
@@ -30,7 +30,7 @@ public class BookInfoActivity extends Activity {
     public static final String REST_RESOURCE_PUSH_MESSAGE = "%s/books/%s?format=%s&code=%s";
     private static final String TAG = BiblioActivity.class.getName();
     private AbstractBookInfoLoader bookInfoLoader;
-    private Properties properties;
+    private SharedPreferences sharedPreferences;
 
     private String link;
     private String format;
@@ -43,10 +43,10 @@ public class BookInfoActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_bookinfo);
+        sharedPreferences = getApplicationContext().getSharedPreferences("biblio", Context.MODE_PRIVATE);
         Log.d(TAG, "onCreate");
-        AssetsPropertyReader assetsPropertyReader = new AssetsPropertyReader(getApplicationContext());
-        properties = assetsPropertyReader.getProperties("biblio.properties");
+
+        setContentView(R.layout.activity_bookinfo);
 
         TextView textTitle = (TextView) findViewById(R.id.textTitle);
         TextView textAuthor = (TextView) findViewById(R.id.textAuthor);
@@ -102,7 +102,8 @@ public class BookInfoActivity extends Activity {
         @Override
         protected Void doInBackground(String... params) {
             HttpClient client = new DefaultHttpClient();
-            String url = String.format(REST_RESOURCE_PUSH_MESSAGE, properties.getProperty("server.host"), params[0], params[1], params[2]);
+            String url = String.format(REST_RESOURCE_PUSH_MESSAGE,
+                    sharedPreferences.getString("server", ""), params[0], params[1], params[2]);
             Log.d(TAG, "http request. url [" + url + "].");
 
             HttpPost httpPost = new HttpPost(url);

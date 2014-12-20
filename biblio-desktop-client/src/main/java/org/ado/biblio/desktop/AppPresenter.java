@@ -21,6 +21,8 @@ import org.ado.biblio.desktop.dropbox.DropboxManager;
 import org.ado.biblio.desktop.dropbox.DropboxPresenter;
 import org.ado.biblio.desktop.dropbox.DropboxView;
 import org.ado.biblio.desktop.model.Book;
+import org.ado.biblio.desktop.settings.SettingsPresenter;
+import org.ado.biblio.desktop.settings.SettingsView;
 import org.ado.biblio.desktop.util.ImageUtils;
 import org.ado.biblio.domain.BookMessageDTO;
 import org.ado.googleapis.books.BookInfo;
@@ -178,6 +180,22 @@ public class AppPresenter implements Initializable {
         stage.setScene(new Scene(dropboxView.getView()));
         stage.setTitle("Dropbox");
         stage.show();
+    }
+
+    public void settings() {
+        Stage stage = new Stage();
+        final SettingsView settingsView = new SettingsView();
+        final SettingsPresenter presenter = (SettingsPresenter) settingsView.getPresenter();
+        presenter.setStage(stage);
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.setScene(new Scene(settingsView.getView()));
+        stage.setTitle("Settings");
+        stage.show();
+    }
+
+    public void exit() {
+        LOGGER.info("exit");
+
     }
 
     public void search(Event event) throws SQLException {

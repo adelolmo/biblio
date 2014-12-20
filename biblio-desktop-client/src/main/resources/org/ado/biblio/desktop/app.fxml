@@ -14,12 +14,8 @@
                             <items>
                                 <MenuItem mnemonicParsing="false" onAction="#linkDropbox" text="Dropbox..."/>
                                 <MenuItem mnemonicParsing="false" onAction="#linkAndroid" text="Android"/>
-                                <MenuItem mnemonicParsing="false" text="Close"/>
-                            </items>
-                        </Menu>
-                        <Menu mnemonicParsing="false" text="Edit">
-                            <items>
-                                <MenuItem mnemonicParsing="false" text="Delete"/>
+                                <MenuItem mnemonicParsing="false" onAction="#settings" text="Settings..."/>
+                                <MenuItem mnemonicParsing="false" onAction="#exit" text="Exit"/>
                             </items>
                         </Menu>
                         <Menu mnemonicParsing="false" text="Help">
