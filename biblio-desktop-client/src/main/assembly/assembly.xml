@@ -5,6 +5,7 @@
     <id>dist</id>
     <formats>
         <format>tar.gz</format>
+        <format>zip</format>
     </formats>
     <includeBaseDirectory>false</includeBaseDirectory>
 
@@ -19,7 +20,7 @@
 
     <files>
         <file>
-            <source>${project.basedir}/src/main/resources/org/ado/musicdroid/musicdroid.properties</source>
+            <source>${project.basedir}/src/main/resources/org/ado/biblio/desktop/biblio.properties</source>
             <filtered>true</filtered>
         </file>
     </files>

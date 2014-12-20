@@ -25,7 +25,7 @@
         <javafx.version>2.2</javafx.version>
 
         <exec.mainClass>org.ado.biblio.desktop.App</exec.mainClass>
-        <project.build.scriptSourceDirectory>bin</project.build.scriptSourceDirectory>
+        <project.build.scriptSourceDirectory>src/main/bin</project.build.scriptSourceDirectory>
     </properties>
 
     <dependencies>

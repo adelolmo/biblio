@@ -151,10 +151,7 @@ public class AppPresenter implements Initializable {
         });
         serverPullingService.start();
 
-        tableViewBooks.setOnMouseClicked(event -> {
-                    loadBookDetails(event);
-                }
-        );
+        tableViewBooks.setOnMouseClicked(this::loadBookDetails);
     }
 
     @PreDestroy
