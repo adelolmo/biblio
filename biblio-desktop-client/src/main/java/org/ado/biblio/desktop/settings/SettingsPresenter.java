@@ -30,7 +30,7 @@ public class SettingsPresenter implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        textFieldServerUrl.setText(AppConfiguration.getApplicationProperty("server.url"));
+        textFieldServerUrl.setText(AppConfiguration.getConfigurationProperty("server.url"));
     }
 
     public void save() {

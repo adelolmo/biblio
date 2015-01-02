@@ -38,8 +38,8 @@ public class AndroidPresenter implements Initializable {
     private void createQrCode() {
         try {
             LOGGER.info("App ID: {}", AppConfiguration.getAppId());
-            LOGGER.info("Server IP: {}", AppConfiguration.getApplicationProperty("server.host"));
-            BitMatrix matrix = new MultiFormatWriter().encode(getCode(AppConfiguration.getAppId(), AppConfiguration.getApplicationProperty("server.host")), BarcodeFormat.QR_CODE, 300, 300);
+            LOGGER.info("Server IP: {}", AppConfiguration.getConfigurationProperty("server.url"));
+            BitMatrix matrix = new MultiFormatWriter().encode(getCode(AppConfiguration.getAppId(), AppConfiguration.getConfigurationProperty("server.url")), BarcodeFormat.QR_CODE, 300, 300);
             final BufferedImage bufferedImage = MatrixToImageWriter.toBufferedImage(matrix);
 
             imageViewQrCode.setImage(SwingFXUtils.toFXImage(bufferedImage, null));
