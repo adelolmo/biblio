@@ -3,54 +3,60 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
-<Pane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8"
+<Pane xmlns:fx="http://javafx.com/fxml/1" minWidth="-Infinity" snapToPixel="false" xmlns="http://javafx.com/javafx/8"
       fx:controller="org.ado.biblio.desktop.AppPresenter">
     <children>
-        <Pane maxHeight="1.7976931348623157E308" minHeight="-Infinity" prefHeight="68.0" prefWidth="1187.0">
+        <MenuBar minHeight="-Infinity" minWidth="-Infinity" prefWidth="1173.0">
+            <menus>
+                <Menu mnemonicParsing="false" text="File">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#settings" text="Settings..."/>
+                        <SeparatorMenuItem mnemonicParsing="false"/>
+                        <MenuItem mnemonicParsing="false" onAction="#linkAndroid" text="Android"/>
+                        <MenuItem mnemonicParsing="false" onAction="#linkDropbox" text="Dropbox..."/>
+                        <SeparatorMenuItem mnemonicParsing="false"/>
+                        <MenuItem mnemonicParsing="false" onAction="#exit" text="Exit"/>
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Help">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="About"/>
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+        <AnchorPane layoutY="29.0" minHeight="0.0" minWidth="0.0" prefHeight="57.0" prefWidth="633.0">
             <children>
-                <MenuBar prefHeight="29.0" prefWidth="1187.0">
-                    <menus>
-                        <Menu mnemonicParsing="false" text="File">
-                            <items>
-                                <MenuItem mnemonicParsing="false" onAction="#linkDropbox" text="Dropbox..."/>
-                                <MenuItem mnemonicParsing="false" onAction="#linkAndroid" text="Android"/>
-                                <MenuItem mnemonicParsing="false" onAction="#settings" text="Settings..."/>
-                                <MenuItem mnemonicParsing="false" onAction="#exit" text="Exit"/>
-                            </items>
-                        </Menu>
-                        <Menu mnemonicParsing="false" text="Help">
-                            <items>
-                                <MenuItem mnemonicParsing="false" text="About"/>
-                            </items>
-                        </Menu>
-                    </menus>
-                </MenuBar>
-                <Label layoutX="14.0" layoutY="34.0" text="Search:"/>
-                <TextField fx:id="textFieldSearch" layoutX="64.0" layoutY="29.0" onKeyReleased="#search"/>
+                <HBox alignment="CENTER_LEFT" layoutX="14.0" layoutY="3.0" spacing="10.0">
+                    <children>
+                        <Label layoutX="14.0" layoutY="8.0" text="Search:"/>
+                        <TextField fx:id="textFieldSearch" layoutX="64.0" layoutY="3.0" onKeyReleased="#search"/>
+                        <Button mnemonicParsing="false" onAction="#clear" text="Clear"/>
+                    </children>
+                </HBox>
             </children>
-        </Pane>
-        <SplitPane dividerPositions="0.35566188197767146, 0.3923444976076555" layoutY="66.0" orientation="VERTICAL"
-                   prefHeight="707.0" prefWidth="1189.0">
+        </AnchorPane>
+        <SplitPane dividerPositions="0.6054313099041534, 0.9696485623003195" layoutY="61.0" orientation="VERTICAL"
+                   prefHeight="619.0" prefWidth="1217.0">
             <items>
-                <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
+                <TabPane tabClosingPolicy="UNAVAILABLE">
                     <tabs>
                         <Tab text="Library">
                             <content>
-                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                <AnchorPane>
                                     <children>
-                                        <TableView fx:id="tableViewBooks" editable="true" layoutX="366.0" layoutY="10.0"
-                                                   prefHeight="204.0" prefWidth="926.0" AnchorPane.bottomAnchor="0.0"
-                                                   AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-                                                   AnchorPane.topAnchor="0.0">
+                                        <TableView fx:id="tableViewBooks" editable="true" prefHeight="342.0"
+                                                   AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                                                   AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                             <columns>
                                                 <TableColumn fx:id="tableColumnId" prefWidth="75.0" text="Id"
                                                              visible="false"/>
-                                                <TableColumn fx:id="tableColumnTitle" editable="false" prefWidth="521.0"
-                                                             text="Title"/>
                                                 <TableColumn fx:id="tableColumnAuthor" minWidth="0.0" prefWidth="467.0"
                                                              text="Author"/>
                                                 <TableColumn fx:id="tableColumnCreation" prefWidth="194.0"
                                                              text="Creation"/>
+                                                <TableColumn fx:id="tableColumnTitle" editable="false" prefWidth="521.0"
+                                                             text="Title"/>
                                             </columns>
                                         </TableView>
                                     </children>
@@ -85,12 +91,13 @@
                         </Tab>
                     </tabs>
                 </TabPane>
-                <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                <AnchorPane>
                     <children>
                         <HBox layoutX="712.0"/>
-                        <HBox alignment="CENTER_LEFT" layoutX="13.9619140625" layoutY="9.0" spacing="10.0">
+                        <HBox alignment="CENTER_LEFT" layoutX="13.9619140625" layoutY="9.0" spacing="10.0"
+                              AnchorPane.leftAnchor="13.9619140625" AnchorPane.rightAnchor="479.0380859375">
                             <children>
-                                <Label layoutX="14.0" layoutY="14.0" text="Title:"/>
+                                <Label layoutX="14.0" layoutY="14.0" prefHeight="15.0" prefWidth="61.0" text="Title:"/>
                                 <TextField fx:id="textFieldTitle" layoutX="62.0" layoutY="9.0" prefHeight="25.0"
                                            prefWidth="651.0"/>
                             </children>
@@ -114,7 +121,7 @@
                                 <TextField fx:id="textFieldTags" layoutX="50.0" layoutY="60.0"/>
                             </children>
                         </HBox>
-                        <HBox layoutX="712.0" layoutY="339.0" spacing="10.0">
+                        <HBox layoutX="712.0" layoutY="157.0" spacing="10.0">
                             <children>
                                 <Button layoutX="539.0" layoutY="283.0" mnemonicParsing="false" onAction="#delete"
                                         text="Delete"/>
@@ -125,8 +132,8 @@
                                         text="Lend"/>
                             </children>
                         </HBox>
-                        <ImageView fx:id="imageViewCover" fitHeight="341.0" fitWidth="217.0" layoutX="956.0"
-                                   layoutY="19.0" pickOnBounds="true" preserveRatio="true"/>
+                        <ImageView fx:id="imageViewCover" fitHeight="206.0" fitWidth="162.0" layoutX="997.0"
+                                   layoutY="14.0" pickOnBounds="true" preserveRatio="true"/>
                     </children>
                 </AnchorPane>
                 <Label fx:id="labelSystem" prefHeight="15.0" prefWidth="405.0"/>

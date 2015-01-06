@@ -15,21 +15,23 @@ import java.io.IOException;
  */
 public class App extends Application {
 
+    public static void main(String[] args) {
+        launch(args);
+    }
+
     @Override
     public void start(Stage primaryStage) throws IOException {
         final AppView appView = new AppView();
         final Scene scene = new Scene(appView.getView());
         primaryStage.setTitle("Biblio");
         primaryStage.setScene(scene);
+        primaryStage.setMaxHeight(Double.MAX_VALUE);
+        primaryStage.setMaxWidth(Double.MAX_VALUE);
         primaryStage.show();
     }
 
     @Override
     public void stop() throws Exception {
         Injector.forgetAll();
-    }
-
-    public static void main(String[] args) {
-        launch(args);
     }
 }

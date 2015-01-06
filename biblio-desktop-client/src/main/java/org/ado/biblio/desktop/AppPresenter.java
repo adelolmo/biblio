@@ -112,7 +112,7 @@ public class AppPresenter implements Initializable {
     @PostConstruct
     public void init() throws Exception {
         serverPullingService.setClientId(AppConfiguration.getAppId());
-        data.addAll(databaseConnection.getBookList().stream().collect(Collectors.toList()));
+        reloadBooksTable();
     }
 
     @Override
@@ -203,8 +203,7 @@ public class AppPresenter implements Initializable {
         String searchSequence = textFieldSearch.getCharacters().toString();
         LOGGER.debug(searchSequence);
         if (StringUtils.isBlank(searchSequence)) {
-            data.clear();
-            data.addAll(databaseConnection.getBookList().stream().collect(Collectors.toList()));
+            reloadBooksTable();
 
         } else {
             data.removeIf(new Predicate<Book>() {
@@ -219,6 +218,12 @@ public class AppPresenter implements Initializable {
                 }
             });
         }
+    }
+
+    public void clear() throws SQLException {
+        LOGGER.info("clear");
+        textFieldSearch.clear();
+        reloadBooksTable();
     }
 
     public void save() throws SQLException {
@@ -262,6 +267,11 @@ public class AppPresenter implements Initializable {
     public void lend() {
         LOGGER.info("lend");
 
+    }
+
+    private void reloadBooksTable() throws SQLException {
+        data.clear();
+        data.addAll(databaseConnection.getBookList().stream().collect(Collectors.toList()));
     }
 
     private void loadBookDetails(MouseEvent event) {
