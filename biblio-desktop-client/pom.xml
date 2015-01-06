@@ -13,6 +13,7 @@
     <groupId>org.ado.biblio</groupId>
     <artifactId>desktop-client</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <name>Desktop</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

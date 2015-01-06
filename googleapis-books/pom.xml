@@ -12,6 +12,7 @@
 
     <artifactId>googleapis-books</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <name>Google Apis - Books</name>
 
     <properties>
         <maven.compiler.target>1.6</maven.compiler.target>

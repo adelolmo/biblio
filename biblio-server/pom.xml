@@ -13,7 +13,7 @@
     <groupId>org.ado.biblio</groupId>
     <artifactId>biblio-server</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <packaging>jar</packaging>
+    <name>Routing Server</name>
 
     <dependencies>
         <dependency>

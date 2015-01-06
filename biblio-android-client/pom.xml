@@ -13,7 +13,7 @@
     <artifactId>biblio-android</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>apk</packaging>
-    <name>Biblio Android Client</name>
+    <name>Android App</name>
 
     <properties>
         <maven.compiler.target>1.6</maven.compiler.target>
@@ -22,6 +22,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <platform.version>4.1.1.4</platform.version>
         <android.plugin.version>3.6.0</android.plugin.version>
+        <android.sdk.path>/usr/local/android-sdk-linux</android.sdk.path>
     </properties>
 
     <dependencies>
@@ -50,7 +51,7 @@
     </dependencies>
 
     <build>
-        <finalName>${project.artifactId}</finalName>
+        <!--<finalName>${project.artifactId}</finalName>-->
         <pluginManagement>
             <plugins>
                 <plugin>
