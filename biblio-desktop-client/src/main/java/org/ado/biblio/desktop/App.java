@@ -23,6 +23,8 @@ public class App extends Application {
     public void start(Stage primaryStage) throws IOException {
         final AppView appView = new AppView();
         final Scene scene = new Scene(appView.getView());
+        final AppPresenter presenter = (AppPresenter) appView.getPresenter();
+        presenter.setStage(primaryStage);
         primaryStage.setTitle("Biblio");
         primaryStage.setScene(scene);
         primaryStage.setMaxHeight(Double.MAX_VALUE);

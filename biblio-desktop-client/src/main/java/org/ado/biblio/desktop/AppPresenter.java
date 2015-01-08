@@ -116,6 +116,7 @@ public class AppPresenter implements Initializable {
     @Inject
     private DropboxManager dropboxManager;
 
+    private Stage stage;
     private Integer bookId;
     private int bookFocusedIndex;
 
@@ -181,6 +182,10 @@ public class AppPresenter implements Initializable {
         tableViewBooks.setOnMouseClicked(this::loadBookDetails);
     }
 
+    public void setStage(Stage stage) {
+        this.stage = stage;
+    }
+
     @PreDestroy
     private void destroy() {
         LOGGER.info("destroy");
@@ -220,7 +225,7 @@ public class AppPresenter implements Initializable {
 
     public void exit() {
         LOGGER.info("exit");
-
+        stage.close();
     }
 
     public void search(Event event) throws SQLException {
