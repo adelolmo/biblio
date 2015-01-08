@@ -1,8 +1,9 @@
-package org.ado.biblio.desktop;
+package org.ado.biblio.desktop.server;
 
 import com.google.gson.Gson;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
+import org.ado.biblio.desktop.AppConfiguration;
 import org.ado.biblio.domain.BookMessageDTO;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
@@ -20,8 +21,8 @@ import org.slf4j.LoggerFactory;
  */
 public class ServerPullingService extends Service<BookMessageDTO[]> {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ServerPullingService.class);
     private static final String SERVER_PULL_URL = "%s/books/%s";
-    private final Logger LOGGER = LoggerFactory.getLogger(ServerPullingService.class);
     private String clientId;
 
     public void setClientId(String clientId) {
@@ -51,8 +52,8 @@ public class ServerPullingService extends Service<BookMessageDTO[]> {
                 } catch (Exception e) {
                     LOGGER.error(String.format("Unable to pull server %s", requestUrl), e);
                     pause(15);
+                    throw e;
                 }
-                return null;
             }
         };
     }

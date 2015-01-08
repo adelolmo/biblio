@@ -136,7 +136,13 @@
                                    layoutY="14.0" pickOnBounds="true" preserveRatio="true"/>
                     </children>
                 </AnchorPane>
-                <Label fx:id="labelSystem" prefHeight="15.0" prefWidth="405.0"/>
+                <HBox spacing="5.0">
+                    <children>
+                        <ImageView fx:id="imageViewServerStatus" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true"
+                                   preserveRatio="true"/>
+                        <Label fx:id="labelSystem" prefHeight="15.0" prefWidth="405.0"/>
+                    </children>
+                </HBox>
             </items>
         </SplitPane>
     </children>

@@ -10,6 +10,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
@@ -21,6 +22,9 @@ import org.ado.biblio.desktop.dropbox.DropboxManager;
 import org.ado.biblio.desktop.dropbox.DropboxPresenter;
 import org.ado.biblio.desktop.dropbox.DropboxView;
 import org.ado.biblio.desktop.model.Book;
+import org.ado.biblio.desktop.server.ServerPullingService;
+import org.ado.biblio.desktop.server.ServerStatusEnum;
+import org.ado.biblio.desktop.server.ServerStatusService;
 import org.ado.biblio.desktop.settings.SettingsPresenter;
 import org.ado.biblio.desktop.settings.SettingsView;
 import org.ado.biblio.desktop.util.ImageUtils;
@@ -92,6 +96,9 @@ public class AppPresenter implements Initializable {
     private ImageView imageViewCover;
 
     @FXML
+    private ImageView imageViewServerStatus;
+
+    @FXML
     private Label labelSystem;
 
     @Inject
@@ -99,6 +106,9 @@ public class AppPresenter implements Initializable {
 
     @Inject
     private ServerPullingService serverPullingService;
+
+    @Inject
+    private ServerStatusService serverStatusService;
 
     @Inject
     private DatabaseConnection databaseConnection;
@@ -125,8 +135,22 @@ public class AppPresenter implements Initializable {
 
         tableViewBooks.setItems(data);
 
+        serverStatusService.setOnSucceeded(event -> {
+            final ServerStatusEnum serverStatus = (ServerStatusEnum) event.getSource().getValue();
+            switch (serverStatus) {
+                case ONLINE:
+                    serverStatusImageOnline();
+                    break;
+                case OFFLINE:
+                    serverStatusImageOffline();
+                    break;
+            }
+        });
+        serverStatusService.start();
+
         serverPullingService.setOnSucceeded(event -> {
             LOGGER.info("Succeeded");
+            serverStatusImageOnline();
             BookMessageDTO[] bookMessages = (BookMessageDTO[]) event.getSource().getValue();
             if (bookMessages != null) {
                 for (BookMessageDTO bookMessage : bookMessages) {
@@ -136,7 +160,7 @@ public class AppPresenter implements Initializable {
                         labelSystem.setText(null);
 
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        LOGGER.error(e.getMessage());
                         labelSystem.setText(e.getMessage());
                     } catch (NoBookInfoFoundException e) {
                         LOGGER.error(e.getMessage());
@@ -149,7 +173,8 @@ public class AppPresenter implements Initializable {
         });
         serverPullingService.setOnFailed(event -> {
             LOGGER.error(event.getSource().getMessage());
-            labelSystem.setText("error");
+            serverStatusImageOffline();
+            serverPullingService.restart();
         });
         serverPullingService.start();
 
@@ -317,5 +342,17 @@ public class AppPresenter implements Initializable {
         textFieldAuthor.setText(null);
         textFieldIsbn.setText(null);
         imageViewCover.setImage(null);
+    }
+
+    private void serverStatusImageOffline() {
+        imageViewServerStatus.setImage(getImageResource("trafficlight-red.png"));
+    }
+
+    private void serverStatusImageOnline() {
+        imageViewServerStatus.setImage(getImageResource("trafficlight-green.png"));
+    }
+
+    private Image getImageResource(String resourceName) {
+        return new Image(AppPresenter.class.getResourceAsStream(resourceName));
     }
 }
