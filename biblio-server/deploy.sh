@@ -11,7 +11,7 @@ echo "Installing in $INSTALLATION_DIRECTORY..."
 
 if [ ! -d $INSTALLATION_DIRECTORY ]; then
     echo "* create directory $INSTALLATION_DIRECTORY"
-    mkdir $INSTALLATION_DIRECTORY
+    mkdir -p $INSTALLATION_DIRECTORY
 fi
 
 mvn clean install
