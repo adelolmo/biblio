@@ -246,10 +246,9 @@ public class AppPresenter implements Initializable {
         LOGGER.info("search");
         String searchSequence = textFieldSearch.getCharacters().toString();
         LOGGER.debug(searchSequence);
-        if (StringUtils.isBlank(searchSequence)) {
-            reloadBooksTable();
 
-        } else {
+        reloadBooksTable();
+        if (!StringUtils.isBlank(searchSequence)) {
             reloadBooksTable();
             data.removeIf(new Predicate<Book>() {
                 @Override
