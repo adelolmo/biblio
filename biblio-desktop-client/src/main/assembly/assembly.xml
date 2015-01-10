@@ -18,6 +18,14 @@
         </dependencySet>
     </dependencySets>
 
+    <!--    <moduleSets>
+            <moduleSet>
+                <excludes>
+                    <exclude>${project.basedir}/src/main/resources/org/ado/biblio/desktop/biblio.properties</exclude>
+                </excludes>
+            </moduleSet>
+        </moduleSets>-->
+
     <files>
         <file>
             <source>${project.basedir}/src/main/resources/org/ado/biblio/desktop/biblio.properties</source>
@@ -34,6 +42,9 @@
             </includes>
             <fileMode>744</fileMode>
             <lineEnding>unix</lineEnding>
+            <excludes>
+                <exclude>**/biblio.properties</exclude>
+            </excludes>
         </fileSet>
     </fileSets>
 </assembly>

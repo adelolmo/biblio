@@ -26,7 +26,13 @@ public class AppConfiguration {
 
     public static String getApplicationProperty(String name) {
         if (properties == null) {
-            properties = loadFileProperties(AppConfiguration.class.getResourceAsStream("biblio.properties"));
+            try {
+                properties = loadFileProperties(new File("biblio.properties"), false);
+            } catch (Exception e) {
+                // fallback
+                System.out.println("loading fallback properties");
+                properties = loadFileProperties(AppConfiguration.class.getResourceAsStream("biblio.properties"));
+            }
         }
         return properties.getProperty(name);
     }
@@ -62,7 +68,7 @@ public class AppConfiguration {
     }
 
     private static void init() {
-        config = loadFileProperties(CONFIG);
+        config = loadFileProperties(CONFIG, true);
         store();
     }
 
@@ -76,11 +82,15 @@ public class AppConfiguration {
         return prop;
     }
 
-    private static Properties loadFileProperties(File file) {
+    private static Properties loadFileProperties(File file, boolean createIfNotExist) {
         Properties prop = new Properties();
         try {
             if (!file.exists()) {
-                FileUtils.touch(file);
+                if (createIfNotExist) {
+                    FileUtils.touch(file);
+                } else {
+                    throw new IOException(String.format("Properties file \"%s\" does not exits.", file.getAbsolutePath()));
+                }
             }
             prop.load(new FileInputStream(file));
         } catch (IOException e) {

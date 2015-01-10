@@ -99,14 +99,6 @@
             <version>3.7.2</version>
         </dependency>
 
-        <!--        <dependency>
-                    <groupId>com.oracle</groupId>
-                    <artifactId>javafx</artifactId>
-                    <version>${javafx.version}</version>
-                    <systemPath>${java.home}/lib/ext/jfxrt.jar</systemPath>
-                    <scope>system</scope>
-                </dependency>-->
-
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -115,6 +107,13 @@
     </dependencies>
 
     <build>
+        <!--        <resources>
+                    <resource>
+                        <targetPath>src/main/resources</targetPath>
+                        &lt;!&ndash;<directory>src/main/resources/org/ado/biblio/desktop</directory>&ndash;&gt;
+                        <filtering>true</filtering>
+                    </resource>
+                </resources>-->
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

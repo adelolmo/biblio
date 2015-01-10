@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Rectangle2D?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<Pane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+      minWidth="-Infinity" prefHeight="141.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8"
+      fx:controller="org.ado.biblio.desktop.about.AboutPresenter">
+    <children>
+        <ImageView fitHeight="100.0" fitWidth="100.0" layoutX="23.0" layoutY="18.0" pickOnBounds="true"
+                   preserveRatio="true">
+            <image>
+                <Image url="@biblio_logo.png"/>
+            </image>
+            <viewport>
+                <Rectangle2D height="150.0" width="150.0"/>
+            </viewport>
+        </ImageView>
+        <Button layoutX="532.0" layoutY="106.0" mnemonicParsing="false" onAction="#close" text="Close"/>
+        <HBox layoutX="150.0" layoutY="80.0" spacing="10.0">
+            <children>
+                <Label layoutX="150.0" layoutY="60.0" text="Version:"/>
+                <Label fx:id="labelApplicationVersion" layoutX="233.0" layoutY="58.0" text="Label"/>
+            </children>
+        </HBox>
+        <Label layoutX="150.0" layoutY="20.0" text="Biblio"/>
+        <Label layoutX="150.0" layoutY="40.0" text="Solution to organize your personal physical library."/>
+    </children>
+</Pane>

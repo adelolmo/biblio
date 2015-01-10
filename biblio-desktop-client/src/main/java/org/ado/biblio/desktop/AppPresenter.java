@@ -15,6 +15,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.ado.biblio.desktop.about.AboutPresenter;
+import org.ado.biblio.desktop.about.AboutView;
 import org.ado.biblio.desktop.android.AndroidView;
 import org.ado.biblio.desktop.db.DatabaseConnection;
 import org.ado.biblio.desktop.dropbox.DropboxException;
@@ -226,6 +228,18 @@ public class AppPresenter implements Initializable {
     public void exit() {
         LOGGER.info("exit");
         stage.close();
+    }
+
+    public void about() {
+        LOGGER.info("about");
+        Stage stage = new Stage();
+        final AboutView aboutView = new AboutView();
+        final AboutPresenter presenter = (AboutPresenter) aboutView.getPresenter();
+        presenter.setStage(stage);
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.setScene(new Scene(aboutView.getView()));
+        stage.setTitle("About");
+        stage.show();
     }
 
     public void search(Event event) throws SQLException {

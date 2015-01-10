@@ -14,4 +14,4 @@ do
 done
 #echo "CLASSPATH=$_CLASSPATH"
 
-$JAVA_HOME/bin/java $JAVA_OPTS -Dlog4j.configuration=file:$APP_HOME/log4j.xml -Dfile.encoding=UTF-8 -classpath "${_CLASSPATH}" "org.ado.bilbio.desktop.App" $@ > /dev/null &
+$JAVA_HOME/bin/java $JAVA_OPTS -Dlog4j.configuration=file:$APP_HOME/log4j.xml -Dfile.encoding=UTF-8 -classpath "${_CLASSPATH}" "org.ado.biblio.desktop.App" $@ > /dev/null &
