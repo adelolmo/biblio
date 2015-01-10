@@ -250,6 +250,7 @@ public class AppPresenter implements Initializable {
             reloadBooksTable();
 
         } else {
+            reloadBooksTable();
             data.removeIf(new Predicate<Book>() {
                 @Override
                 public boolean test(Book book) {
