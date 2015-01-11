@@ -288,6 +288,7 @@ public class AppPresenter implements Initializable {
         LOGGER.info("add");
         resetBookView();
         textFieldTitle.requestFocus();
+        tableViewBooks.scrollTo(data.size());
     }
 
     public void delete() throws SQLException, DropboxException {
@@ -323,9 +324,13 @@ public class AppPresenter implements Initializable {
         Book book = (Book) ((TableView) event.getSource()).getFocusModel().getFocusedItem();
         bookId = book.getId();
         textFieldTitle.setText(book.getTitle());
+
+//        textFieldAuthor.setStyle("-fx-background-color:red");
+
         textFieldAuthor.setText(book.getAuthor());
         textFieldIsbn.setText(book.getIsbn());
         textFieldTags.setText(book.getTags());
+
         if (StringUtils.isNotBlank(book.getIsbn())) {
             imageViewCover.setImage(ImageUtils.readCoverOrDefault(book.getIsbn()));
         } else {
