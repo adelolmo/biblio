@@ -42,16 +42,16 @@ public abstract class AbstractBookInfoLoader {
 
     private BookInfo getBookInfo(Item item) {
         BookInfo bookInfo = new BookInfo();
-        VolumenInfo volumeInfo = item.getVolumeInfo();
+        VolumeInfo volumeInfo = item.getVolumeInfo();
 
         if (volumeInfo != null) {
             StringBuilder authors = new StringBuilder();
             if (volumeInfo.getAuthors() != null && !volumeInfo.getAuthors().isEmpty()) {
                 for (String author : volumeInfo.getAuthors()) {
-                    authors.append(author);
+                    authors.append(author).append(", ");
                 }
             }
-            bookInfo.setAuthor(authors.toString());
+            bookInfo.setAuthor(authors.substring(0, authors.lastIndexOf(",")));
 
             bookInfo.setTitle(volumeInfo.getTitle());
 

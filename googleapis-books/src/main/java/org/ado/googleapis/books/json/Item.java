@@ -12,7 +12,7 @@ public class Item {
     private String id;
     private String etag;
     private String selfLink;
-    private VolumenInfo volumeInfo;
+    private VolumeInfo volumeInfo;
 
     public String getKind() {
         return kind;
@@ -46,11 +46,11 @@ public class Item {
         this.selfLink = selfLink;
     }
 
-    public VolumenInfo getVolumeInfo() {
+    public VolumeInfo getVolumeInfo() {
         return volumeInfo;
     }
 
-    public void setVolumeInfo(VolumenInfo volumeInfo) {
+    public void setVolumeInfo(VolumeInfo volumeInfo) {
         this.volumeInfo = volumeInfo;
     }
 

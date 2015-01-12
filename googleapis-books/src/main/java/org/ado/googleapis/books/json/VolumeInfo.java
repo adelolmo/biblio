@@ -9,7 +9,7 @@ import java.util.List;
  * @author andoni
  * @since 25.10.2014
  */
-public class VolumenInfo {
+public class VolumeInfo {
     private String title;
     private List<String> authors;
     private String publisher;
@@ -28,7 +28,7 @@ public class VolumenInfo {
     private String infoLink;
     private String canonicalVolumeLink;
 
-    public VolumenInfo() {
+    public VolumeInfo() {
         industryIdentifiers = new ArrayList<IndustryIdentifier>();
         categories = new ArrayList<String>();
     }
