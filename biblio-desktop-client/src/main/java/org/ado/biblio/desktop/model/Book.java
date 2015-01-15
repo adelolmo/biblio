@@ -19,12 +19,17 @@ public class Book {
     private StringProperty isbn;
     private ObservableValue<Date> creation;
     private String tags;
+    private BooleanProperty lent;
 
     public Book(String title, String author, String isbn, Date creation, String tags) {
         this(null, title, author, isbn, creation, tags);
     }
 
     public Book(Integer id, String title, String author, String isbn, Date creation, String tags) {
+
+    }
+
+    public Book(Integer id, String title, String author, String isbn, Date creation, String tags, boolean lent) {
         if (id != null) {
             this.id = new SimpleIntegerProperty(id);
         }
@@ -33,6 +38,7 @@ public class Book {
         this.isbn = new SimpleStringProperty(isbn);
         this.creation = new SimpleObjectProperty<>(creation);
         this.tags = tags;
+        this.lent = new SimpleBooleanProperty(lent);
     }
 
     public Integer getId() {
@@ -78,6 +84,14 @@ public class Book {
         return tags;
     }
 
+    public boolean getLent() {
+        return lent.get();
+    }
+
+    public BooleanProperty lentProperty() {
+        return lent;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -89,6 +103,7 @@ public class Book {
         if (creation != null ? !creation.equals(book.creation) : book.creation != null) return false;
         if (id != null ? !id.equals(book.id) : book.id != null) return false;
         if (isbn != null ? !isbn.equals(book.isbn) : book.isbn != null) return false;
+        if (lent != null ? !lent.equals(book.lent) : book.lent != null) return false;
         if (tags != null ? !tags.equals(book.tags) : book.tags != null) return false;
         if (title != null ? !title.equals(book.title) : book.title != null) return false;
 
@@ -103,6 +118,7 @@ public class Book {
         result = 31 * result + (isbn != null ? isbn.hashCode() : 0);
         result = 31 * result + (creation != null ? creation.hashCode() : 0);
         result = 31 * result + (tags != null ? tags.hashCode() : 0);
+        result = 31 * result + (lent != null ? lent.hashCode() : 0);
         return result;
     }
 
@@ -115,6 +131,7 @@ public class Book {
         sb.append(", isbn=").append(isbn);
         sb.append(", creation=").append(creation);
         sb.append(", tags='").append(tags).append('\'');
+        sb.append(", lent=").append(lent);
         sb.append('}');
         return sb.toString();
     }

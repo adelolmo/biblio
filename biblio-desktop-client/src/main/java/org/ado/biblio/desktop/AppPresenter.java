@@ -6,10 +6,7 @@ import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -23,7 +20,11 @@ import org.ado.biblio.desktop.dropbox.DropboxException;
 import org.ado.biblio.desktop.dropbox.DropboxManager;
 import org.ado.biblio.desktop.dropbox.DropboxPresenter;
 import org.ado.biblio.desktop.dropbox.DropboxView;
+import org.ado.biblio.desktop.lend.LendPresenter;
+import org.ado.biblio.desktop.lend.LendView;
 import org.ado.biblio.desktop.model.Book;
+import org.ado.biblio.desktop.returnbook.ReturnBookPresenter;
+import org.ado.biblio.desktop.returnbook.ReturnBookView;
 import org.ado.biblio.desktop.server.ServerPullingService;
 import org.ado.biblio.desktop.server.ServerStatusEnum;
 import org.ado.biblio.desktop.server.ServerStatusService;
@@ -59,7 +60,7 @@ import java.util.stream.Collectors;
  * @author andoni
  * @since 25.10.2014
  */
-public class AppPresenter implements Initializable {
+public class AppPresenter implements Initializable, LendPresenter.LendBookListener, ReturnBookPresenter.ReturnBookListener {
 
     private final Logger LOGGER = LoggerFactory.getLogger(AppPresenter.class);
     private final ObservableList<Book> data = FXCollections.observableArrayList();
@@ -96,6 +97,12 @@ public class AppPresenter implements Initializable {
 
     @FXML
     private ImageView imageViewCover;
+
+    @FXML
+    private Button buttonReturnBook;
+
+    @FXML
+    private Button buttonLend;
 
     @FXML
     private ImageView imageViewServerStatus;
@@ -137,6 +144,8 @@ public class AppPresenter implements Initializable {
         tableColumnCreation.setCellValueFactory(cellData -> cellData.getValue().creationProperty());
 
         tableViewBooks.setItems(data);
+        buttonLend.setDisable(true);
+        buttonReturnBook.setDisable(true);
 
         serverStatusService.setOnSucceeded(event -> {
             final ServerStatusEnum serverStatus = (ServerStatusEnum) event.getSource().getValue();
@@ -309,9 +318,42 @@ public class AppPresenter implements Initializable {
         }
     }
 
-    public void lend() {
+    public void returnBook() {
+        LOGGER.info("returnBook");
+
+        Stage stage = new Stage();
+        final ReturnBookView returnBookView = new ReturnBookView();
+        final ReturnBookPresenter presenter = (ReturnBookPresenter) returnBookView.getPresenter();
+        presenter.init(stage, this, bookId);
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.setScene(new Scene(returnBookView.getView()));
+        stage.setTitle("Return Book");
+        stage.show();
+    }
+
+    @Override
+    public void returnBook(Book book) {
+        data.set(bookFocusedIndex, book);
+        setButtonsToLend();
+    }
+
+    public void lend() throws SQLException {
         LOGGER.info("lend");
 
+        Stage stage = new Stage();
+        final LendView lendView = new LendView();
+        final LendPresenter presenter = (LendPresenter) lendView.getPresenter();
+        presenter.init(stage, this, bookId);
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.setScene(new Scene(lendView.getView()));
+        stage.setTitle("Lend Book");
+        stage.show();
+    }
+
+    @Override
+    public void lentBook(Book book) {
+        data.set(bookFocusedIndex, book);
+        setButtonsToReturn();
     }
 
     private void reloadBooksTable() throws SQLException {
@@ -330,6 +372,12 @@ public class AppPresenter implements Initializable {
         textFieldAuthor.setText(book.getAuthor());
         textFieldIsbn.setText(book.getIsbn());
         textFieldTags.setText(book.getTags());
+
+        if (book.lentProperty().getValue()) {
+            setButtonsToReturn();
+        } else {
+            setButtonsToLend();
+        }
 
         if (StringUtils.isNotBlank(book.getIsbn())) {
             imageViewCover.setImage(ImageUtils.readCoverOrDefault(book.getIsbn()));
@@ -366,6 +414,16 @@ public class AppPresenter implements Initializable {
         textFieldAuthor.setText(null);
         textFieldIsbn.setText(null);
         imageViewCover.setImage(null);
+    }
+
+    private void setButtonsToReturn() {
+        buttonLend.setDisable(true);
+        buttonReturnBook.setDisable(false);
+    }
+
+    private void setButtonsToLend() {
+        buttonLend.setDisable(false);
+        buttonReturnBook.setDisable(true);
     }
 
     private void serverStatusImageOffline() {

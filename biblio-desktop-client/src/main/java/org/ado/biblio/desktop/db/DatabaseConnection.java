@@ -10,7 +10,7 @@ import javax.annotation.PreDestroy;
 import java.io.File;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -91,21 +91,57 @@ public class DatabaseConnection {
     }
 
     public List<Book> getBookList() throws SQLException {
-        String query = "SELECT id, title, author, ctime, isbn, tags FROM Book";
+        String query = "SELECT Book.id, Book.title, Book.author, Book.ctime, Book.isbn, Book.tags, Lend.ctime AS lendctime, Lend.rtime FROM Book " +
+                "LEFT OUTER JOIN Lend " +
+                "ON Book.id = Lend.bookId";
         final List<Book> bookList = new ArrayList<>();
 
         final PreparedStatement preparedStatement = connection.prepareStatement(query);
         final ResultSet resultSet = preparedStatement.executeQuery();
         while (resultSet.next()) {
-            bookList.add(new Book(resultSet.getInt("id"),
-                    resultSet.getString("title"),
-                    resultSet.getString("author"),
-                    resultSet.getString("isbn"),
-                    DateUtils.parseSqlite(resultSet.getString("ctime")),
-                    resultSet.getString("tags")));
+            bookList.add(getBook(resultSet));
         }
 
         return bookList;
+    }
+
+    public Book returnBook(int bookId, Date rtime) throws SQLException {
+        String query = "UPDATE Lend SET rtime=? WHERE bookId=?;";
+        final PreparedStatement statement = connection.prepareStatement(query);
+        statement.setString(1, DateUtils.formatSqlite(rtime));
+        statement.setInt(2, bookId);
+        final int i = statement.executeUpdate();
+        if (i == 0) {
+            throw new SQLException("Return book failed, no rows affected.");
+        }
+        return getBook(bookId);
+    }
+
+    public Book lendBook(int bookId, String person, Date ctime) throws SQLException {
+        String query = "INSERT INTO Lend (bookId, person, ctime) values (?,?, ?);";
+        final PreparedStatement statement = connection.prepareStatement(query);
+        statement.setInt(1, bookId);
+        statement.setString(2, person);
+        statement.setString(3, DateUtils.formatSqlite(ctime));
+        final int i = statement.executeUpdate();
+        if (i == 0) {
+            throw new SQLException("Lend book failed, no rows affected.");
+        }
+        return getBook(bookId);
+    }
+
+    private Book getBook(int id) throws SQLException {
+        String query = "SELECT Book.id, Book.title, Book.author, Book.ctime, Book.isbn, Book.tags, Lend.ctime AS lendctime, Lend.rtime FROM Book " +
+                "LEFT OUTER JOIN Lend " +
+                "ON Book.id = Lend.bookId " +
+                "WHERE Book.id = ?";
+        final PreparedStatement preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setInt(1, id);
+        final ResultSet resultSet = preparedStatement.executeQuery();
+        while (resultSet.next()) {
+            return getBook(resultSet);
+        }
+        return null;
     }
 
     private void initializeDatabase() throws SQLException {
@@ -118,6 +154,23 @@ public class DatabaseConnection {
                 .append("'isbn' TEXT,")
                 .append("'tags' TEXT DEFAULT '');")
                 .toString());
+        executeQuery("CREATE TABLE  IF NOT EXISTS Lend(" +
+                "id INTEGER PRIMARY KEY NOT NULL, " +
+                "bookId INTEGER NOT NULL, " +
+                "person TEXT NOT NULL, " +
+                "ctime DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL, " +
+                "rtime DATETIME DEFAULT NULL, " + // return timestamp
+                "FOREIGN KEY(bookId) REFERENCES Book(id));");
+    }
+
+    private Book getBook(ResultSet resultSet) throws SQLException {
+        return new Book(resultSet.getInt("id"),
+                resultSet.getString("title"),
+                resultSet.getString("author"),
+                resultSet.getString("isbn"),
+                DateUtils.parseSqlite(resultSet.getString("ctime")),
+                resultSet.getString("tags"),
+                isBookLent(resultSet.getString("lendctime"), resultSet.getString("rtime")));
     }
 
     private void executeQuery(String sql) throws SQLException {
@@ -126,16 +179,7 @@ public class DatabaseConnection {
         stmt.close();
     }
 
-    private List<String> getTagList(String tagsString) {
-        return Arrays.asList(tagsString.split(","));
-    }
-
-    private String getTagListString(List<String> tagList) {
-
-        final StringBuilder stringBuilder = new StringBuilder();
-        for (String tag : tagList) {
-            stringBuilder.append(tag).append(",");
-        }
-        return stringBuilder.toString();
+    private boolean isBookLent(String ctime, String rtime) throws SQLException {
+        return ctime != null && rtime == null;
     }
 }

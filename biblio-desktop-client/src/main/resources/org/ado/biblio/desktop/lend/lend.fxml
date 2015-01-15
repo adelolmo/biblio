@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<Pane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+      minWidth="-Infinity" prefHeight="123.0" prefWidth="441.0" xmlns="http://javafx.com/javafx/8"
+      fx:controller="org.ado.biblio.desktop.lend.LendPresenter">
+    <children>
+        <HBox alignment="CENTER_LEFT" layoutX="14.0" layoutY="10.0" spacing="10.0">
+            <children>
+                <Label contentDisplay="CENTER" layoutX="14.0" layoutY="20.0" text="Name:"/>
+                <TextField fx:id="textFieldName" layoutX="57.0" layoutY="10.0" prefHeight="25.0" prefWidth="224.0"/>
+            </children>
+        </HBox>
+        <HBox alignment="CENTER_LEFT" layoutX="14.0" layoutY="40.0" spacing="10.0">
+            <children>
+                <Label contentDisplay="CENTER" layoutX="14.0" layoutY="15.0" text="Date:"/>
+                <TextField fx:id="textFieldDate" layoutX="57.0" layoutY="10.0" prefHeight="25.0" prefWidth="170.0"/>
+            </children>
+        </HBox>
+        <HBox layoutX="281.0" layoutY="80.0" spacing="10.0">
+            <children>
+                <Button layoutX="431.0" layoutY="281.0" mnemonicParsing="false" onAction="#cancel" text="Cancel"/>
+                <Button layoutX="517.0" layoutY="281.0" mnemonicParsing="false" onAction="#accept" text="Accept"/>
+            </children>
+        </HBox>
+    </children>
+</Pane>
