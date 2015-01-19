@@ -27,6 +27,7 @@
 
         <exec.mainClass>org.ado.biblio.desktop.App</exec.mainClass>
         <project.build.scriptSourceDirectory>src/main/bin</project.build.scriptSourceDirectory>
+        <app.id>Biblio</app.id>
     </properties>
 
     <dependencies>
@@ -126,10 +127,11 @@
             <plugin>
                 <groupId>com.zenjava</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
-                <version>8.1.1</version>
+                <version>8.1.2</version>
                 <configuration>
                     <mainClass>${exec.mainClass}</mainClass>
-                    <vendor>Andoni</vendor>
+                    <vendor>${project.organization.name}</vendor>
+                    <id>${app.id}</id>
                 </configuration>
             </plugin>
             <plugin>
@@ -155,6 +157,7 @@
                             </JavaFX-Class-Path> -->
                             <!-- The artifactId (name) of the jfxrt.jar ... see dependency system scope-->
                             <Class-Path>javafx-${javafx.version}.jar</Class-Path>
+                            <Permissions>all-permissions</Permissions>
                         </manifestEntries>
                     </archive>
                 </configuration>

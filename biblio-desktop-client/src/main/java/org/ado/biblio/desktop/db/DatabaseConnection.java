@@ -4,6 +4,8 @@ import org.ado.biblio.desktop.AppConfiguration;
 import org.ado.biblio.desktop.model.Book;
 import org.ado.biblio.desktop.util.DateUtils;
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -22,7 +24,10 @@ import java.util.List;
 public class DatabaseConnection {
 
     private static final File DATABASE_FILE = new File(AppConfiguration.APP_CONFIG_DIRECTORY, "biblio.db");
+    private static final int DATABASE_VERSION = 1;
+    private final Logger LOGGER = LoggerFactory.getLogger(DatabaseConnection.class);
     private Connection connection;
+    private DatabaseInitialize databaseInitialize;
 
     @PostConstruct
     private void init() {
@@ -32,10 +37,15 @@ public class DatabaseConnection {
                 FileUtils.touch(DATABASE_FILE);
             }
             connection = DriverManager.getConnection(String.format("jdbc:sqlite:%s", DATABASE_FILE.getAbsolutePath()));
-
-            initializeDatabase();
         } catch (Exception e) {
             throw new IllegalStateException("Unable to establish connection to database", e);
+        }
+
+        try {
+            databaseInitialize = new DatabaseInitialize(connection, DATABASE_VERSION);
+            databaseInitialize.initializeDatabase();
+        } catch (SQLException e) {
+            throw new IllegalStateException("Unable to initialize database", e);
         }
     }
 
@@ -144,25 +154,6 @@ public class DatabaseConnection {
         return null;
     }
 
-    private void initializeDatabase() throws SQLException {
-//        executeQuery("CREATE TABLE IF NOT EXISTS [Table 1] (id INTEGER PRIMARY KEY AUTOINCREMENT, 'text column' TEXT, 'int column' INTEGER);");
-        executeQuery(new StringBuilder().append("CREATE TABLE IF NOT EXISTS [Book]")
-                .append("(id INTEGER PRIMARY KEY AUTOINCREMENT, ")
-                .append("'title' TEXT,")
-                .append("'author' TEXT,")
-                .append("'ctime' DATETIME DEFAULT CURRENT_TIMESTAMP,")
-                .append("'isbn' TEXT,")
-                .append("'tags' TEXT DEFAULT '');")
-                .toString());
-        executeQuery("CREATE TABLE  IF NOT EXISTS Lend(" +
-                "id INTEGER PRIMARY KEY NOT NULL, " +
-                "bookId INTEGER NOT NULL, " +
-                "person TEXT NOT NULL, " +
-                "ctime DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL, " +
-                "rtime DATETIME DEFAULT NULL, " + // return timestamp
-                "FOREIGN KEY(bookId) REFERENCES Book(id));");
-    }
-
     private Book getBook(ResultSet resultSet) throws SQLException {
         return new Book(resultSet.getInt("id"),
                 resultSet.getString("title"),
@@ -171,12 +162,6 @@ public class DatabaseConnection {
                 DateUtils.parseSqlite(resultSet.getString("ctime")),
                 resultSet.getString("tags"),
                 isBookLent(resultSet.getString("lendctime"), resultSet.getString("rtime")));
-    }
-
-    private void executeQuery(String sql) throws SQLException {
-        Statement stmt = connection.createStatement();
-        stmt.executeUpdate(sql);
-        stmt.close();
     }
 
     private boolean isBookLent(String ctime, String rtime) throws SQLException {

@@ -8,6 +8,15 @@
     <artifactId>biblio</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
+    <organization>
+        <name>Andoni del Olmo</name>
+    </organization>
+    <contributors>
+        <contributor>
+            <name>Andoni del Olmo</name>
+            <email>andoni.delolmo@gmail.com</email>
+        </contributor>
+    </contributors>
 
     <modules>
         <module>biblio-domain</module>

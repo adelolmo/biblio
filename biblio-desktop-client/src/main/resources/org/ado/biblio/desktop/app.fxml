@@ -51,12 +51,12 @@
                                             <columns>
                                                 <TableColumn fx:id="tableColumnId" prefWidth="75.0" text="Id"
                                                              visible="false"/>
+                                                <TableColumn fx:id="tableColumnTitle" editable="false" prefWidth="521.0"
+                                                             text="Title"/>
                                                 <TableColumn fx:id="tableColumnAuthor" minWidth="0.0" prefWidth="467.0"
                                                              text="Author"/>
                                                 <TableColumn fx:id="tableColumnCreation" prefWidth="194.0"
                                                              text="Creation"/>
-                                                <TableColumn fx:id="tableColumnTitle" editable="false" prefWidth="521.0"
-                                                             text="Title"/>
                                             </columns>
                                         </TableView>
                                     </children>
