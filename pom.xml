@@ -72,4 +72,8 @@
             </plugins>
         </pluginManagement>
     </build>
+
+    <scm>
+        <developerConnection>scm:git:https://github.com/adelolmo/biblio.git</developerConnection>
+    </scm>
 </project>
