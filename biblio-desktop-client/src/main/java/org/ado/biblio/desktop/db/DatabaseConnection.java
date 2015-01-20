@@ -103,7 +103,8 @@ public class DatabaseConnection {
     public List<Book> getBookList() throws SQLException {
         String query = "SELECT Book.id, Book.title, Book.author, Book.ctime, Book.isbn, Book.tags, Lend.ctime AS lendctime, Lend.rtime FROM Book " +
                 "LEFT OUTER JOIN Lend " +
-                "ON Book.id = Lend.bookId";
+                "ON Book.id = Lend.bookId " +
+                "WHERE Lend.rtime IS NULL";
         final List<Book> bookList = new ArrayList<>();
 
         final PreparedStatement preparedStatement = connection.prepareStatement(query);
