@@ -12,6 +12,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import org.ado.biblio.desktop.about.AboutPresenter;
 import org.ado.biblio.desktop.about.AboutView;
 import org.ado.biblio.desktop.android.AndroidView;
@@ -140,6 +141,39 @@ public class AppPresenter implements Initializable, LendPresenter.LendBookListen
         LOGGER.info("initializing...");
 
         tableColumnTitle.setCellValueFactory(cellData -> cellData.getValue().titleProperty());
+        tableColumnTitle.setCellFactory(new Callback<TableColumn<Book, String>, TableCell<Book, String>>() {
+            @Override
+            public TableCell<Book, String> call(TableColumn<Book, String> param) {
+                return new TableCell<Book, String>() {
+                    @Override
+                    protected void updateItem(String item, boolean empty) {
+                        super.updateItem(item, empty);
+                        getTableRow().getStyleClass().remove("bookLent");
+
+                        if (item != null) {
+                            setText(item);
+                            final boolean lent = isBookLend();
+                            if (lent) {
+                                getTableRow().getStyleClass().add("bookLent");
+                            }
+                        }
+                    }
+
+                    private boolean isBookLend() {
+                        final TableRow tableRow = getTableRow();
+                        if (tableRow == null) {
+                            return false;
+                        }
+                        final Object item = tableRow.getItem();
+                        if (item == null) {
+                            LOGGER.warn("Unexpected null in table row \"{}\".", "");
+                            return false;
+                        }
+                        return ((Book) item).getLent();
+                    }
+                };
+            }
+        });
         tableColumnAuthor.setCellValueFactory(cellData -> cellData.getValue().authorProperty());
         tableColumnCreation.setCellValueFactory(cellData -> cellData.getValue().creationProperty());
 
