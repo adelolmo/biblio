@@ -26,7 +26,7 @@ public class Book {
     }
 
     public Book(Integer id, String title, String author, String isbn, Date creation, String tags) {
-
+        this(id, title, author, isbn, creation, tags, false);
     }
 
     public Book(Integer id, String title, String author, String isbn, Date creation, String tags, boolean lent) {
