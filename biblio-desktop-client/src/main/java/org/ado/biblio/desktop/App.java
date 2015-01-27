@@ -5,8 +5,6 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import java.io.IOException;
-
 /**
  * Class description here.
  *
@@ -20,7 +18,10 @@ public class App extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) throws IOException {
+    public void start(Stage primaryStage) throws Exception {
+        // initializes HostServicesDelegate
+        getHostServices();
+
         final AppView appView = new AppView();
         final Scene scene = new Scene(appView.getView());
         final AppPresenter presenter = (AppPresenter) appView.getPresenter();

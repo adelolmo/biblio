@@ -14,6 +14,7 @@ if [ ! -d $INSTALLATION_DIRECTORY ]; then
     mkdir $INSTALLATION_DIRECTORY
 fi
 
+rm -Rf $INSTALLATION_DIRECTORY/lib
 mvn clean install
-tar zxvf target/desktop-client*.tar.gz -C $INSTALLATION_DIRECTORY
+tar zxvf target/biblio-desktop-client*.tar.gz -C $INSTALLATION_DIRECTORY
 #unzip -o -d $INSTALLATION_DIRECTORY target/*.zip

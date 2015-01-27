@@ -31,6 +31,8 @@ import org.ado.biblio.desktop.server.ServerStatusEnum;
 import org.ado.biblio.desktop.server.ServerStatusService;
 import org.ado.biblio.desktop.settings.SettingsPresenter;
 import org.ado.biblio.desktop.settings.SettingsView;
+import org.ado.biblio.desktop.update.UpdateManager;
+import org.ado.biblio.desktop.update.UpdateService;
 import org.ado.biblio.desktop.util.ImageUtils;
 import org.ado.biblio.domain.BookMessageDTO;
 import org.ado.googleapis.books.BookInfo;
@@ -121,6 +123,9 @@ public class AppPresenter implements Initializable, LendPresenter.LendBookListen
     private ServerStatusService serverStatusService;
 
     @Inject
+    private UpdateService updateService;
+
+    @Inject
     private DatabaseConnection databaseConnection;
 
     @Inject
@@ -132,6 +137,7 @@ public class AppPresenter implements Initializable, LendPresenter.LendBookListen
 
     @PostConstruct
     public void init() throws Exception {
+        LOGGER.info("PostConstruct...");
         serverPullingService.setClientId(AppConfiguration.getAppId());
         reloadBooksTable();
     }
@@ -139,6 +145,9 @@ public class AppPresenter implements Initializable, LendPresenter.LendBookListen
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         LOGGER.info("initializing...");
+
+        updateService.setOnSucceeded(new UpdateManager());
+        updateService.start();
 
         tableColumnTitle.setCellValueFactory(cellData -> cellData.getValue().titleProperty());
         tableColumnTitle.setCellFactory(new Callback<TableColumn<Book, String>, TableCell<Book, String>>() {

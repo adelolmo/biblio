@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -32,6 +33,11 @@
         <dependency>
             <groupId>org.ado.biblio</groupId>
             <artifactId>biblio-domain</artifactId>
+            <version>1.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.ado.biblio</groupId>
+            <artifactId>biblio-update</artifactId>
             <version>1.1-SNAPSHOT</version>
         </dependency>
         <dependency>
@@ -106,13 +112,7 @@
     </dependencies>
 
     <build>
-        <!--        <resources>
-                    <resource>
-                        <targetPath>src/main/resources</targetPath>
-                        &lt;!&ndash;<directory>src/main/resources/org/ado/biblio/desktop</directory>&ndash;&gt;
-                        <filtering>true</filtering>
-                    </resource>
-                </resources>-->
+        <finalName>biblio-desktop-client-${project.version}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -129,7 +129,7 @@
                 <configuration>
                     <mainClass>${exec.mainClass}</mainClass>
                     <vendor>${project.organization.name}</vendor>
-                    <id>${app.id}</id>
+                    <!--<id>${app.id}</id>-->
                 </configuration>
             </plugin>
             <plugin>
