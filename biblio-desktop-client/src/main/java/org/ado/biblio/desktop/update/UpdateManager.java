@@ -10,8 +10,6 @@ import org.ado.biblio.update.Release;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
-
 /**
  * @author Andoni del Olmo,
  * @since 26.01.15
@@ -26,8 +24,7 @@ public class UpdateManager implements EventHandler<WorkerStateEvent> {
         final int currentVersionMayor = getVersionMayor(applicationVersion);
         final int currentVersionMinor = getVersionMinor(applicationVersion);
 
-        final List<Release> releaseList = (List<Release>) event.getSource().getValue();
-        final Release latestRelease = ReleaseVersionUtils.getLatestRelease(releaseList);
+        final Release latestRelease = (Release) event.getSource().getValue();
 
         if (ReleaseVersionUtils.updateAvailable(latestRelease, currentVersionMayor, currentVersionMinor)) {
             LOGGER.info("Update to version {} available.", latestRelease.getVersionName());

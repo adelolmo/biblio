@@ -13,7 +13,7 @@ public class KimonoResponse {
     private int version;
 
     @SerializedName("results")
-    private Result result;
+    private KimonoRelease kimonoRelease;
 
     public String getName() {
         return name;
@@ -39,12 +39,12 @@ public class KimonoResponse {
         this.version = version;
     }
 
-    public Result getResult() {
-        return result;
+    public KimonoRelease getKimonoRelease() {
+        return kimonoRelease;
     }
 
-    public void setResult(Result result) {
-        this.result = result;
+    public void setKimonoRelease(KimonoRelease kimonoRelease) {
+        this.kimonoRelease = kimonoRelease;
     }
 
     @Override
@@ -57,7 +57,8 @@ public class KimonoResponse {
         if (count != that.count) return false;
         if (version != that.version) return false;
         if (name != null ? !name.equals(that.name) : that.name != null) return false;
-        if (result != null ? !result.equals(that.result) : that.result != null) return false;
+        if (kimonoRelease != null ? !kimonoRelease.equals(that.kimonoRelease) : that.kimonoRelease != null)
+            return false;
 
         return true;
     }
@@ -67,7 +68,7 @@ public class KimonoResponse {
         int result1 = name != null ? name.hashCode() : 0;
         result1 = 31 * result1 + count;
         result1 = 31 * result1 + version;
-        result1 = 31 * result1 + (result != null ? result.hashCode() : 0);
+        result1 = 31 * result1 + (kimonoRelease != null ? kimonoRelease.hashCode() : 0);
         return result1;
     }
 
@@ -77,7 +78,7 @@ public class KimonoResponse {
         sb.append("name='").append(name).append('\'');
         sb.append(", count=").append(count);
         sb.append(", version=").append(version);
-        sb.append(", result=").append(result);
+        sb.append(", result=").append(kimonoRelease);
         sb.append('}');
         return sb.toString();
     }

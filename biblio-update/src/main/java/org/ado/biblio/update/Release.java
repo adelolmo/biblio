@@ -1,25 +1,19 @@
 package org.ado.biblio.update;
 
+import java.util.Map;
+
 /**
  * @author Andoni del Olmo,
  * @since 25.01.15
  */
 public class Release {
 
-    private ComponentEnum component; // desktop-client
+    private String name; // Desktop Client Release 1.0
     private String versionName; // 1.2
     private int versionMayor; // 1
     private int versionMinor; // 2
-    private String artifactUrl; // https://github.com/adelolmo/biblio/releases/download/biblio-1.0/desktop-client-1.0-dist.zip
-    private String name; // Desktop Client Release 1.0
-
-    public ComponentEnum getComponent() {
-        return component;
-    }
-
-    public void setComponent(ComponentEnum component) {
-        this.component = component;
-    }
+    private Map<ComponentEnum, String> artifactUrl; // https://github.com/adelolmo/biblio/releases/download/biblio-1.0/desktop-client-1.0-dist.zip
+    private String releaseNotes;
 
     public String getVersionName() {
         return versionName;
@@ -45,11 +39,11 @@ public class Release {
         this.versionMinor = versionMinor;
     }
 
-    public String getArtifactUrl() {
+    public Map<ComponentEnum, String> getArtifactUrl() {
         return artifactUrl;
     }
 
-    public void setArtifactUrl(String artifactUrl) {
+    public void setArtifactUrl(Map<ComponentEnum, String> artifactUrl) {
         this.artifactUrl = artifactUrl;
     }
 
@@ -59,6 +53,14 @@ public class Release {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getReleaseNotes() {
+        return releaseNotes;
+    }
+
+    public void setReleaseNotes(String releaseNotes) {
+        this.releaseNotes = releaseNotes;
     }
 
     @Override
@@ -71,8 +73,9 @@ public class Release {
         if (versionMayor != release.versionMayor) return false;
         if (versionMinor != release.versionMinor) return false;
         if (artifactUrl != null ? !artifactUrl.equals(release.artifactUrl) : release.artifactUrl != null) return false;
-        if (component != release.component) return false;
         if (name != null ? !name.equals(release.name) : release.name != null) return false;
+        if (releaseNotes != null ? !releaseNotes.equals(release.releaseNotes) : release.releaseNotes != null)
+            return false;
         if (versionName != null ? !versionName.equals(release.versionName) : release.versionName != null) return false;
 
         return true;
@@ -80,24 +83,24 @@ public class Release {
 
     @Override
     public int hashCode() {
-        int result = component != null ? component.hashCode() : 0;
+        int result = name != null ? name.hashCode() : 0;
         result = 31 * result + (versionName != null ? versionName.hashCode() : 0);
         result = 31 * result + versionMayor;
         result = 31 * result + versionMinor;
         result = 31 * result + (artifactUrl != null ? artifactUrl.hashCode() : 0);
-        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (releaseNotes != null ? releaseNotes.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("Release{");
-        sb.append("component=").append(component);
+        sb.append("name='").append(name).append('\'');
         sb.append(", versionName='").append(versionName).append('\'');
         sb.append(", versionMayor=").append(versionMayor);
         sb.append(", versionMinor=").append(versionMinor);
-        sb.append(", artifactUrl='").append(artifactUrl).append('\'');
-        sb.append(", name='").append(name).append('\'');
+        sb.append(", artifactUrl=").append(artifactUrl);
+        sb.append(", releaseNotes='").append(releaseNotes).append('\'');
         sb.append('}');
         return sb.toString();
     }

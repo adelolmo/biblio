@@ -2,31 +2,34 @@ package org.ado.biblio.update.kimono.json;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 /**
  * @author Andoni del Olmo,
  * @since 25.01.15
  */
 public class KimonoRelease {
 
-    private Link artifact;
+    @SerializedName("artifacts")
+    private List<KimonoArtifact> artifactList;
 
-    @SerializedName("release-name")
-    private Link releaseName;
+    @SerializedName("description")
+    private List<KimonoDescription> description;
 
-    public Link getArtifact() {
-        return artifact;
+    public List<KimonoArtifact> getArtifactList() {
+        return artifactList;
     }
 
-    public void setArtifact(Link artifact) {
-        this.artifact = artifact;
+    public void setArtifactList(List<KimonoArtifact> artifactList) {
+        this.artifactList = artifactList;
     }
 
-    public Link getReleaseName() {
-        return releaseName;
+    public List<KimonoDescription> getDescription() {
+        return description;
     }
 
-    public void setReleaseName(Link releaseName) {
-        this.releaseName = releaseName;
+    public void setDescription(List<KimonoDescription> description) {
+        this.description = description;
     }
 
     @Override
@@ -34,26 +37,28 @@ public class KimonoRelease {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        KimonoRelease that = (KimonoRelease) o;
+        KimonoRelease kimonoRelease = (KimonoRelease) o;
 
-        if (artifact != null ? !artifact.equals(that.artifact) : that.artifact != null) return false;
-        if (releaseName != null ? !releaseName.equals(that.releaseName) : that.releaseName != null) return false;
+        if (description != null ? !description.equals(kimonoRelease.description) : kimonoRelease.description != null)
+            return false;
+        if (artifactList != null ? !artifactList.equals(kimonoRelease.artifactList) : kimonoRelease.artifactList != null)
+            return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = artifact != null ? artifact.hashCode() : 0;
-        result = 31 * result + (releaseName != null ? releaseName.hashCode() : 0);
+        int result = artifactList != null ? artifactList.hashCode() : 0;
+        result = 31 * result + (description != null ? description.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("KimonoRelease{");
-        sb.append("artifact=").append(artifact);
-        sb.append(", releaseName=").append(releaseName);
+        final StringBuilder sb = new StringBuilder("Result{");
+        sb.append("artifactList=").append(artifactList);
+        sb.append(", description=").append(description);
         sb.append('}');
         return sb.toString();
     }

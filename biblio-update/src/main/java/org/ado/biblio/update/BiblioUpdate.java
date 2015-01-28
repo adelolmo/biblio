@@ -1,6 +1,6 @@
 package org.ado.biblio.update;
 
-import java.util.List;
+import java.io.IOException;
 
 /**
  * @author Andoni del Olmo,
@@ -8,7 +8,6 @@ import java.util.List;
  */
 public interface BiblioUpdate {
 
-    List<Release> getReleases(ComponentEnum component);
+    Release getLatestRelease() throws IOException;
 
-    List<Release> getReleases();
 }

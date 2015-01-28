@@ -5,7 +5,8 @@ package org.ado.biblio.update;
  * @since 25.01.15
  */
 public enum ComponentEnum {
-    DESKTOP_CLIENT("biblio-desktop-client");
+    DESKTOP_CLIENT("biblio-desktop-client"),
+    ANDROID_APP("biblio-android");
 
     private String codeName;
 

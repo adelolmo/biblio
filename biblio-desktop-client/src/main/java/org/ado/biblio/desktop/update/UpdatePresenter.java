@@ -4,7 +4,9 @@ import com.sun.javafx.application.HostServicesDelegate;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
+import org.ado.biblio.update.ComponentEnum;
 import org.ado.biblio.update.Release;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +25,9 @@ public class UpdatePresenter implements Initializable {
     @FXML
     private Label labelVersion;
 
+    @FXML
+    private TextArea textAreaReleaseNotes;
+
     private Stage stage;
     private Release release;
 
@@ -37,11 +42,12 @@ public class UpdatePresenter implements Initializable {
     public void setRelease(Release release) {
         this.release = release;
         labelVersion.setText(release.getName());
+        textAreaReleaseNotes.setText(release.getReleaseNotes());
     }
 
     public void download() {
         LOGGER.info("download");
-        HostServicesDelegate.getInstance(null).showDocument(release.getArtifactUrl());
+        HostServicesDelegate.getInstance(null).showDocument(release.getArtifactUrl().get(ComponentEnum.DESKTOP_CLIENT));
         stage.close();
     }
 

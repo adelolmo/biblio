@@ -3,10 +3,13 @@ package org.ado.biblio.update.kimono;
 import org.ado.biblio.update.BiblioUpdate;
 import org.ado.biblio.update.ComponentEnum;
 import org.ado.biblio.update.Release;
+import org.ado.biblio.update.kimono.json.KimonoArtifact;
 import org.ado.biblio.update.kimono.json.KimonoRelease;
 
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 /**
  * @author Andoni del Olmo,
@@ -20,31 +23,28 @@ public class KimonoBiblioUpdate implements BiblioUpdate {
         kimonoBiblioApi = new KimonoBiblioApi();
     }
 
-    @Override
-    public List<Release> getReleases(ComponentEnum component) {
-        return kimonoBiblioApi.getReleases().stream()
-                .filter(r -> r.getArtifact().getText().startsWith(component.getCodeName()))
-                .map(this::getRelease)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<Release> getReleases() {
-        return kimonoBiblioApi.getReleases().stream()
-                .map(this::getRelease)
-                .collect(Collectors.toList());
+    public Release getLatestRelease() throws IOException {
+        return getRelease(kimonoBiblioApi.getLatestRelease());
     }
 
     private Release getRelease(KimonoRelease kimonoRelease) {
         final Release release = new Release();
-        release.setArtifactUrl(kimonoRelease.getArtifact().getHref());
-        release.setComponent(getComponent(kimonoRelease.getArtifact().getText()));
-        release.setName(kimonoRelease.getReleaseName().getText());
-        final String versionName = getVersion(kimonoRelease.getReleaseName().getHref());
+        release.setName(kimonoRelease.getDescription().get(0).getName().getText());
+        final String versionName = getVersion(kimonoRelease.getDescription().get(0).getName().getHref());
         release.setVersionName(versionName);
         release.setVersionMayor(getVersionMayor(versionName));
         release.setVersionMinor(getVersionMinor(versionName));
+        release.setArtifactUrl(getArtifactMap(kimonoRelease.getArtifactList()));
+        release.setReleaseNotes(kimonoRelease.getDescription().get(0).getReleaseNotes());
         return release;
+    }
+
+    private Map<ComponentEnum, String> getArtifactMap(List<KimonoArtifact> artifactList) {
+        final Map<ComponentEnum, String> artifactsMap = new HashMap<>();
+        for (KimonoArtifact kimonoArtifact : artifactList) {
+            artifactsMap.put(getComponent(kimonoArtifact.getArtifact().getHref()), kimonoArtifact.getArtifact().getHref());
+        }
+        return artifactsMap;
     }
 
     private int getVersionMayor(String versionName) {
@@ -57,7 +57,7 @@ public class KimonoBiblioUpdate implements BiblioUpdate {
 
     private ComponentEnum getComponent(String text) {
         for (ComponentEnum componentEnum : ComponentEnum.values()) {
-            if (text.startsWith(componentEnum.getCodeName())) {
+            if (text.substring(text.lastIndexOf("/") + 1).startsWith(componentEnum.getCodeName())) {
                 return componentEnum;
             }
         }
