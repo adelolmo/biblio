@@ -2,9 +2,7 @@ package org.ado.biblio.desktop;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.concurrent.WorkerStateEvent;
 import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
@@ -133,6 +131,9 @@ public class AppPresenter implements Initializable, LendPresenter.LendBookListen
     @Inject
     private DropboxManager dropboxManager;
 
+    @Inject
+    private UpdateManager updateManager;
+
     private Stage stage;
     private Integer bookId;
     private int bookFocusedIndex;
@@ -148,13 +149,8 @@ public class AppPresenter implements Initializable, LendPresenter.LendBookListen
     public void initialize(URL location, ResourceBundle resources) {
         LOGGER.info("initializing...");
 
-        updateService.setOnSucceeded(new UpdateManager());
-        updateService.setOnFailed(new EventHandler<WorkerStateEvent>() {
-            @Override
-            public void handle(WorkerStateEvent event) {
-                LOGGER.equals(event.getSource().getException());
-            }
-        });
+        updateService.setOnSucceeded(updateManager.getOnSucceeded());
+        updateService.setOnFailed(updateManager.getOnFailed());
         updateService.start();
 
         tableColumnTitle.setCellValueFactory(cellData -> cellData.getValue().titleProperty());

@@ -14,27 +14,32 @@ import org.slf4j.LoggerFactory;
  * @author Andoni del Olmo,
  * @since 26.01.15
  */
-public class UpdateManager implements EventHandler<WorkerStateEvent> {
+public class UpdateManager {
 
     private final Logger LOGGER = LoggerFactory.getLogger(UpdateManager.class);
 
-    @Override
-    public void handle(WorkerStateEvent event) {
-        final String applicationVersion = AppConfiguration.getApplicationProperty("project.version");
-        final int currentVersionMayor = getVersionMayor(applicationVersion);
-        final int currentVersionMinor = getVersionMinor(applicationVersion);
+    public EventHandler<WorkerStateEvent> getOnSucceeded() {
+        return event -> {
+            final String applicationVersion = AppConfiguration.getApplicationProperty("project.version");
+            final int currentVersionMayor = getVersionMayor(applicationVersion);
+            final int currentVersionMinor = getVersionMinor(applicationVersion);
 
-        final Release latestRelease = (Release) event.getSource().getValue();
+            final Release latestRelease = (Release) event.getSource().getValue();
 
-        if (ReleaseVersionUtils.updateAvailable(latestRelease, currentVersionMayor, currentVersionMinor)) {
-            LOGGER.info("Update to version {} available.", latestRelease.getVersionName());
-            openUpdateDialog(latestRelease);
-        } else {
-            LOGGER.info("Updated to latest version.");
-        }
+            if (ReleaseVersionUtils.updateAvailable(latestRelease, currentVersionMayor, currentVersionMinor)) {
+                LOGGER.info("Update to version {} available.", latestRelease.getVersionName());
+                openUpdateDialog(latestRelease);
+            } else {
+                LOGGER.info("Updated to latest version.");
+            }
+        };
     }
 
-    public void openUpdateDialog(Release release) {
+    public EventHandler<WorkerStateEvent> getOnFailed() {
+        return event -> LOGGER.equals(event.getSource().getException());
+    }
+
+    private void openUpdateDialog(Release release) {
         Stage stage = new Stage();
         final UpdateView updateView = new UpdateView();
         final UpdatePresenter presenter = (UpdatePresenter) updateView.getPresenter();
