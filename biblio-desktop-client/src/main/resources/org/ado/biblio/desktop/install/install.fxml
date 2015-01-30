@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+
+<Pane fx:controller="org.ado.biblio.desktop.install.InstallPresenter" maxHeight="-Infinity" maxWidth="-Infinity"
+      minHeight="-Infinity" minWidth="-Infinity" prefHeight="96.0" prefWidth="503.0" xmlns="http://javafx.com/javafx/8"
+      xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <Label fx:id="labelStepOne" layoutX="20.0" layoutY="20.0" text="step 1"/>
+        <Label fx:id="labelStepTwo" layoutX="20.0" layoutY="40.0" text="step 2"/>
+        <Label fx:id="labelStepThree" layoutX="20.0" layoutY="60.0" text="step 3"/>
+    </children>
+</Pane>
