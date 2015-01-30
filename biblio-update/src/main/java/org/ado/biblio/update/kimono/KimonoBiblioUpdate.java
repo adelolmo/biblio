@@ -1,8 +1,10 @@
 package org.ado.biblio.update.kimono;
 
+import org.ado.biblio.update.Artifact;
 import org.ado.biblio.update.BiblioUpdate;
 import org.ado.biblio.update.ComponentEnum;
 import org.ado.biblio.update.Release;
+import org.ado.biblio.update.kimono.json.ArtifactDetails;
 import org.ado.biblio.update.kimono.json.KimonoArtifact;
 import org.ado.biblio.update.kimono.json.KimonoRelease;
 
@@ -17,6 +19,8 @@ import java.util.Map;
  */
 public class KimonoBiblioUpdate implements BiblioUpdate {
 
+    private static int INC_SIZE = 1024;
+
     private KimonoBiblioApi kimonoBiblioApi;
 
     public KimonoBiblioUpdate() {
@@ -29,8 +33,8 @@ public class KimonoBiblioUpdate implements BiblioUpdate {
 
     private Release getRelease(KimonoRelease kimonoRelease) {
         final Release release = new Release();
-        release.setName(kimonoRelease.getDescription().get(0).getName().getText());
-        final String versionName = getVersion(kimonoRelease.getDescription().get(0).getName().getHref());
+        release.setName(kimonoRelease.getDescription().get(0).getName());
+        final String versionName = getVersion(kimonoRelease.getDescription().get(0).getName());
         release.setVersionName(versionName);
         release.setVersionMayor(getVersionMayor(versionName));
         release.setVersionMinor(getVersionMinor(versionName));
@@ -39,12 +43,34 @@ public class KimonoBiblioUpdate implements BiblioUpdate {
         return release;
     }
 
-    private Map<ComponentEnum, String> getArtifactMap(List<KimonoArtifact> artifactList) {
-        final Map<ComponentEnum, String> artifactsMap = new HashMap<>();
+    private Map<ComponentEnum, Artifact> getArtifactMap(List<KimonoArtifact> artifactList) {
+        final Map<ComponentEnum, Artifact> artifactsMap = new HashMap<>();
         for (KimonoArtifact kimonoArtifact : artifactList) {
-            artifactsMap.put(getComponent(kimonoArtifact.getArtifact().getHref()), kimonoArtifact.getArtifact().getHref());
+            artifactsMap.put(getComponent(kimonoArtifact.getArtifact().getHref()), getArtifact(kimonoArtifact.getArtifact()));
         }
         return artifactsMap;
+    }
+
+    private Artifact getArtifact(ArtifactDetails artifactDetails) {
+        final Artifact artifact = new Artifact();
+        artifact.setUrl(artifactDetails.getHref());
+        artifact.setSize(getSize(artifactDetails.getSizeString()));
+        return artifact;
+    }
+
+    private long getSize(String sizeString) {
+        final String[] split = sizeString.split(" ");
+        final Double size = Double.valueOf(split[0]);
+        final String units = split[1];
+
+        long format = 0;
+        if ("KB".equalsIgnoreCase(units)) {
+            format = INC_SIZE;
+        } else if ("MB".equalsIgnoreCase(units)) {
+            format = INC_SIZE * INC_SIZE;
+        }
+
+        return (long) (size * format);
     }
 
     private int getVersionMayor(String versionName) {
@@ -65,6 +91,6 @@ public class KimonoBiblioUpdate implements BiblioUpdate {
     }
 
     private String getVersion(String href) {
-        return href.substring(href.lastIndexOf("-") + 1);
+        return href.substring(href.lastIndexOf(" ") + 1);
     }
 }

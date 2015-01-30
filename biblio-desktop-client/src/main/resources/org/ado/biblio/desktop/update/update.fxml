@@ -6,16 +6,35 @@
 <?import javafx.scene.layout.*?>
 
 <Pane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
-      minWidth="-Infinity" prefHeight="315.0" prefWidth="902.0" xmlns="http://javafx.com/javafx/8"
+      minWidth="-Infinity" prefHeight="342.0" prefWidth="902.0" xmlns="http://javafx.com/javafx/8"
       fx:controller="org.ado.biblio.desktop.update.UpdatePresenter">
     <children>
+        <ImageView fitHeight="100.0" fitWidth="100.0" layoutX="26.0" layoutY="33.0" pickOnBounds="true"
+                   preserveRatio="true">
+            <image>
+                <Image url="@update.png"/>
+            </image>
+        </ImageView>
         <HBox layoutX="150.0" layoutY="60.0" spacing="10.0">
             <children>
                 <Label layoutX="40.0" layoutY="60.0" text="New version available:"/>
                 <Label fx:id="labelVersion" layoutX="108.0" layoutY="100.0" text="Label"/>
             </children>
         </HBox>
-        <HBox layoutX="718.0" layoutY="248.0" spacing="10.0">
+        <HBox layoutX="150.0" layoutY="80.0" spacing="10.0">
+            <children>
+                <Label layoutX="152.0" layoutY="83.0" text="Size:"/>
+                <Label fx:id="labelSize" layoutX="211.0" layoutY="83.0" text="Label"/>
+            </children>
+        </HBox>
+        <HBox layoutX="150.0" layoutY="100.0" spacing="10.0">
+            <children>
+                <Label layoutX="150.0" layoutY="80.0" text="Release notes:"/>
+                <TextArea fx:id="textAreaReleaseNotes" layoutX="247.0" layoutY="80.0" prefHeight="92.0"
+                          prefWidth="450.0"/>
+            </children>
+        </HBox>
+        <HBox layoutX="720.0" layoutY="301.0" spacing="10.0">
             <children>
                 <Button layoutX="219.0" layoutY="161.0" mnemonicParsing="false" onAction="#close" text="Not Now"/>
                 <Button layoutX="308.0" layoutY="161.0" mnemonicParsing="false" onAction="#download" text="Download"/>
@@ -23,21 +42,8 @@
         </HBox>
         <Label layoutX="150.0" layoutY="20.0" prefHeight="25.0" prefWidth="370.0"
                text="A new version is available for downloading."/>
-        <Label layoutX="154.0" layoutY="188.0" text="Click &quot;Download&quot; to start downloading the new version."/>
-        <Label layoutX="154.0" layoutY="208.0"
+        <Label layoutX="150.0" layoutY="220.0"
                text="Click &quot;Not Now&quot; to ignore the update. (This message will appear again next time that the application is started) "/>
-        <ImageView fitHeight="100.0" fitWidth="100.0" layoutX="26.0" layoutY="33.0" pickOnBounds="true"
-                   preserveRatio="true">
-            <image>
-                <Image url="@update.png"/>
-            </image>
-        </ImageView>
-        <HBox layoutX="150.0" layoutY="80.0" spacing="10.0">
-            <children>
-                <Label layoutX="150.0" layoutY="80.0" text="Release notes:"/>
-                <TextArea fx:id="textAreaReleaseNotes" layoutX="247.0" layoutY="80.0" prefHeight="92.0"
-                          prefWidth="450.0"/>
-            </children>
-        </HBox>
+        <Label layoutX="150.0" layoutY="240.0" text="Click &quot;Download&quot; to start downloading the new version."/>
     </children>
 </Pane>

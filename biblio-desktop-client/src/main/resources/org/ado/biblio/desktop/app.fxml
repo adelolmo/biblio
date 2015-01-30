@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
+
 <Pane xmlns:fx="http://javafx.com/fxml/1" minWidth="-Infinity" snapToPixel="false" xmlns="http://javafx.com/javafx/8"
       fx:controller="org.ado.biblio.desktop.AppPresenter">
     <children>
-        <MenuBar minHeight="-Infinity" minWidth="-Infinity" prefWidth="1173.0">
+        <MenuBar minHeight="-Infinity" minWidth="-Infinity" prefWidth="1173.0" snapToPixel="false">
             <menus>
                 <Menu mnemonicParsing="false" text="File">
                     <items>
@@ -71,8 +74,13 @@
                                                    AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
                                                    AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                             <columns>
-                                                <TableColumn prefWidth="75.0" text="C1"/>
-                                                <TableColumn prefWidth="75.0" text="C2"/>
+                                                <TableColumn fx:id="tableColumnLendTitle" prefWidth="478.0"
+                                                             text="Title"/>
+                                                <TableColumn fx:id="tableColumnLendAuthor" minWidth="0.0"
+                                                             prefWidth="358.0" text="Author"/>
+                                                <TableColumn fx:id="tableColumnLendLentTo" prefWidth="220.0"
+                                                             text="Lent to"/>
+                                                <TableColumn fx:id="tableColumnLendDate" prefWidth="152.0" text="Date"/>
                                             </columns>
                                         </TableView>
                                     </children>

@@ -12,8 +12,16 @@ public class Release {
     private String versionName; // 1.2
     private int versionMayor; // 1
     private int versionMinor; // 2
-    private Map<ComponentEnum, String> artifactUrl; // https://github.com/adelolmo/biblio/releases/download/biblio-1.0/desktop-client-1.0-dist.zip
+    private Map<ComponentEnum, Artifact> artifactUrl; // https://github.com/adelolmo/biblio/releases/download/biblio-1.0/desktop-client-1.0-dist.zip
     private String releaseNotes;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public String getVersionName() {
         return versionName;
@@ -39,20 +47,12 @@ public class Release {
         this.versionMinor = versionMinor;
     }
 
-    public Map<ComponentEnum, String> getArtifactUrl() {
+    public Map<ComponentEnum, Artifact> getArtifactUrl() {
         return artifactUrl;
     }
 
-    public void setArtifactUrl(Map<ComponentEnum, String> artifactUrl) {
+    public void setArtifactUrl(Map<ComponentEnum, Artifact> artifactUrl) {
         this.artifactUrl = artifactUrl;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getReleaseNotes() {

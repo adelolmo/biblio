@@ -24,6 +24,7 @@ import org.ado.biblio.desktop.dropbox.DropboxView;
 import org.ado.biblio.desktop.lend.LendPresenter;
 import org.ado.biblio.desktop.lend.LendView;
 import org.ado.biblio.desktop.model.Book;
+import org.ado.biblio.desktop.model.LendBook;
 import org.ado.biblio.desktop.returnbook.ReturnBookPresenter;
 import org.ado.biblio.desktop.returnbook.ReturnBookView;
 import org.ado.biblio.desktop.server.ServerPullingService;
@@ -66,7 +67,8 @@ import java.util.stream.Collectors;
 public class AppPresenter implements Initializable, LendPresenter.LendBookListener, ReturnBookPresenter.ReturnBookListener {
 
     private final Logger LOGGER = LoggerFactory.getLogger(AppPresenter.class);
-    private final ObservableList<Book> data = FXCollections.observableArrayList();
+    private final ObservableList<Book> bookData = FXCollections.observableArrayList();
+    private final ObservableList<LendBook> lendBookData = FXCollections.observableArrayList();
 
     @FXML
     private TextField textFieldSearch;
@@ -190,7 +192,7 @@ public class AppPresenter implements Initializable, LendPresenter.LendBookListen
         tableColumnAuthor.setCellValueFactory(cellData -> cellData.getValue().authorProperty());
         tableColumnCreation.setCellValueFactory(cellData -> cellData.getValue().creationProperty());
 
-        tableViewBooks.setItems(data);
+        tableViewBooks.setItems(bookData);
         buttonLend.setDisable(true);
         buttonReturnBook.setDisable(true);
 
@@ -306,7 +308,7 @@ public class AppPresenter implements Initializable, LendPresenter.LendBookListen
         reloadBooksTable();
         if (!StringUtils.isBlank(searchSequence)) {
             reloadBooksTable();
-            data.removeIf(new Predicate<Book>() {
+            bookData.removeIf(new Predicate<Book>() {
                 @Override
                 public boolean test(Book book) {
 
@@ -332,11 +334,11 @@ public class AppPresenter implements Initializable, LendPresenter.LendBookListen
         if (bookId != null) {
             final Book book = new Book(bookId, textFieldTitle.getText(), textFieldAuthor.getText(), textFieldIsbn.getText(), new Date(), textFieldTags.getText());
             databaseConnection.updateBook(book);
-            data.set(bookFocusedIndex, book);
+            bookData.set(bookFocusedIndex, book);
         } else {
             final Book book = databaseConnection
                     .insertBook(new Book(textFieldTitle.getText(), textFieldAuthor.getText(), textFieldIsbn.getText(), new Date(), textFieldTags.getText()));
-            data.add(book);
+            bookData.add(book);
         }
     }
 
@@ -344,7 +346,7 @@ public class AppPresenter implements Initializable, LendPresenter.LendBookListen
         LOGGER.info("add");
         resetBookView();
         textFieldTitle.requestFocus();
-        tableViewBooks.scrollTo(data.size());
+        tableViewBooks.scrollTo(bookData.size());
     }
 
     public void delete() throws SQLException, DropboxException {
@@ -357,7 +359,7 @@ public class AppPresenter implements Initializable, LendPresenter.LendBookListen
 
         if (response == org.controlsfx.dialog.Dialog.ACTION_YES) {
             databaseConnection.deleteBook(bookId);
-            data.remove(bookFocusedIndex);
+            bookData.remove(bookFocusedIndex);
             ImageUtils.deleteCover(textFieldIsbn.getText());
             dropboxManager.deleteCover(textFieldIsbn.getText());
 
@@ -380,7 +382,7 @@ public class AppPresenter implements Initializable, LendPresenter.LendBookListen
 
     @Override
     public void returnBook(Book book) {
-        data.set(bookFocusedIndex, book);
+        bookData.set(bookFocusedIndex, book);
         setButtonsToLend();
     }
 
@@ -399,13 +401,13 @@ public class AppPresenter implements Initializable, LendPresenter.LendBookListen
 
     @Override
     public void lentBook(Book book) {
-        data.set(bookFocusedIndex, book);
+        bookData.set(bookFocusedIndex, book);
         setButtonsToReturn();
     }
 
     private void reloadBooksTable() throws SQLException {
-        data.clear();
-        data.addAll(databaseConnection.getBookList().stream().collect(Collectors.toList()));
+        bookData.clear();
+        bookData.addAll(databaseConnection.getBookList().stream().collect(Collectors.toList()));
     }
 
     private void loadBookDetails(MouseEvent event) {
@@ -413,9 +415,6 @@ public class AppPresenter implements Initializable, LendPresenter.LendBookListen
         Book book = (Book) ((TableView) event.getSource()).getFocusModel().getFocusedItem();
         bookId = book.getId();
         textFieldTitle.setText(book.getTitle());
-
-//        textFieldAuthor.setStyle("-fx-background-color:red");
-
         textFieldAuthor.setText(book.getAuthor());
         textFieldIsbn.setText(book.getIsbn());
         textFieldTags.setText(book.getTags());
@@ -437,7 +436,7 @@ public class AppPresenter implements Initializable, LendPresenter.LendBookListen
         LOGGER.info(bookInfo.toString());
         try {
             final Book book = databaseConnection.insertBook(new Book(bookInfo.getTitle(), bookInfo.getAuthor(), bookInfo.getIsbn(), new Date(), ""));
-            data.add(book);
+            bookData.add(book);
         } catch (SQLException e) {
             LOGGER.error(String.format("Cannot insert book into database. %s", bookInfo.toString()), e);
         }

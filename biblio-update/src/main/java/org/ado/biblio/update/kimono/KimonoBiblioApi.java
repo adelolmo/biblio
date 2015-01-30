@@ -15,7 +15,7 @@ import java.net.URL;
  */
 public class KimonoBiblioApi {
 
-    private static final String KIMONO_URL = "https://www.kimonolabs.com/api/2fwithpm?apikey=a506e75ca96092b0f73b0ff59c15abe6";
+    private static final String KIMONO_URL = "https://www.kimonolabs.com/api/2fwithpm?apikey=a506e75ca96092b0f73b0ff59c15abe6&kimmodify=1";
 
     public KimonoRelease getLatestRelease() throws IOException {
         return getKimonoResponse().getKimonoRelease();

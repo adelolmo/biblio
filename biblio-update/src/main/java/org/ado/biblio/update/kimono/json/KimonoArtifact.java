@@ -9,13 +9,13 @@ import com.google.gson.annotations.SerializedName;
 public class KimonoArtifact {
 
     @SerializedName("artifact")
-    private Link artifact;
+    private ArtifactDetails artifact;
 
-    public Link getArtifact() {
+    public ArtifactDetails getArtifact() {
         return artifact;
     }
 
-    public void setArtifact(Link artifact) {
+    public void setArtifact(ArtifactDetails artifact) {
         this.artifact = artifact;
     }
 

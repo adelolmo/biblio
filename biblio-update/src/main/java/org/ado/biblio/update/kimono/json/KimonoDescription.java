@@ -9,16 +9,19 @@ import com.google.gson.annotations.SerializedName;
 public class KimonoDescription {
 
     @SerializedName("name")
-    private Link name;
+    private String name;
 
     @SerializedName("release-notes")
     private String releaseNotes;
 
-    public Link getName() {
+    @SerializedName("version")
+    private String version;
+
+    public String getName() {
         return name;
     }
 
-    public void setName(Link name) {
+    public void setName(String name) {
         this.name = name;
     }
 
