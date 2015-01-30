@@ -4,12 +4,9 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-
-<Pane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
-      minWidth="-Infinity" prefHeight="78.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8"
-      fx:controller="org.ado.biblio.desktop.update.DownloadPresenter">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="80.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.ado.biblio.desktop.update.DownloadPresenter">
     <children>
-        <ProgressBar fx:id="progressBarDownload" layoutX="74.0" layoutY="29.0" prefHeight="20.0" prefWidth="507.0"
-                     progress="0.0"/>
+        <ProgressBar fx:id="progressBarDownload" layoutX="20.0" layoutY="20.0" prefHeight="20.0" prefWidth="556.0" progress="0.0" />
+      <Label layoutX="20.0" layoutY="50.0" text="Downloading... please wait" />
     </children>
 </Pane>
