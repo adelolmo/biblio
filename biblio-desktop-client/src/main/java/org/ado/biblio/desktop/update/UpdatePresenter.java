@@ -64,7 +64,7 @@ public class UpdatePresenter implements Initializable {
         presenter.process(stage, artifact);
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.setScene(new Scene(updateView.getView()));
-        stage.setTitle("Downloading update");
+        stage.setTitle("Update");
         stage.show();
 
         this.stage.close();
