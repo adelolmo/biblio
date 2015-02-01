@@ -1,7 +1,6 @@
 package org.ado.biblio.desktop.install;
 
-import javafx.concurrent.WorkerStateEvent;
-import javafx.event.EventHandler;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
@@ -38,34 +37,37 @@ public class InstallPresenter implements Initializable {
     public void init() {
         LOGGER.info("PostConstruct");
         unzipService = new UnzipService(UPDATE_FILE, new File(System.getProperty("user.dir")));
-        unzipService.setOnRunning(new EventHandler<WorkerStateEvent>() {
-            @Override
-            public void handle(WorkerStateEvent event) {
-                LOGGER.info("on running");
+        unzipService.setOnRunning(event -> {
+            LOGGER.info("on running");
+            labelStepTwo.setText("2. Extracting update file");
+        });
+        unzipService.setOnSucceeded(event -> {
+            LOGGER.info("on succeeded");
+            labelStepThree.setText("3. Installation process successfully finished.");
+            FileUtils.deleteQuietly(UPDATE_FILE);
 
-                labelStepTwo.setText("2. Extracting update file");
-//                Platform.runLater(() -> labelStepTwo.setText("2. Extracting update file"));
-            }
+            final Task<Void> voidTask = new Task<Void>() {
+                @Override
+                protected Void call() throws Exception {
+                    pause(2000);
+                    System.exit(0);
+                    return null;
+                }
+            };
+            new Thread(voidTask).start();
         });
-        unzipService.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-            @Override
-            public void handle(WorkerStateEvent event) {
-                LOGGER.info("on succeeded");
-                labelStepThree.setText("3. Installation process successfully finished.");
-                FileUtils.deleteQuietly(UPDATE_FILE);
-//                pause(5000);
-//                stage.close();
-                System.exit(0);
-            }
-        });
-        unzipService.setOnFailed(new EventHandler<WorkerStateEvent>() {
-            @Override
-            public void handle(WorkerStateEvent event) {
-                LOGGER.info("on failed");
-                labelStepThree.setText("3. ERROR.");
-                pause(2000);
-                System.exit(1);
-            }
+        unzipService.setOnFailed(event -> {
+            LOGGER.info("on failed");
+            labelStepThree.setText("3. Error on installation process!");
+            final Task<Void> voidTask = new Task<Void>() {
+                @Override
+                protected Void call() throws Exception {
+                    pause(2000);
+                    System.exit(1);
+                    return null;
+                }
+            };
+            new Thread(voidTask).start();
         });
     }
 

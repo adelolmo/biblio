@@ -11,8 +11,5 @@
         <Label fx:id="labelStepOne" layoutX="20.0" layoutY="20.0"/>
         <Label fx:id="labelStepTwo" layoutX="20.0" layoutY="40.0"/>
         <Label fx:id="labelStepThree" layoutX="20.0" layoutY="60.0"/>
-        <Label layoutX="159.0" layoutY="40.0" text="Installing update... plase wait" visible="false"/>
-        <Button layoutX="409.0" layoutY="23.0" mnemonicParsing="false" onAction="#execute" text="Button"
-                visible="false"/>
     </children>
 </Pane>
