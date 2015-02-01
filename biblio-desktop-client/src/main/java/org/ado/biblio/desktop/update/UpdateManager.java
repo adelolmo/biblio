@@ -36,7 +36,7 @@ public class UpdateManager {
     }
 
     public EventHandler<WorkerStateEvent> getOnFailed() {
-        return event -> LOGGER.equals(event.getSource().getException());
+        return event -> LOGGER.error("Unable to retrieve latest version details", event.getSource().getException());
     }
 
     private void openUpdateDialog(Release release) {
