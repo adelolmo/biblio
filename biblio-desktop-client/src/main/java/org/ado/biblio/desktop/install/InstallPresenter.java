@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -79,7 +80,16 @@ public class InstallPresenter implements Initializable {
     public void execute() {
         LOGGER.info("installing update...");
         labelStepOne.setText("1. Application update found");
+        cleanDirectory(new File(System.getProperty("user.dir")));
         unzipService.start();
+    }
+
+    private void cleanDirectory(File directory) {
+        try {
+            FileUtils.cleanDirectory(directory);
+        } catch (IOException e) {
+            LOGGER.error(String.format("Cannot clean directory \"%s\".", directory), e);
+        }
     }
 
     private void pause(int millis) {
