@@ -20,6 +20,7 @@
     <modules>
         <module>biblio-domain</module>
         <module>biblio-server</module>
+        <module>biblio-server-war</module>
         <module>biblio-android-client</module>
         <module>biblio-desktop-client</module>
         <module>googleapis-books</module>
