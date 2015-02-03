@@ -98,6 +98,6 @@
     </pluginRepositories>
 
     <scm>
-        <developerConnection>scm:git:git@github.com:adelolmo/biblio.git</developerConnection>
+        <developerConnection>scm:git:ssh://github.com/adelolmo/biblio.git</developerConnection>
     </scm>
 </project>
