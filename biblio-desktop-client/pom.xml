@@ -5,12 +5,12 @@
     <parent>
         <groupId>org.ado</groupId>
         <artifactId>biblio</artifactId>
-        <version>1.4</version>
+        <version>1.5-SNAPSHOT</version>
     </parent>
 
     <groupId>org.ado.biblio</groupId>
     <artifactId>desktop-client</artifactId>
-    <version>1.4</version>
+    <version>1.5-SNAPSHOT</version>
     <name>Desktop App</name>
 
     <properties>
@@ -32,17 +32,17 @@
         <dependency>
             <groupId>org.ado.biblio</groupId>
             <artifactId>biblio-domain</artifactId>
-            <version>1.4</version>
+            <version>1.5-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.ado.biblio</groupId>
             <artifactId>biblio-update</artifactId>
-            <version>1.4</version>
+            <version>1.5-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.ado</groupId>
             <artifactId>googleapis-books</artifactId>
-            <version>1.4</version>
+            <version>1.5-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>

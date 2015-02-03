@@ -5,12 +5,12 @@
     <parent>
         <groupId>org.ado</groupId>
         <artifactId>biblio</artifactId>
-        <version>1.4</version>
+        <version>1.5-SNAPSHOT</version>
     </parent>
 
     <groupId>org.ado.biblio</groupId>
     <artifactId>biblio-server-war</artifactId>
-    <version>1.4</version>
+    <version>1.5-SNAPSHOT</version>
     <packaging>war</packaging>
     <name>Biblio Server WAR</name>
 
