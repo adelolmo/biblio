@@ -98,8 +98,8 @@
     </pluginRepositories>
 
     <scm>
-        <connection>scm:git:git@github.com:adelolmo/biblio.git</connection>
-        <url>scm:git:git@github.com:adelolmo/biblio.git</url>
-        <developerConnection>scm:git:git@github.com:adelolmo/biblio.git</developerConnection>
+        <connection>scm:git:https://github.com/adelolmo/biblio.git</connection>
+        <url>scm:git:https://github.com/adelolmo/biblio.git</url>
+        <developerConnection>scm:git:https://github.com/adelolmo/biblio.git</developerConnection>
     </scm>
 </project>
