@@ -4,7 +4,11 @@ import org.ado.biblio.server.ServerStatusEnum;
 import org.ado.biblio.server.ServerStatusMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 /*
@@ -37,13 +41,13 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController()
 @RequestMapping("/server")
-@SuppressWarnings("unused")
 public class ServerController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ServerController.class);
 
-    @RequestMapping(value = "/status", produces = "application/json")
-    public ServerStatusMessage getServerStatus() {
-        return new ServerStatusMessage(ServerStatusEnum.ONLINE);
+    @RequestMapping(method = RequestMethod.GET, value = "/status", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ServerStatusMessage> getServerStatus() {
+        final ServerStatusMessage serverStatusMessage = new ServerStatusMessage(ServerStatusEnum.ONLINE);
+        return new ResponseEntity<ServerStatusMessage>(serverStatusMessage, HttpStatus.OK);
     }
 }

@@ -3,6 +3,9 @@ package org.ado.biblio;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
@@ -38,7 +41,6 @@ import javax.validation.constraints.NotNull;
  * @since 25.10.2014
  */
 @RestController
-@SuppressWarnings("unused")
 public class BarCodeController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BarCodeController.class);
@@ -46,18 +48,20 @@ public class BarCodeController {
     @Autowired
     private BarCodeCache barCodeCache;
 
-    @RequestMapping(value = "/books/{id}", method = RequestMethod.POST)
-    public void postBooks(@NotNull @PathVariable(value = "id") String id,
-                          @NotNull @RequestParam(value = "format") String format,
-                          @NotNull @RequestParam(value = "code") String code) {
+    @RequestMapping(method = RequestMethod.POST, value = "/books/{id}")
+    public ResponseEntity<Void> postBooks(@NotNull @PathVariable(value = "id") String id,
+                                          @NotNull @RequestParam(value = "format") String format,
+                                          @NotNull @RequestParam(value = "code") String code) {
 
         LOGGER.info("POST /books/{} - format [{}] code [{}].", id, format, code);
 
         barCodeCache.add(id, new BookMessage(format, code));
+
+        return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/books/{id}", method = RequestMethod.GET)
-    public BookMessage[] getBooks(@NotNull @PathVariable(value = "id") String id) {
+    @RequestMapping(method = RequestMethod.GET, value = "/books/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<BookMessage[]> getBooks(@NotNull @PathVariable(value = "id") String id) {
 
         LOGGER.info("GET /books/{}", id);
 
@@ -79,7 +83,7 @@ public class BarCodeController {
             }
             LOGGER.info("sending to [{}] message [{}]", id, messages);
 
-            return bookMessages;
+            return new ResponseEntity<BookMessage[]>(bookMessages, HttpStatus.OK);
         } else {
 
             return null;
