@@ -36,7 +36,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 
 /**
- * @author Andoni del Olmo,
+ * @author Andoni del Olmo
  * @since 06.01.15
  */
 @RestController()
@@ -48,6 +48,7 @@ public class ServerController {
     @RequestMapping(method = RequestMethod.GET, value = "/status", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ServerStatusMessage> getServerStatus() {
         final ServerStatusMessage serverStatusMessage = new ServerStatusMessage(ServerStatusEnum.ONLINE);
+        LOGGER.info("/status {}", serverStatusMessage);
         return new ResponseEntity<ServerStatusMessage>(serverStatusMessage, HttpStatus.OK);
     }
 }

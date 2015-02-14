@@ -31,6 +31,7 @@ package org.ado.biblio.update;
 public enum ComponentEnum {
     DESKTOP_CLIENT("biblio-desktop-client"),
     ANDROID_APP("biblio-android"),
+    SERVER_STANDALONE("biblio-server-standalone"),
     SERVER_WAR("biblio-server-war");
 
     private String codeName;

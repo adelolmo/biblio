@@ -1,4 +1,15 @@
-package org.ado.biblio.server;
+package org.ado.biblio;
+
+import org.ado.biblio.server.ServerStatusEnum;
+import org.ado.biblio.server.ServerStatusMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 /*
  * The MIT License (MIT)
@@ -28,6 +39,15 @@ package org.ado.biblio.server;
  * @author Andoni del Olmo,
  * @since 06.01.15
  */
-public enum ServerStatusEnum {
-    ONLINE, OFFLINE, UNKNOWN
+@RestController()
+@RequestMapping("/server")
+public class ServerController {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ServerController.class);
+
+    @RequestMapping(method = RequestMethod.GET, value = "/status", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ServerStatusMessage> getServerStatus() {
+        final ServerStatusMessage serverStatusMessage = new ServerStatusMessage(ServerStatusEnum.ONLINE);
+        return new ResponseEntity<ServerStatusMessage>(serverStatusMessage, HttpStatus.OK);
+    }
 }

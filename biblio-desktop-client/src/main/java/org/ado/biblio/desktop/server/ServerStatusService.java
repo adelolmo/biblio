@@ -6,6 +6,7 @@ import javafx.concurrent.Task;
 import org.ado.biblio.desktop.AppConfiguration;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -59,7 +60,9 @@ public class ServerStatusService extends Service<ServerStatusEnum> {
                     HttpResponse response = client.execute(request);
 
                     LOGGER.info("Response code [{}]", response.getStatusLine().getStatusCode());
-
+                    if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+                        return ServerStatusEnum.OFFLINE;
+                    }
                     return getServerStatus(IOUtils.toString(response.getEntity().getContent()));
                 } catch (IOException | IllegalStateException e) {
                     return ServerStatusEnum.OFFLINE;
