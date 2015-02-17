@@ -66,7 +66,7 @@ public class BarCodeController {
         LOGGER.info("GET /books/{}", id);
 
         boolean pullingActive = true;
-        long timeout = System.currentTimeMillis() + (5 * 1000);
+        long timeout = System.currentTimeMillis() + (60 * 1000);
         while (pullingActive && timeout > System.currentTimeMillis()) {
             if (!barCodeCache.isEmpty(id)) {
                 pullingActive = false;
