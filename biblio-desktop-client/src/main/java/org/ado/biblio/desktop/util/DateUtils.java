@@ -34,7 +34,8 @@ import java.util.Map;
 
 public class DateUtils {
 
-    private static final DateFormat SQLITE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    public static final String SQLITE_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    private static final DateFormat SQLITE_DATE_FORMAT = new SimpleDateFormat(SQLITE_FORMAT);
     private static final DateFormat SQLITE_DATE_TIME_FORMAT_GERMAN = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
     private static final DateFormat SQLITE_DATE_FORMAT_GERMAN = new SimpleDateFormat("dd.MM.yyyy");
     private static final DateFormat SQLITE_DATE_TIME_FORMAT_SPAIN = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
@@ -76,9 +77,9 @@ public class DateUtils {
 
     public static Date parseSqlite(String stringDate) {
         try {
-            return SQLITE_DATE_FORMAT.parse(stringDate);
+            return new SimpleDateFormat(SQLITE_FORMAT).parse(stringDate);
         } catch (ParseException e) {
-            throw new IllegalStateException(String.format("Cannot parse \"%s\" to date", stringDate), e);
+            throw new IllegalStateException(String.format("Cannot parse \"%s\" to date. Format required \"%s\".", stringDate, SQLITE_FORMAT), e);
         }
     }
 

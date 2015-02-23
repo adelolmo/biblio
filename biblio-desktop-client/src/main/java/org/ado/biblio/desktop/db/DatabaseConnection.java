@@ -2,6 +2,7 @@ package org.ado.biblio.desktop.db;
 
 import org.ado.biblio.desktop.AppConfiguration;
 import org.ado.biblio.desktop.model.Book;
+import org.ado.biblio.desktop.model.LendBook;
 import org.ado.biblio.desktop.util.DateUtils;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -125,10 +126,8 @@ public class DatabaseConnection {
     }
 
     public List<Book> getBookList() throws SQLException {
-        String query = "SELECT Book.id, Book.title, Book.author, Book.ctime, Book.isbn, Book.tags, Lend.ctime AS lendctime, Lend.rtime FROM Book " +
-                "LEFT OUTER JOIN Lend " +
-                "ON Book.id = Lend.bookId " +
-                "WHERE Lend.rtime IS NULL";
+        String query = "SELECT Book.id, Book.title, Book.author, Book.ctime, Book.isbn, Book.tags," +
+                "(SELECT max(Lend.id) FROM Lend WHERE Book.id = Lend.bookId AND Lend.rtime IS NULL) AS lent FROM Book ";
         final List<Book> bookList = new ArrayList<>();
 
         final PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -138,6 +137,20 @@ public class DatabaseConnection {
         }
 
         return bookList;
+    }
+
+    public List<LendBook> getLentBookList() throws SQLException {
+        String query = "SELECT Book.id, Book.title, Book.author, Book.ctime, Book.isbn, Book.tags," +
+                "(SELECT Lend.person FROM Lend WHERE Book.id = Lend.bookId AND Lend.rtime IS NULL GROUP BY Lend.id LIMIT 1) AS person FROM Book " +
+                "where person is not null";
+        final List<LendBook> lendBookList = new ArrayList<>();
+
+        final PreparedStatement preparedStatement = connection.prepareStatement(query);
+        final ResultSet resultSet = preparedStatement.executeQuery();
+        while (resultSet.next()) {
+            lendBookList.add(getLentBook(resultSet));
+        }
+        return lendBookList;
     }
 
     public Book returnBook(int bookId, Date rtime) throws SQLException {
@@ -153,7 +166,7 @@ public class DatabaseConnection {
     }
 
     public Book lendBook(int bookId, String person, Date ctime) throws SQLException {
-        String query = "INSERT INTO Lend (bookId, person, ctime) values (?,?, ?);";
+        String query = "INSERT INTO Lend (bookId, person, ctime) VALUES (?,?,?);";
         final PreparedStatement statement = connection.prepareStatement(query);
         statement.setInt(1, bookId);
         statement.setString(2, person);
@@ -166,10 +179,9 @@ public class DatabaseConnection {
     }
 
     private Book getBook(int id) throws SQLException {
-        String query = "SELECT Book.id, Book.title, Book.author, Book.ctime, Book.isbn, Book.tags, Lend.ctime AS lendctime, Lend.rtime FROM Book " +
-                "LEFT OUTER JOIN Lend " +
-                "ON Book.id = Lend.bookId " +
-                "WHERE Book.id = ?";
+        String query = "SELECT Book.id, Book.title, Book.author, Book.ctime, Book.isbn, Book.tags," +
+                " (SELECT max(Lend.id) FROM Lend WHERE Book.id = Lend.bookId AND Lend.rtime IS NULL) AS lent" +
+                " FROM Book WHERE Book.id = ?";
         final PreparedStatement preparedStatement = connection.prepareStatement(query);
         preparedStatement.setInt(1, id);
         final ResultSet resultSet = preparedStatement.executeQuery();
@@ -186,10 +198,22 @@ public class DatabaseConnection {
                 resultSet.getString("isbn"),
                 DateUtils.parseSqlite(resultSet.getString("ctime")),
                 resultSet.getString("tags"),
-                isBookLent(resultSet.getString("lendctime"), resultSet.getString("rtime")));
+                isBookLent(resultSet.getInt("lent")));
     }
 
-    private boolean isBookLent(String ctime, String rtime) throws SQLException {
-        return ctime != null && rtime == null;
+    private LendBook getLentBook(ResultSet resultSet) throws SQLException {
+        return new LendBook(
+                resultSet.getInt("id"),
+                resultSet.getString("title"),
+                resultSet.getString("author"),
+                resultSet.getString("isbn"),
+                DateUtils.parseSqlite(resultSet.getString("ctime")),
+                resultSet.getString("tags"),
+                resultSet.getString("person")
+        );
+    }
+
+    private boolean isBookLent(int lent) {
+        return lent > 0;
     }
 }

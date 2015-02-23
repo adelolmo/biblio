@@ -36,7 +36,7 @@ import java.util.Date;
  * @author andoni
  * @since 22.11.2014
  */
-public class Book {
+public class Book implements BookDetails {
     private IntegerProperty id;
     private StringProperty title;
     private StringProperty author;
@@ -65,9 +65,9 @@ public class Book {
         this.lent = new SimpleBooleanProperty(lent);
     }
 
-    public Integer getId() {
+    public int getId() {
         if (id == null) {
-            return null;
+            return -1;
         }
         return id.get();
     }
@@ -114,6 +114,11 @@ public class Book {
 
     public BooleanProperty lentProperty() {
         return lent;
+    }
+
+    @Override
+    public boolean isLent() {
+        return getLent();
     }
 
     @Override

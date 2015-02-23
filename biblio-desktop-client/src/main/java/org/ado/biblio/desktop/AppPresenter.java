@@ -24,6 +24,7 @@ import org.ado.biblio.desktop.dropbox.DropboxView;
 import org.ado.biblio.desktop.lend.LendPresenter;
 import org.ado.biblio.desktop.lend.LendView;
 import org.ado.biblio.desktop.model.Book;
+import org.ado.biblio.desktop.model.BookDetails;
 import org.ado.biblio.desktop.model.LendBook;
 import org.ado.biblio.desktop.returnbook.ReturnBookPresenter;
 import org.ado.biblio.desktop.returnbook.ReturnBookView;
@@ -113,6 +114,21 @@ public class AppPresenter implements Initializable, LendPresenter.LendBookListen
     private TableColumn<Book, String> tableColumnCreation;
 
     @FXML
+    private TableView<LendBook> tableViewLentBooks;
+
+    @FXML
+    private TableColumn<LendBook, String> tableColumnLendTitle;
+
+    @FXML
+    private TableColumn<LendBook, String> tableColumnLendAuthor;
+
+    @FXML
+    private TableColumn<LendBook, String> tableColumnLendLentTo;
+
+    @FXML
+    private TableColumn<LendBook, String> tableColumnLendDate;
+
+    @FXML
     private TextField textFieldTitle;
 
     @FXML
@@ -169,7 +185,9 @@ public class AppPresenter implements Initializable, LendPresenter.LendBookListen
         LOGGER.info("PostConstruct...");
         serverPullingService.setClientId(AppConfiguration.getAppId());
         reloadBooksTable();
+        reloadLentTable();
     }
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -208,7 +226,7 @@ public class AppPresenter implements Initializable, LendPresenter.LendBookListen
                             LOGGER.warn("Unexpected null in table row \"{}\".", "");
                             return false;
                         }
-                        return ((Book) item).getLent();
+                        return ((BookDetails) item).isLent();
                     }
                 };
             }
@@ -216,7 +234,13 @@ public class AppPresenter implements Initializable, LendPresenter.LendBookListen
         tableColumnAuthor.setCellValueFactory(cellData -> cellData.getValue().authorProperty());
         tableColumnCreation.setCellValueFactory(cellData -> cellData.getValue().creationProperty());
 
+        tableColumnLendAuthor.setCellValueFactory(cellData -> cellData.getValue().authorProperty());
+        tableColumnLendTitle.setCellValueFactory(cellData -> cellData.getValue().titleProperty());
+        tableColumnLendLentTo.setCellValueFactory(cellData -> cellData.getValue().personProperty());
+        tableColumnLendDate.setCellValueFactory(cellData -> cellData.getValue().creationProperty());
+
         tableViewBooks.setItems(bookData);
+        tableViewLentBooks.setItems(lendBookData);
         buttonLend.setDisable(true);
         buttonReturnBook.setDisable(true);
 
@@ -264,6 +288,7 @@ public class AppPresenter implements Initializable, LendPresenter.LendBookListen
         serverPullingService.start();
 
         tableViewBooks.setOnMouseClicked(this::loadBookDetails);
+        tableViewLentBooks.setOnMouseClicked(this::loadBookDetails);
     }
 
     public void setStage(Stage stage) {
@@ -434,25 +459,32 @@ public class AppPresenter implements Initializable, LendPresenter.LendBookListen
         bookData.addAll(databaseConnection.getBookList().stream().collect(Collectors.toList()));
     }
 
+    private void reloadLentTable() throws SQLException {
+        lendBookData.clear();
+        lendBookData.addAll(databaseConnection.getLentBookList().stream().collect(Collectors.toList()));
+    }
+
     private void loadBookDetails(MouseEvent event) {
         bookFocusedIndex = ((TableView) event.getSource()).getFocusModel().getFocusedIndex();
-        Book book = (Book) ((TableView) event.getSource()).getFocusModel().getFocusedItem();
-        bookId = book.getId();
-        textFieldTitle.setText(book.getTitle());
-        textFieldAuthor.setText(book.getAuthor());
-        textFieldIsbn.setText(book.getIsbn());
-        textFieldTags.setText(book.getTags());
+        BookDetails bookDetails = (BookDetails) ((TableView) event.getSource()).getFocusModel().getFocusedItem();
+        if (bookDetails != null) {
+            bookId = bookDetails.getId();
+            textFieldTitle.setText(bookDetails.getTitle());
+            textFieldAuthor.setText(bookDetails.getAuthor());
+            textFieldIsbn.setText(bookDetails.getIsbn());
+            textFieldTags.setText(bookDetails.getTags());
 
-        if (book.lentProperty().getValue()) {
-            setButtonsToReturn();
-        } else {
-            setButtonsToLend();
-        }
+            if (bookDetails.isLent()) {
+                setButtonsToReturn();
+            } else {
+                setButtonsToLend();
+            }
 
-        if (StringUtils.isNotBlank(book.getIsbn())) {
-            imageViewCover.setImage(ImageUtils.readCoverOrDefault(book.getIsbn()));
-        } else {
-            imageViewCover.setImage(null);
+            if (StringUtils.isNotBlank(bookDetails.getIsbn())) {
+                imageViewCover.setImage(ImageUtils.readCoverOrDefault(bookDetails.getIsbn()));
+            } else {
+                imageViewCover.setImage(null);
+            }
         }
     }
 

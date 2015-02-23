@@ -94,9 +94,10 @@
                             <content>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                     <children>
-                                        <TableView layoutX="363.0" layoutY="2.0" prefHeight="204.0" prefWidth="926.0"
-                                                   AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-                                                   AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                        <TableView fx:id="tableViewLentBooks" layoutX="363.0" layoutY="2.0"
+                                                   prefHeight="204.0" prefWidth="926.0" AnchorPane.bottomAnchor="0.0"
+                                                   AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                                                   AnchorPane.topAnchor="0.0">
                                             <columns>
                                                 <TableColumn fx:id="tableColumnLendTitle" prefWidth="478.0"
                                                              text="Title"/>
@@ -129,7 +130,7 @@
                         <HBox alignment="CENTER_LEFT" layoutX="13.9619140625" layoutY="9.0" spacing="10.0"
                               AnchorPane.leftAnchor="13.9619140625" AnchorPane.rightAnchor="479.0380859375">
                             <children>
-                                <Label layoutX="14.0" layoutY="14.0" prefHeight="15.0" prefWidth="61.0" text="Title:"/>
+                                <Label layoutX="14.0" layoutY="14.0" prefHeight="15.0" prefWidth="49.0" text="Title:"/>
                                 <TextField fx:id="textFieldTitle" layoutX="62.0" layoutY="9.0" prefHeight="25.0"
                                            prefWidth="651.0"/>
                             </children>
@@ -143,13 +144,13 @@
                         </HBox>
                         <HBox alignment="CENTER_LEFT" layoutX="14.0" layoutY="72.0" spacing="10.0">
                             <children>
-                                <Label layoutX="14.0" layoutY="65.0" text="ISBN:"/>
+                                <Label layoutX="14.0" layoutY="65.0" prefHeight="15.0" prefWidth="49.0" text="ISBN:"/>
                                 <TextField fx:id="textFieldIsbn" layoutX="50.0" layoutY="60.0"/>
                             </children>
                         </HBox>
                         <HBox alignment="CENTER_LEFT" layoutX="14.0" layoutY="100.0" spacing="10.0">
                             <children>
-                                <Label layoutX="14.0" layoutY="65.0" text="Tags:"/>
+                                <Label layoutX="14.0" layoutY="65.0" prefHeight="15.0" prefWidth="49.0" text="Tags:"/>
                                 <TextField fx:id="textFieldTags" layoutX="50.0" layoutY="60.0"/>
                             </children>
                         </HBox>
