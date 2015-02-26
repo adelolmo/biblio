@@ -30,10 +30,11 @@
   ~ SOFTWARE.
   -->
 
-<Pane xmlns:fx="http://javafx.com/fxml/1" minWidth="-Infinity" snapToPixel="false" xmlns="http://javafx.com/javafx/8"
+<VBox xmlns:fx="http://javafx.com/fxml/1" minWidth="-Infinity" snapToPixel="false" xmlns="http://javafx.com/javafx/8"
       fx:controller="org.ado.biblio.desktop.AppPresenter">
     <children>
-        <MenuBar minHeight="-Infinity" minWidth="-Infinity" prefWidth="1173.0" snapToPixel="false">
+        <MenuBar maxHeight="30.0" minHeight="30.0" minWidth="-Infinity" prefHeight="30.0" prefWidth="1173.0"
+                 snapToPixel="false" VBox.vgrow="NEVER">
             <menus>
                 <Menu mnemonicParsing="false" text="File">
                     <items>
@@ -52,7 +53,8 @@
                 </Menu>
             </menus>
         </MenuBar>
-        <AnchorPane layoutY="29.0" minHeight="0.0" minWidth="0.0" prefHeight="57.0" prefWidth="633.0">
+        <AnchorPane layoutY="29.0" maxHeight="30.0" maxWidth="1.7976931348623157E308" minHeight="30.0" prefHeight="30.0"
+                    prefWidth="633.0" VBox.vgrow="NEVER">
             <children>
                 <HBox alignment="CENTER_LEFT" layoutX="14.0" layoutY="3.0" spacing="10.0">
                     <children>
@@ -64,7 +66,7 @@
             </children>
         </AnchorPane>
         <SplitPane dividerPositions="0.6054313099041534, 0.9696485623003195" layoutY="61.0" orientation="VERTICAL"
-                   prefHeight="619.0" prefWidth="1217.0">
+                   prefHeight="619.0" prefWidth="1217.0" VBox.vgrow="ALWAYS">
             <items>
                 <TabPane tabClosingPolicy="UNAVAILABLE">
                     <tabs>
@@ -175,6 +177,11 @@
                                    layoutY="14.0" pickOnBounds="true" preserveRatio="true"/>
                     </children>
                 </AnchorPane>
+
+            </items>
+        </SplitPane>
+        <Pane>
+            <children>
                 <HBox spacing="5.0">
                     <children>
                         <ImageView fx:id="imageViewServerStatus" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true"
@@ -182,7 +189,7 @@
                         <Label fx:id="labelSystem" prefHeight="15.0" prefWidth="405.0"/>
                     </children>
                 </HBox>
-            </items>
-        </SplitPane>
+            </children>
+        </Pane>
     </children>
-</Pane>
+</VBox>
