@@ -41,7 +41,7 @@ import java.net.URL;
  */
 public class KimonoBiblioApi {
 
-    private static final String KIMONO_ENDPOINT_TEMPLATE = "https://www.kimonolabs.com/api/%s?apikey=%s&kimmodify=%d";
+    private static final String KIMONO_ENDPOINT_TEMPLATE = "https://www.kimonolabs.com/api/ondemand/%s?apikey=%s&kimmodify=%d";
     private static final String API_ID = "2fwithpm";
     private static final String API_KEY = "a506e75ca96092b0f73b0ff59c15abe6";
     private static final String KIMONO_URL = String.format(KIMONO_ENDPOINT_TEMPLATE, API_ID, API_KEY, 1);
