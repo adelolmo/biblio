@@ -198,39 +198,7 @@ public class AppPresenter implements Initializable, LendPresenter.LendBookListen
         updateService.start();
 
         tableColumnTitle.setCellValueFactory(cellData -> cellData.getValue().titleProperty());
-        tableColumnTitle.setCellFactory(new Callback<TableColumn<Book, String>, TableCell<Book, String>>() {
-            @Override
-            public TableCell<Book, String> call(TableColumn<Book, String> param) {
-                return new TableCell<Book, String>() {
-                    @Override
-                    protected void updateItem(String item, boolean empty) {
-                        super.updateItem(item, empty);
-                        getTableRow().getStyleClass().remove("bookLent");
-
-                        if (item != null) {
-                            setText(item);
-                            final boolean lent = isBookLend();
-                            if (lent) {
-                                getTableRow().getStyleClass().add("bookLent");
-                            }
-                        }
-                    }
-
-                    private boolean isBookLend() {
-                        final TableRow tableRow = getTableRow();
-                        if (tableRow == null) {
-                            return false;
-                        }
-                        final Object item = tableRow.getItem();
-                        if (item == null) {
-                            LOGGER.warn("Unexpected null in table row \"{}\".", "");
-                            return false;
-                        }
-                        return ((BookDetails) item).isLent();
-                    }
-                };
-            }
-        });
+        tableColumnTitle.setCellFactory(getHighlightCellFactory());
         tableColumnAuthor.setCellValueFactory(cellData -> cellData.getValue().authorProperty());
         tableColumnCreation.setCellValueFactory(cellData -> cellData.getValue().creationProperty());
 
@@ -258,7 +226,6 @@ public class AppPresenter implements Initializable, LendPresenter.LendBookListen
         serverStatusService.start();
 
         serverPullingService.setOnSucceeded(event -> {
-            LOGGER.info("Succeeded");
             serverStatusImageOnline();
             BookMessageDTO[] bookMessages = (BookMessageDTO[]) event.getSource().getValue();
             if (bookMessages != null) {
@@ -353,10 +320,8 @@ public class AppPresenter implements Initializable, LendPresenter.LendBookListen
         LOGGER.info("search");
         String searchSequence = textFieldSearch.getCharacters().toString();
         LOGGER.debug(searchSequence);
-
         reloadBooksTable();
         if (!StringUtils.isBlank(searchSequence)) {
-            reloadBooksTable();
             bookData.removeIf(new Predicate<Book>() {
                 @Override
                 public boolean test(Book book) {
@@ -433,6 +398,12 @@ public class AppPresenter implements Initializable, LendPresenter.LendBookListen
     public void returnBook(Book book) {
         bookData.set(bookFocusedIndex, book);
         setButtonsToLend();
+        try {
+            reloadBooksTable();
+            reloadLentTable();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public void lend() throws SQLException {
@@ -452,6 +423,12 @@ public class AppPresenter implements Initializable, LendPresenter.LendBookListen
     public void lentBook(Book book) {
         bookData.set(bookFocusedIndex, book);
         setButtonsToReturn();
+        try {
+            reloadBooksTable();
+            reloadLentTable();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     private void reloadBooksTable() throws SQLException {
@@ -521,6 +498,37 @@ public class AppPresenter implements Initializable, LendPresenter.LendBookListen
     private void setButtonsToReturn() {
         buttonLend.setDisable(true);
         buttonReturnBook.setDisable(false);
+    }
+
+    private Callback<TableColumn<Book, String>, TableCell<Book, String>> getHighlightCellFactory() {
+        return param -> new TableCell<Book, String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                getTableRow().getStyleClass().remove("bookLent");
+                if (getTableRow().getItem() != null) {
+                    setText(item);
+                    final boolean lent = isBookLend();
+                    if (lent) {
+                        getTableRow().getStyleClass().add("bookLent");
+                    }
+                } else {
+                    setText(null);
+                }
+            }
+
+            private boolean isBookLend() {
+                final TableRow tableRow = getTableRow();
+                if (tableRow == null) {
+                    return false;
+                }
+                final Object item = tableRow.getItem();
+                if (item == null) {
+                    LOGGER.warn("Unexpected null in table row \"{}\".", tableRow.getIndex());
+                    return false;
+                }
+                return ((BookDetails) item).isLent();
+            }
+        };
     }
 
     private void setButtonsToLend() {
