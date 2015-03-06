@@ -5,12 +5,12 @@
     <parent>
         <groupId>org.ado</groupId>
         <artifactId>biblio</artifactId>
-        <version>1.5-SNAPSHOT</version>
+        <version>1.5</version>
     </parent>
 
     <groupId>org.ado.biblio</groupId>
     <artifactId>biblio-domain</artifactId>
-    <version>1.5-SNAPSHOT</version>
+    <version>1.5</version>
     <name>Domain</name>
 
 </project>
