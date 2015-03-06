@@ -91,6 +91,25 @@
                         <fork>true</fork>
                     </configuration>
                 </plugin>
+                <plugin>
+                    <groupId>de.jutzig</groupId>
+                    <artifactId>github-release-plugin</artifactId>
+                    <version>1.1.1-SNAPSHOT</version>
+                    <executions>
+                        <execution>
+                            <phase>install</phase>
+                            <goals>
+                                <goal>release</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <serverId>github</serverId>
+                        <description>Description of your release</description>
+                        <releaseName>Biblio ${project.version}</releaseName>
+                        <tag>biblio-${project.version}</tag>
+                    </configuration>
+                </plugin>
             </plugins>
         </pluginManagement>
     </build>
@@ -109,6 +128,8 @@
     </pluginRepositories>
 
     <scm>
+        <url>git:git@github.com:adelolmo/biblio.git</url>
+        <connection>scm:git:git@github.com:adelolmo/biblio.git</connection>
         <developerConnection>scm:git:git@github.com:adelolmo/biblio.git</developerConnection>
     </scm>
 </project>

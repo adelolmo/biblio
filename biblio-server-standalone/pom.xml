@@ -14,6 +14,10 @@
     <version>1.5-SNAPSHOT</version>
     <name>Biblio Server Standalone</name>
 
+    <properties>
+        <artifact.dist.name>${project.artifactId}-${project.version}-dist.tar.gz</artifact.dist.name>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.ado.biblio</groupId>
@@ -71,6 +75,23 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>de.jutzig</groupId>
+                        <artifactId>github-release-plugin</artifactId>
+                        <configuration>
+                            <artifact>${artifact.dist.name}</artifact>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
     <repositories>
         <repository>
