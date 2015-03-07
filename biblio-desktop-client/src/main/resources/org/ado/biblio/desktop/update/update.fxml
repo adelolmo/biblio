@@ -54,7 +54,7 @@
         <HBox layoutX="150.0" layoutY="100.0" spacing="10.0">
             <children>
                 <Label layoutX="150.0" layoutY="80.0" text="Release notes:"/>
-                <TextArea fx:id="textAreaReleaseNotes" layoutX="247.0" layoutY="80.0" prefHeight="92.0"
+                <TextArea fx:id="textAreaReleaseNotes" editable="false" layoutX="247.0" layoutY="80.0" prefHeight="92.0"
                           prefWidth="450.0"/>
             </children>
         </HBox>

@@ -63,6 +63,7 @@ public class InstallPresenter implements Initializable {
     @PostConstruct
     public void init() {
         LOGGER.info("PostConstruct");
+        FileUtils.deleteQuietly(TEMP_DIRECTORY);
         unzipService = new UnzipService(UPDATE_FILE, TEMP_DIRECTORY);
         unzipService.setOnRunning(event -> {
             LOGGER.info("on running");
@@ -72,7 +73,8 @@ public class InstallPresenter implements Initializable {
             LOGGER.info("on succeeded");
             labelStepThree.setText("3. Installation process successfully finished.");
 
-            cleanDirectories();
+            FileUtils.deleteQuietly(UPDATE_FILE);
+            cleanDirectory(USER_DIRECTORY);
 
             copyUpdateFiles(TEMP_DIRECTORY, USER_DIRECTORY);
             FileUtils.deleteQuietly(TEMP_DIRECTORY);
@@ -107,16 +109,11 @@ public class InstallPresenter implements Initializable {
         LOGGER.info("initialize");
     }
 
+
     public void execute() {
         LOGGER.info("installing update...");
         labelStepOne.setText("1. Application update found");
         unzipService.start();
-    }
-
-    private void cleanDirectories() {
-        FileUtils.deleteQuietly(UPDATE_FILE);
-        FileUtils.deleteQuietly(TEMP_DIRECTORY);
-        cleanDirectory(USER_DIRECTORY);
     }
 
     private void cleanDirectory(File directory) {
@@ -124,6 +121,7 @@ public class InstallPresenter implements Initializable {
             FileUtils.cleanDirectory(directory);
         } catch (IOException e) {
             LOGGER.error(String.format("Cannot clean directory \"%s\".", directory), e);
+            e.printStackTrace();
         }
     }
 
