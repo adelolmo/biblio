@@ -46,6 +46,8 @@ public class InstallPresenter implements Initializable {
     private static final Logger LOGGER = LoggerFactory.getLogger(InstallPresenter.class);
     private static final String UPDATE_FILE_NAME = "update.zip";
     private static final File UPDATE_FILE = new File(UPDATE_FILE_NAME);
+    private static final File TEMP_DIRECTORY = new File(FileUtils.getTempDirectory(), "biblio-update");
+    private static final File USER_DIRECTORY = new File(System.getProperty("user.dir"));
 
     @FXML
     private Label labelStepOne;
@@ -61,7 +63,7 @@ public class InstallPresenter implements Initializable {
     @PostConstruct
     public void init() {
         LOGGER.info("PostConstruct");
-        unzipService = new UnzipService(UPDATE_FILE, new File(System.getProperty("user.dir")));
+        unzipService = new UnzipService(UPDATE_FILE, TEMP_DIRECTORY);
         unzipService.setOnRunning(event -> {
             LOGGER.info("on running");
             labelStepTwo.setText("2. Extracting update file");
@@ -69,7 +71,11 @@ public class InstallPresenter implements Initializable {
         unzipService.setOnSucceeded(event -> {
             LOGGER.info("on succeeded");
             labelStepThree.setText("3. Installation process successfully finished.");
-            FileUtils.deleteQuietly(UPDATE_FILE);
+
+            cleanDirectories();
+
+            copyUpdateFiles(TEMP_DIRECTORY, USER_DIRECTORY);
+            FileUtils.deleteQuietly(TEMP_DIRECTORY);
 
             final Task<Void> voidTask = new Task<Void>() {
                 @Override
@@ -104,8 +110,13 @@ public class InstallPresenter implements Initializable {
     public void execute() {
         LOGGER.info("installing update...");
         labelStepOne.setText("1. Application update found");
-        cleanDirectory(new File(System.getProperty("user.dir")));
         unzipService.start();
+    }
+
+    private void cleanDirectories() {
+        FileUtils.deleteQuietly(UPDATE_FILE);
+        FileUtils.deleteQuietly(TEMP_DIRECTORY);
+        cleanDirectory(USER_DIRECTORY);
     }
 
     private void cleanDirectory(File directory) {
@@ -113,6 +124,16 @@ public class InstallPresenter implements Initializable {
             FileUtils.cleanDirectory(directory);
         } catch (IOException e) {
             LOGGER.error(String.format("Cannot clean directory \"%s\".", directory), e);
+        }
+    }
+
+    private void copyUpdateFiles(File originDirectory, File destinationDirectory) {
+        try {
+            FileUtils.copyDirectory(originDirectory, destinationDirectory);
+        } catch (IOException e) {
+            LOGGER.error(String.format("Cannot copy directory \"%s\" to directory \"%s\"",
+                    originDirectory.getAbsolutePath(), destinationDirectory.getAbsolutePath()), e);
+            e.printStackTrace();
         }
     }
 
