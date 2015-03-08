@@ -50,17 +50,8 @@ public class UnzipService extends Service<Void> {
             @Override
             protected Void call() throws Exception {
                 ZipUtils.extractFolder(zipFile, destDirectory);
-                pause(5000);
                 return null;
             }
         };
-    }
-
-    private void pause(int millis) {
-        try {
-            Thread.sleep(millis);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
     }
 }
