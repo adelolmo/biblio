@@ -5,7 +5,7 @@
 
     <groupId>org.ado</groupId>
     <artifactId>biblio</artifactId>
-    <version>1.6-SNAPSHOT</version>
+    <version>1.6</version>
     <packaging>pom</packaging>
     <organization>
         <name>Andoni del Olmo</name>
