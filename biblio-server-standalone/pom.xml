@@ -105,4 +105,10 @@
             <url>http://repo.spring.io/libs-release</url>
         </pluginRepository>
     </pluginRepositories>
+
+    <scm>
+        <url>git:git@github.com:adelolmo/biblio.git</url>
+        <connection>scm:git:git@github.com:adelolmo/biblio.git</connection>
+        <developerConnection>scm:git:git@github.com:adelolmo/biblio.git</developerConnection>
+    </scm>
 </project>
