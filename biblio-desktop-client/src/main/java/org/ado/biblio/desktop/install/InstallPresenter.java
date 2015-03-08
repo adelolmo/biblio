@@ -74,7 +74,7 @@ public class InstallPresenter implements Initializable {
             labelStepThree.setText("3. Installation process successfully finished.");
 
             FileUtils.deleteQuietly(UPDATE_FILE);
-            cleanDirectory(USER_DIRECTORY);
+            cleanDirectory(new File(USER_DIRECTORY, "lib"));
 
             copyUpdateFiles(TEMP_DIRECTORY, USER_DIRECTORY);
             FileUtils.deleteQuietly(TEMP_DIRECTORY);
