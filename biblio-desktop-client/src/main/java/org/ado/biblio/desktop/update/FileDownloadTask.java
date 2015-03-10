@@ -82,15 +82,17 @@ public class FileDownloadTask extends Task<File> {
     }
 
     protected File call() throws Exception {
-        LOGGER.info(String.format("Downloading file %s to %s", remoteUrl, localFile.getAbsolutePath()));
+        LOGGER.info("Downloading file {} to {}", remoteUrl, localFile.getAbsolutePath());
 
-        HttpGet httpGet = new HttpGet(this.remoteUrl);
-        HttpResponse response = httpClient.execute(httpGet);
-        InputStream remoteContentStream = response.getEntity().getContent();
+        InputStream remoteContentStream = null;
         OutputStream localFileStream = null;
+        HttpGet httpGet = new HttpGet(this.remoteUrl);
+
         try {
+            HttpResponse response = httpClient.execute(httpGet);
+            remoteContentStream = response.getEntity().getContent();
             long fileSize = response.getEntity().getContentLength();
-            LOGGER.debug(String.format("Size of file to download is %s", fileSize));
+            LOGGER.debug("Size of file to download is {}", fileSize);
 
             localFileStream = new FileOutputStream(localFile);
             byte[] buffer = new byte[bufferSize];
@@ -100,13 +102,15 @@ public class FileDownloadTask extends Task<File> {
                 localFileStream.write(buffer, 0, sizeOfChunk);
                 amountComplete += sizeOfChunk;
                 updateProgress(amountComplete, fileSize);
-                LOGGER.info(String.format("Downloaded %s of %s bytes (%d) for file",
-                        amountComplete, fileSize, (int) ((double) amountComplete / (double) fileSize * 100.0)));
+                LOGGER.info("Downloaded {} of {} bytes ({}) for file",
+                        amountComplete, fileSize, (int) ((double) amountComplete / (double) fileSize * 100.0));
             }
             LOGGER.info(String.format("Downloading of file %s to %s completed successfully", remoteUrl, localFile.getAbsolutePath()));
             return localFile;
         } finally {
-            remoteContentStream.close();
+            if (remoteContentStream != null) {
+                remoteContentStream.close();
+            }
             if (localFileStream != null) {
                 localFileStream.close();
             }

@@ -69,5 +69,12 @@ public class DownloadPresenter implements Initializable {
                     .showInformation();
             stage.close();
         });
+        fileDownloadTask.setOnFailed(event -> {
+            Dialogs.create()
+                    .title("Download failed")
+                    .message("It was not possible to download the update. Please try again later.")
+                    .showError();
+            stage.close();
+        });
     }
 }
