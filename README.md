@@ -16,6 +16,19 @@ Solution to organize your personal physical library
 3. Download the Android APK file (e.g. biblio-android-1.5.apk)
 4. Install the biblio .apk file.
 
+### Server
+This step is only required if you want to deploy your own version of the Biblio server.
+Normal users can skip this section and move directly to the "Run" section.
+
+#### Deploy into Tomcat
+1. Go to [latest release](https://github.com/adelolmo/biblio/releases/latest)
+2. Download the Server WAR file (e.g. biblio-server-war-1.5.war)
+3. Copy the WAR file into tomcat's webapp directory ( TOMCAT/webapps )
+4. Start Tomcat
+
+#### Run as Standalone
+TODO
+
 ## Run
 
 ### On Windows
@@ -34,7 +47,17 @@ Solution to organize your personal physical library
 
 ## First steps
 TODO
+
 ### How to Link Desktop Application with Android App
+Once the Biblio Desktop Application is running:
+
+1. Go to File -> Settings
+2. Set "Server URL" to "http://biblio-adoorg.rhcloud.com" and click "Save".
+** If you have deployed your own version of the server, you should enter here where the server can be reached.
+3. Go to File -> Android
+4. Take your device running the Biblio App and use the button to scan the QR code shown in the computer's screen.
+Now your computer and your mobile are linked. Every time that you scan a book's barcode its details will be sent to the server.
+Once the Biblio Desktop Application is started the book's details will be added to the list.
 
 ## Build
 
