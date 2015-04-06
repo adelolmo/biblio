@@ -7,12 +7,12 @@
     <parent>
         <groupId>org.ado</groupId>
         <artifactId>biblio</artifactId>
-        <version>1.7-SNAPSHOT-SNAPSHOT</version>
+        <version>1.6-SNAPSHOT</version>
     </parent>
 
     <groupId>org.ado.biblio</groupId>
     <artifactId>biblio-server-core</artifactId>
-    <version>1.7-SNAPSHOT-SNAPSHOT</version>
+    <version>1.6-SNAPSHOT</version>
     <name>Biblio Server Core</name>
 
     <properties>
