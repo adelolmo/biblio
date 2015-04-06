@@ -6,12 +6,12 @@
     <parent>
         <groupId>org.ado</groupId>
         <artifactId>biblio</artifactId>
-        <version>1.7-SNAPSHOT-SNAPSHOT</version>
+        <version>1.6-SNAPSHOT</version>
     </parent>
 
     <groupId>org.ado.biblio</groupId>
     <artifactId>desktop-client</artifactId>
-    <version>1.7-SNAPSHOT-SNAPSHOT</version>
+    <version>1.6-SNAPSHOT</version>
     <name>Desktop App</name>
 
     <properties>
@@ -21,8 +21,6 @@
 
         <version.plugin.compiler>2.3.2</version.plugin.compiler>
         <version.plugin.jar>2.4</version.plugin.jar>
-
-        <javafx.version>2.2</javafx.version>
 
         <exec.mainClass>org.ado.biblio.desktop.App</exec.mainClass>
         <project.build.scriptSourceDirectory>src/main/bin</project.build.scriptSourceDirectory>
@@ -36,17 +34,17 @@
         <dependency>
             <groupId>org.ado.biblio</groupId>
             <artifactId>biblio-domain</artifactId>
-            <version>1.7-SNAPSHOT-SNAPSHOT</version>
+            <version>1.6-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.ado.biblio</groupId>
             <artifactId>biblio-update</artifactId>
-            <version>1.7-SNAPSHOT-SNAPSHOT</version>
+            <version>1.6-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.ado</groupId>
             <artifactId>googleapis-books</artifactId>
-            <version>1.7-SNAPSHOT-SNAPSHOT</version>
+            <version>1.6-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -59,12 +57,10 @@
         <dependency>
             <groupId>com.airhacks</groupId>
             <artifactId>afterburner.fx</artifactId>
-            <version>1.6.1</version>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.4</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -131,7 +127,7 @@
                 <version>8.1.2</version>
                 <configuration>
                     <mainClass>${exec.mainClass}</mainClass>
-                    <vendor>${project.organization.name}</vendor>
+                    <!--<vendor>${project.organization.name}</vendor>-->
                     <!--<id>${app.id}</id>-->
                 </configuration>
             </plugin>
@@ -153,7 +149,7 @@
                             <JavaFX-Application-Class>${exec.mainClass}</JavaFX-Application-Class>
                             <Main-Class>${exec.mainClass}</Main-Class>
                             <JavaFX-Version>${javafx.version}+</JavaFX-Version>
-                            <implementation-version>1.0</implementation-version>
+                            <implementation-version>${project.version}</implementation-version>
                             <!--                            <JavaFX-Class-Path>
                             </JavaFX-Class-Path> -->
                             <!-- The artifactId (name) of the jfxrt.jar ... see dependency system scope-->
@@ -166,21 +162,11 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.3</version>
                 <configuration>
                     <descriptors>
                         <descriptor>src/main/assembly/assembly.xml</descriptor>
                     </descriptors>
                 </configuration>
-                <executions>
-                    <execution>
-                        <id>make-assembly</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>

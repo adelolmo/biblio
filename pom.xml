@@ -5,7 +5,7 @@
 
     <groupId>org.ado</groupId>
     <artifactId>biblio</artifactId>
-    <version>1.7-SNAPSHOT-SNAPSHOT</version>
+    <version>1.6-SNAPSHOT</version>
     <packaging>pom</packaging>
     <organization>
         <name>Andoni del Olmo</name>
@@ -26,12 +26,14 @@
         <module>biblio-desktop-client</module>
         <module>googleapis-books</module>
         <module>biblio-update</module>
+        <module>biblio-install</module>
     </modules>
 
     <properties>
         <maven.compiler.target>1.6</maven.compiler.target>
         <maven.compiler.source>1.6</maven.compiler.source>
 
+        <javafx.version>2.2</javafx.version>
         <version.plugin.compiler>2.5.1</version.plugin.compiler>
     </properties>
 
@@ -46,6 +48,11 @@
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-log4j12</artifactId>
                 <version>1.7.7</version>
+            </dependency>
+            <dependency>
+                <groupId>com.airhacks</groupId>
+                <artifactId>afterburner.fx</artifactId>
+                <version>1.6.1</version>
             </dependency>
             <dependency>
                 <groupId>com.google.code.gson</groupId>
@@ -109,6 +116,28 @@
                         <releaseName>Biblio ${project.version}</releaseName>
                         <tag>biblio-${project.version}</tag>
                     </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>com.zenjava</groupId>
+                    <artifactId>javafx-maven-plugin</artifactId>
+                    <version>8.1.2</version>
+                    <configuration>
+                        <vendor>${project.organization.name}</vendor>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>2.3</version>
+                    <!--                    <executions>
+                                            <execution>
+                                                <id>make-assembly</id>
+                                                <phase>package</phase>
+                                                <goals>
+                                                    <goal>single</goal>
+                                                </goals>
+                                            </execution>
+                                        </executions>-->
                 </plugin>
             </plugins>
         </pluginManagement>
