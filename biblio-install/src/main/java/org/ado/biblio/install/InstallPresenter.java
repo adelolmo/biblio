@@ -1,4 +1,4 @@
-package org.ado.biblio.desktop.install;
+package org.ado.biblio.install;
 
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
@@ -39,7 +39,8 @@ import java.util.ResourceBundle;
  */
 
 /**
- * @author sMeet, 30.01.15
+ * @author Andoni del Olmo
+ * @since 31.01.15
  */
 public class InstallPresenter implements Initializable {
 
@@ -73,11 +74,11 @@ public class InstallPresenter implements Initializable {
             LOGGER.info("on succeeded");
             labelStepThree.setText("3. Installation process successfully finished.");
 
-            FileUtils.deleteQuietly(UPDATE_FILE);
+            deleteQuietly(UPDATE_FILE);
             cleanDirectory(new File(USER_DIRECTORY, "lib"));
 
             copyUpdateFiles(TEMP_DIRECTORY, USER_DIRECTORY);
-            FileUtils.deleteQuietly(TEMP_DIRECTORY);
+            deleteQuietly(TEMP_DIRECTORY);
 
             final Task<Void> voidTask = new Task<Void>() {
                 @Override
@@ -109,14 +110,25 @@ public class InstallPresenter implements Initializable {
         LOGGER.info("initialize");
     }
 
-
     public void execute() {
         LOGGER.info("installing update...");
         labelStepOne.setText("1. Application update found");
         unzipService.start();
     }
 
+
+    private void deleteQuietly(File file) {
+        LOGGER.info("delete [{}]", file.getAbsoluteFile());
+        try {
+            FileUtils.forceDelete(file);
+        } catch (IOException e) {
+            LOGGER.error(String.format("Cannot delete file \"%s\".", file), e);
+            e.printStackTrace();
+        }
+    }
+
     private void cleanDirectory(File directory) {
+        LOGGER.info("clean directory [{}]", directory.getAbsoluteFile());
         try {
             FileUtils.cleanDirectory(directory);
         } catch (IOException e) {
@@ -126,6 +138,7 @@ public class InstallPresenter implements Initializable {
     }
 
     private void copyUpdateFiles(File originDirectory, File destinationDirectory) {
+        LOGGER.info("copy directory [{}] to [{}]", originDirectory.getAbsoluteFile(), destinationDirectory.getAbsoluteFile());
         try {
             FileUtils.copyDirectory(originDirectory, destinationDirectory);
         } catch (IOException e) {

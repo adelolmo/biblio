@@ -1,8 +1,10 @@
-package org.ado.biblio.desktop.install;
+package org.ado.biblio;
 
-import javafx.concurrent.Service;
-import javafx.concurrent.Task;
-import org.ado.biblio.desktop.util.ZipUtils;
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import org.ado.biblio.install.InstallPresenter;
+import org.ado.biblio.install.InstallView;
 
 import java.io.File;
 
@@ -31,27 +33,33 @@ import java.io.File;
  */
 
 /**
- * @author Andoni del Olmo,
- * @since 31.01.15
+ * @author sMeet, 30.01.15
  */
-public class UnzipService extends Service<Void> {
+public class InstallUpdate extends Application {
 
-    private File zipFile;
-    private File destDirectory;
-
-    public UnzipService(File zipFile, File destDirectory) {
-        this.zipFile = zipFile;
-        this.destDirectory = destDirectory;
-    }
+    private static final String UPDATE_FILE_NAME = "update.zip";
+    private static final File UPDATE_FILE = new File(UPDATE_FILE_NAME);
 
     @Override
-    protected Task<Void> createTask() {
-        return new Task<Void>() {
-            @Override
-            protected Void call() throws Exception {
-                ZipUtils.extractFolder(zipFile, destDirectory);
-                return null;
-            }
-        };
+    public void start(Stage primaryStage) throws Exception {
+
+        if (UPDATE_FILE.exists()) {
+            showStage(primaryStage);
+        } else {
+            System.exit(0);
+        }
+    }
+
+    private void showStage(Stage primaryStage) {
+        final InstallView installView = new InstallView();
+        final Scene scene = new Scene(installView.getView());
+        final InstallPresenter presenter = (InstallPresenter) installView.getPresenter();
+        primaryStage.setTitle("Biblio update");
+        primaryStage.setScene(scene);
+        primaryStage.setMaxHeight(Double.MAX_VALUE);
+        primaryStage.setMaxWidth(Double.MAX_VALUE);
+        primaryStage.show();
+
+        presenter.execute();
     }
 }

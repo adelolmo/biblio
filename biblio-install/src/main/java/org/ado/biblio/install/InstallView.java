@@ -1,4 +1,4 @@
-package org.ado.biblio.desktop.install;
+package org.ado.biblio.install;
 
 import com.airhacks.afterburner.views.FXMLView;
 
@@ -27,7 +27,8 @@ import com.airhacks.afterburner.views.FXMLView;
  */
 
 /**
- * @author sMeet, 30.01.15
+ * @author Andoni del Olmo
+ * @since 31.01.15
  */
 public class InstallView extends FXMLView {
 
