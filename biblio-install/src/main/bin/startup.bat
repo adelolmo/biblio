@@ -25,5 +25,5 @@ set LOGFILE=%CD%\log4j.xml
 echo ClassPath : %LOCALCLASSPATH%
 
 echo START APPLICATION
-"%JAVA_HOME%"\bin\java %JAVA_OPTS% -Dlog4j.configuration=file:%LOGFILE% -Dfile.encoding=ISO-8859-1 -classpath biblio-install-1.6-jar-with-dependencies.jar "org.ado.biblio.InstallUpdate" &&
+"%JAVA_HOME%"\bin\java %JAVA_OPTS% -Dlog4j.configuration=file:%LOGFILE% -Dfile.encoding=ISO-8859-1 -classpath biblio-install-1.6-jar-with-dependencies.jar "org.ado.biblio.InstallUpdate" &
 "%JAVA_HOME%"\bin\java %JAVA_OPTS% -Dlog4j.configuration=file:%LOGFILE% -Dfile.encoding=ISO-8859-1 -classpath "%LOCALCLASSPATH%" "org.ado.biblio.desktop.App"
