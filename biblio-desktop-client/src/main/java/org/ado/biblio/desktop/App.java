@@ -4,6 +4,13 @@ import com.airhacks.afterburner.injection.Injector;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.ado.biblio.desktop.dropbox.DropboxException;
+import org.ado.biblio.desktop.dropbox.DropboxManager;
+import org.ado.biblio.desktop.dropbox.NoAccountDropboxException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static org.ado.biblio.desktop.AppConfiguration.DATABASE_FILE;
 
 /*
  * The MIT License (MIT)
@@ -37,12 +44,18 @@ import javafx.stage.Stage;
  */
 public class App extends Application {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(App.class);
+
+    private DropboxManager dropboxManager;
+
     public static void main(String[] args) {
         launch(args);
     }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        dropboxManager = new DropboxManager();
+
         // initializes HostServicesDelegate
         getHostServices();
 
@@ -59,6 +72,13 @@ public class App extends Application {
 
     @Override
     public void stop() throws Exception {
+        try {
+            dropboxManager.uploadSync(DATABASE_FILE.getName(), DATABASE_FILE);
+        } catch (DropboxException e) {
+            LOGGER.error("Unable to upload database", e);
+        } catch (NoAccountDropboxException e) {
+            LOGGER.debug("Cannot upload database. {}.", e.getMessage());
+        }
         Injector.forgetAll();
     }
 }

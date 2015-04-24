@@ -30,11 +30,11 @@
   ~ SOFTWARE.
   -->
 
-<VBox xmlns:fx="http://javafx.com/fxml/1" minWidth="-Infinity" snapToPixel="false" xmlns="http://javafx.com/javafx/8"
+<VBox minWidth="-Infinity" snapToPixel="false" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="org.ado.biblio.desktop.AppPresenter">
     <children>
-        <MenuBar maxHeight="30.0" minHeight="30.0" minWidth="-Infinity" prefHeight="30.0" prefWidth="1173.0"
-                 snapToPixel="false" VBox.vgrow="NEVER">
+        <MenuBar VBox.vgrow="NEVER" maxHeight="30.0" minHeight="30.0" minWidth="-Infinity" prefHeight="30.0"
+                 prefWidth="1173.0" snapToPixel="false">
             <menus>
                 <Menu mnemonicParsing="false" text="File">
                     <items>
@@ -48,25 +48,26 @@
                 </Menu>
                 <Menu mnemonicParsing="false" text="Help">
                     <items>
+                        <MenuItem mnemonicParsing="false" onAction="#update" text="Check for Update..."/>
                         <MenuItem mnemonicParsing="false" onAction="#about" text="About"/>
                     </items>
                 </Menu>
             </menus>
         </MenuBar>
-        <AnchorPane layoutY="29.0" maxHeight="30.0" maxWidth="1.7976931348623157E308" minHeight="30.0" prefHeight="30.0"
-                    prefWidth="633.0" VBox.vgrow="NEVER">
+        <AnchorPane VBox.vgrow="NEVER" layoutY="29.0" maxHeight="30.0" maxWidth="1.7976931348623157E308"
+                    minHeight="30.0" prefHeight="30.0" prefWidth="633.0">
             <children>
                 <HBox alignment="CENTER_LEFT" layoutX="14.0" layoutY="3.0" spacing="10.0">
                     <children>
                         <Label layoutX="14.0" layoutY="8.0" text="Search:"/>
-                        <TextField fx:id="textFieldSearch" layoutX="64.0" layoutY="3.0" onKeyReleased="#search"/>
+                        <TextField layoutX="64.0" layoutY="3.0" onKeyReleased="#search" fx:id="textFieldSearch"/>
                         <Button mnemonicParsing="false" onAction="#clear" text="Clear"/>
                     </children>
                 </HBox>
             </children>
         </AnchorPane>
-        <SplitPane dividerPositions="0.6054313099041534, 0.9696485623003195" layoutY="61.0" orientation="VERTICAL"
-                   prefHeight="619.0" prefWidth="1217.0" VBox.vgrow="ALWAYS">
+        <SplitPane VBox.vgrow="ALWAYS" dividerPositions="0.6054313099041534" layoutY="61.0" orientation="VERTICAL"
+                   prefHeight="619.0" prefWidth="1217.0">
             <items>
                 <TabPane tabClosingPolicy="UNAVAILABLE">
                     <tabs>
@@ -74,18 +75,18 @@
                             <content>
                                 <AnchorPane>
                                     <children>
-                                        <TableView fx:id="tableViewBooks" editable="true" prefHeight="342.0"
-                                                   AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-                                                   AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                        <TableView AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                                                   AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"
+                                                   editable="true" prefHeight="342.0" fx:id="tableViewBooks">
                                             <columns>
-                                                <TableColumn fx:id="tableColumnId" prefWidth="75.0" text="Id"
-                                                             visible="false"/>
-                                                <TableColumn fx:id="tableColumnTitle" editable="false" prefWidth="521.0"
-                                                             text="Title"/>
-                                                <TableColumn fx:id="tableColumnAuthor" minWidth="0.0" prefWidth="467.0"
-                                                             text="Author"/>
-                                                <TableColumn fx:id="tableColumnCreation" prefWidth="194.0"
-                                                             text="Creation"/>
+                                                <TableColumn prefWidth="75.0" text="Id" visible="false"
+                                                             fx:id="tableColumnId"/>
+                                                <TableColumn editable="false" prefWidth="521.0" text="Title"
+                                                             fx:id="tableColumnTitle"/>
+                                                <TableColumn minWidth="0.0" prefWidth="467.0" text="Author"
+                                                             fx:id="tableColumnAuthor"/>
+                                                <TableColumn prefWidth="194.0" text="Creation"
+                                                             fx:id="tableColumnCreation"/>
                                             </columns>
                                         </TableView>
                                     </children>
@@ -96,18 +97,18 @@
                             <content>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                     <children>
-                                        <TableView fx:id="tableViewLentBooks" layoutX="363.0" layoutY="2.0"
-                                                   prefHeight="204.0" prefWidth="926.0" AnchorPane.bottomAnchor="0.0"
-                                                   AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-                                                   AnchorPane.topAnchor="0.0">
+                                        <TableView AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                                                   AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"
+                                                   layoutX="363.0" layoutY="2.0" prefHeight="204.0" prefWidth="926.0"
+                                                   fx:id="tableViewLentBooks">
                                             <columns>
-                                                <TableColumn fx:id="tableColumnLendTitle" prefWidth="478.0"
-                                                             text="Title"/>
-                                                <TableColumn fx:id="tableColumnLendAuthor" minWidth="0.0"
-                                                             prefWidth="358.0" text="Author"/>
-                                                <TableColumn fx:id="tableColumnLendLentTo" prefWidth="220.0"
-                                                             text="Lent to"/>
-                                                <TableColumn fx:id="tableColumnLendDate" prefWidth="152.0" text="Date"/>
+                                                <TableColumn prefWidth="478.0" text="Title"
+                                                             fx:id="tableColumnLendTitle"/>
+                                                <TableColumn minWidth="0.0" prefWidth="358.0" text="Author"
+                                                             fx:id="tableColumnLendAuthor"/>
+                                                <TableColumn prefWidth="220.0" text="Lent to"
+                                                             fx:id="tableColumnLendLentTo"/>
+                                                <TableColumn prefWidth="152.0" text="Date" fx:id="tableColumnLendDate"/>
                                             </columns>
                                         </TableView>
                                     </children>
@@ -129,39 +130,39 @@
                 <AnchorPane>
                     <children>
                         <HBox layoutX="712.0"/>
-                        <HBox alignment="CENTER_LEFT" layoutX="13.9619140625" layoutY="9.0" spacing="10.0"
-                              AnchorPane.leftAnchor="13.9619140625" AnchorPane.rightAnchor="479.0380859375">
+                        <HBox AnchorPane.leftAnchor="13.9619140625" AnchorPane.rightAnchor="479.0380859375"
+                              alignment="CENTER_LEFT" layoutX="13.9619140625" layoutY="9.0" spacing="10.0">
                             <children>
                                 <Label layoutX="14.0" layoutY="14.0" prefHeight="15.0" prefWidth="49.0" text="Title:"/>
-                                <TextField fx:id="textFieldTitle" layoutX="62.0" layoutY="9.0" prefHeight="25.0"
-                                           prefWidth="651.0"/>
+                                <TextField layoutX="62.0" layoutY="9.0" prefHeight="25.0" prefWidth="651.0"
+                                           fx:id="textFieldTitle"/>
                             </children>
                         </HBox>
                         <HBox alignment="CENTER_LEFT" layoutX="14.0" layoutY="40.0" spacing="10.0">
                             <children>
                                 <Label layoutX="14.0" layoutY="37.0" text="Author:"/>
-                                <TextField fx:id="textFieldAuthor" layoutX="62.0" layoutY="32.0" prefHeight="25.0"
-                                           prefWidth="353.0"/>
+                                <TextField layoutX="62.0" layoutY="32.0" prefHeight="25.0" prefWidth="353.0"
+                                           fx:id="textFieldAuthor"/>
                             </children>
                         </HBox>
                         <HBox alignment="CENTER_LEFT" layoutX="14.0" layoutY="72.0" spacing="10.0">
                             <children>
                                 <Label layoutX="14.0" layoutY="65.0" prefHeight="15.0" prefWidth="49.0" text="ISBN:"/>
-                                <TextField fx:id="textFieldIsbn" layoutX="50.0" layoutY="60.0"/>
+                                <TextField layoutX="50.0" layoutY="60.0" fx:id="textFieldIsbn"/>
                             </children>
                         </HBox>
                         <HBox alignment="CENTER_LEFT" layoutX="14.0" layoutY="100.0" spacing="10.0">
                             <children>
                                 <Label layoutX="14.0" layoutY="65.0" prefHeight="15.0" prefWidth="49.0" text="Tags:"/>
-                                <TextField fx:id="textFieldTags" layoutX="50.0" layoutY="60.0"/>
+                                <TextField layoutX="50.0" layoutY="60.0" fx:id="textFieldTags"/>
                             </children>
                         </HBox>
                         <HBox layoutX="840.0" layoutY="150.0" spacing="10.0">
                             <children>
-                                <Button fx:id="buttonReturnBook" layoutX="840.0" layoutY="156.0" mnemonicParsing="false"
-                                        onAction="#returnBook" text="Return"/>
-                                <Button fx:id="buttonLend" layoutX="10.0" layoutY="10.0" mnemonicParsing="false"
-                                        onAction="#lend" text="Lend"/>
+                                <Button layoutX="840.0" layoutY="156.0" mnemonicParsing="false" onAction="#returnBook"
+                                        text="Return" fx:id="buttonReturnBook"/>
+                                <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#lend"
+                                        text="Lend" fx:id="buttonLend"/>
                             </children>
                         </HBox>
                         <HBox layoutX="784.0" layoutY="181.0" spacing="10.0">
@@ -173,8 +174,8 @@
                                         text="Save"/>
                             </children>
                         </HBox>
-                        <ImageView fx:id="imageViewCover" fitHeight="206.0" fitWidth="162.0" layoutX="997.0"
-                                   layoutY="14.0" pickOnBounds="true" preserveRatio="true"/>
+                        <ImageView fitHeight="206.0" fitWidth="162.0" layoutX="997.0" layoutY="14.0" pickOnBounds="true"
+                                   preserveRatio="true" fx:id="imageViewCover"/>
                     </children>
                 </AnchorPane>
 
@@ -184,9 +185,9 @@
             <children>
                 <HBox spacing="5.0">
                     <children>
-                        <ImageView fx:id="imageViewServerStatus" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true"
-                                   preserveRatio="true"/>
-                        <Label fx:id="labelSystem" prefHeight="15.0" prefWidth="405.0"/>
+                        <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true"
+                                   fx:id="imageViewServerStatus"/>
+                        <Label prefHeight="15.0" prefWidth="405.0" fx:id="labelSystem"/>
                     </children>
                 </HBox>
             </children>

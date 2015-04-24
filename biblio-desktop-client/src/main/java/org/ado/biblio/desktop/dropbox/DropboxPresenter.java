@@ -99,7 +99,9 @@ public class DropboxPresenter implements Initializable {
 
     public void unlink() throws DropboxException {
         dropboxManager.unlink();
-        labelDropboxLinkedTo.setText("Not linked");
+        labelDropboxLinkedTo.setText("");
+        labelUserId.setText("");
+        labelCountry.setText("");
     }
 
     public void close() {
@@ -118,7 +120,7 @@ public class DropboxPresenter implements Initializable {
             return new Task<AccountInfo>() {
                 @Override
                 protected AccountInfo call() throws Exception {
-                    if (dropboxManager.hasLinkedAccount()) {
+                    if (dropboxManager.isAccountLinked()) {
                         return dropboxManager.getAccountInfo();
                     }
                     return null;

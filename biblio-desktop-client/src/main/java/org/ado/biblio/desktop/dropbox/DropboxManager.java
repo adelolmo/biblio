@@ -4,15 +4,15 @@ import com.dropbox.core.*;
 import com.dropbox.core.json.JsonReader;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
+import javafx.event.EventHandler;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.Locale;
 
 import static org.ado.biblio.desktop.AppConfiguration.APP_CONFIG_DIRECTORY;
@@ -42,7 +42,7 @@ import static org.ado.biblio.desktop.AppConfiguration.APP_CONFIG_DIRECTORY;
  */
 
 /**
- * Class description here.
+ * Class to provide access to dropbox.
  *
  * @author andoni
  * @since 05.11.2014
@@ -51,7 +51,7 @@ public class DropboxManager {
 
     private static final File ACCESS_TOKEN_FILE = new File(APP_CONFIG_DIRECTORY, ".dropbox_access_token");
     private static final String COVER_PATH = "/covers/%s.%s";
-    private static DbxRequestConfig DROPBOX_CONFIG = new DbxRequestConfig("Biblio Data/1.0", Locale.getDefault().toString());
+    private static final DbxRequestConfig DROPBOX_CONFIG = new DbxRequestConfig("Biblio Data/1.0", Locale.getDefault().toString());
     private final Logger LOGGER = LoggerFactory.getLogger(DropboxManager.class);
     private DbxClient dbxClient;
 
@@ -65,21 +65,67 @@ public class DropboxManager {
         LOGGER.info("Cleaning up!");
     }
 
-    public void uploadCover(String isbn, File file) throws DropboxException {
-        upload(String.format(COVER_PATH, isbn, "jpeg"), file);
+    public void uploadCover(String isbn, File file) throws DropboxException, NoAccountDropboxException {
+        uploadAsync(String.format(COVER_PATH, isbn, "jpeg"), file);
     }
 
-    public void upload(String targetPath, File file) throws DropboxException {
-        new UploadAsync(targetPath, file).start();
+    public void deleteCover(String isbn) throws DropboxException, NoAccountDropboxException {
+        deleteAsync(String.format(COVER_PATH, isbn, "jpeg"));
     }
 
-    public void deleteCover(String isbn) throws DropboxException {
-        new DeleteAsync(String.format(COVER_PATH, isbn, "jpeg")).start();
+    public void uploadAsync(String remotePath, File file) throws DropboxException, NoAccountDropboxException {
+        if (isAccountLinked()) {
+            new UploadAsync(remotePath, file).start();
+        } else {
+            throw new NoAccountDropboxException();
+        }
+    }
+
+    public void uploadSync(String remotePath, File file) throws DropboxException, NoAccountDropboxException {
+        if (isAccountLinked()) {
+            try {
+                getClient().uploadFile(getRemotePath(remotePath), DbxWriteMode.force(), file.length(), new FileInputStream(file));
+                LOGGER.debug("File uploaded {}", remotePath);
+            } catch (Exception e) {
+                throw new DropboxException(String.format("Cannot upload file \"%s\"", remotePath), e);
+            }
+        } else {
+            throw new NoAccountDropboxException();
+        }
+    }
+
+    private void deleteAsync(String remotePath) throws NoAccountDropboxException {
+        if (isAccountLinked()) {
+            new DeleteAsync(remotePath).start();
+        } else {
+            throw new NoAccountDropboxException();
+        }
+    }
+
+    public File downloadSync(String remotePath, File localFile) throws DropboxException, NoAccountDropboxException {
+        if (isAccountLinked()) {
+            try {
+                final OutputStream out = new FileOutputStream(localFile);
+                final DbxEntry.File dbxFile = getClient().getFile(getRemotePath(remotePath), null, out);
+                return localFile;
+            } catch (Exception e) {
+                throw new DropboxException(String.format("Cannot download file \"%s\"", remotePath), e);
+            }
+
+        } else {
+            throw new NoAccountDropboxException();
+        }
+    }
+
+    public void downloadAsync(String remotePath, File localFile, EventHandler<WorkerStateEvent> onSucceeded) throws DropboxException {
+        final DownloadAsync downloadAsync = new DownloadAsync(getRemotePath(remotePath), localFile);
+        downloadAsync.start();
+        downloadAsync.setOnSucceeded(onSucceeded);
     }
 
     public boolean isConnected() {
         try {
-            return ACCESS_TOKEN_FILE.exists() && getClient() != null;
+            return isAccountLinked() && getClient() != null;
         } catch (Exception e) {
             return false;
         }
@@ -100,8 +146,8 @@ public class DropboxManager {
         dbxClient = null;
     }
 
-    public boolean hasLinkedAccount() {
-        return ACCESS_TOKEN_FILE.exists();
+    public boolean isAccountLinked() {
+        return ACCESS_TOKEN_FILE.exists() && ACCESS_TOKEN_FILE.isFile() && ACCESS_TOKEN_FILE.length() > 0;
     }
 
     public void link(DropboxAccountLinkListener dropboxAccountLinkListener) throws DropboxException {
@@ -141,8 +187,9 @@ public class DropboxManager {
         }
     }
 
-    //                             DbxAuthInfo.Writer.writeToFile(dbxAuthInfo, ACCESS_TOKEN_FILE);
-
+    private String getRemotePath(String remotePath) {
+        return remotePath.startsWith("/") ? remotePath : "/" + remotePath;
+    }
 
     public interface DropboxAccountLinkListener {
         void accountLinked(AccountInfo accountInfo);
@@ -150,11 +197,11 @@ public class DropboxManager {
 
     class UploadAsync extends Service<Void> {
 
-        private String targetPath;
+        private String remotePath;
         private File file;
 
-        public UploadAsync(String targetPath, File file) {
-            this.targetPath = targetPath;
+        public UploadAsync(String remotePath, File file) {
+            this.remotePath = remotePath;
             this.file = file;
         }
 
@@ -164,10 +211,10 @@ public class DropboxManager {
                 @Override
                 protected Void call() throws Exception {
                     try {
-                        getClient().uploadFile(targetPath, DbxWriteMode.force(), file.length(), new FileInputStream(file));
-                        LOGGER.debug("File uploaded {}", targetPath);
+                        getClient().uploadFile(remotePath, DbxWriteMode.force(), file.length(), new FileInputStream(file));
+                        LOGGER.debug("File uploaded {}", remotePath);
                     } catch (DbxException | IOException | JsonReader.FileLoadException e) {
-                        throw new DropboxException(String.format("Unable to upload \"%s\" to target path \"%s\".", file.getAbsolutePath(), targetPath), e);
+                        throw new DropboxException(String.format("Unable to upload \"%s\" to localFile remotePath \"%s\".", file.getAbsolutePath(), remotePath), e);
                     }
                     return null;
                 }
@@ -177,10 +224,10 @@ public class DropboxManager {
 
     class DeleteAsync extends Service<Void> {
 
-        private String targetPath;
+        private String remotePath;
 
-        public DeleteAsync(String targetPath) {
-            this.targetPath = targetPath;
+        public DeleteAsync(String remotePath) {
+            this.remotePath = remotePath;
         }
 
         @Override
@@ -189,12 +236,41 @@ public class DropboxManager {
                 @Override
                 protected Void call() throws Exception {
                     try {
-                        getClient().delete(targetPath);
-                        LOGGER.debug("File deleted {}", targetPath);
+                        getClient().delete(remotePath);
+                        LOGGER.debug("File deleted {}", remotePath);
                     } catch (DbxException | JsonReader.FileLoadException e) {
-                        throw new DropboxException(String.format("Unable to delete file to target path \"%s\".", targetPath), e);
+                        throw new DropboxException(String.format("Unable to delete file in remotePath \"%s\".", remotePath), e);
                     }
                     return null;
+                }
+            };
+        }
+    }
+
+    private class DownloadAsync extends Service<File> {
+
+        private String remotePath;
+        private File localFile;
+
+        public DownloadAsync(String remotePath, File localFile) {
+            this.remotePath = remotePath;
+            this.localFile = localFile;
+        }
+
+        @Override
+        protected Task<File> createTask() {
+            return new Task<File>() {
+                @Override
+                protected File call() throws Exception {
+                    try {
+                        final OutputStream out = new FileOutputStream(localFile);
+                        final DbxEntry.File dbxFile = getClient().getFile(remotePath, null, out);
+                        return localFile;
+                    } catch (DbxException | IOException | JsonReader.FileLoadException e) {
+                        throw new DropboxException(
+                                String.format("Unable to download remote file \"%s\" into localFile \"%s\".", remotePath, localFile.getAbsolutePath()), e);
+                    }
+
                 }
             };
         }

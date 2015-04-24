@@ -35,7 +35,8 @@ import java.util.UUID;
  */
 
 /**
- * Class description here.
+ * Class to access application properties and handle user's configuration options.
+ * It also contains some application constants.
  *
  * @author andoni
  * @since 22.11.2014
@@ -43,6 +44,7 @@ import java.util.UUID;
 public class AppConfiguration {
 
     public static final File APP_CONFIG_DIRECTORY = new File(FileUtils.getUserDirectory(), "biblio");
+    public static final File DATABASE_FILE = new File(APP_CONFIG_DIRECTORY, "biblio.db");
     private static final File CONFIG = new File(APP_CONFIG_DIRECTORY, "biblio-config.properties");
 
     private static Properties config;

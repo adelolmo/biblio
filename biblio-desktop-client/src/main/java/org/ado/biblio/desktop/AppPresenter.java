@@ -17,10 +17,7 @@ import org.ado.biblio.desktop.about.AboutPresenter;
 import org.ado.biblio.desktop.about.AboutView;
 import org.ado.biblio.desktop.android.AndroidView;
 import org.ado.biblio.desktop.db.DatabaseConnection;
-import org.ado.biblio.desktop.dropbox.DropboxException;
-import org.ado.biblio.desktop.dropbox.DropboxManager;
-import org.ado.biblio.desktop.dropbox.DropboxPresenter;
-import org.ado.biblio.desktop.dropbox.DropboxView;
+import org.ado.biblio.desktop.dropbox.*;
 import org.ado.biblio.desktop.lend.LendPresenter;
 import org.ado.biblio.desktop.lend.LendView;
 import org.ado.biblio.desktop.model.Book;
@@ -188,7 +185,6 @@ public class AppPresenter implements Initializable, LendPresenter.LendBookListen
         reloadLentTable();
     }
 
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         LOGGER.info("initializing...");
@@ -316,6 +312,10 @@ public class AppPresenter implements Initializable, LendPresenter.LendBookListen
         stage.show();
     }
 
+    public void update() {
+
+    }
+
     public void search(Event event) throws SQLException {
         LOGGER.info("search");
         String searchSequence = textFieldSearch.getCharacters().toString();
@@ -375,7 +375,11 @@ public class AppPresenter implements Initializable, LendPresenter.LendBookListen
             databaseConnection.deleteBook(bookId);
             bookData.remove(bookFocusedIndex);
             ImageUtils.deleteCover(textFieldIsbn.getText());
-            dropboxManager.deleteCover(textFieldIsbn.getText());
+            try {
+                dropboxManager.deleteCover(textFieldIsbn.getText());
+            } catch (NoAccountDropboxException e) {
+                LOGGER.debug("Cannot delete cover. {}.", e.getMessage());
+            }
 
             resetBookView();
         }
@@ -482,7 +486,9 @@ public class AppPresenter implements Initializable, LendPresenter.LendBookListen
             } catch (IOException e) {
                 LOGGER.error(String.format("Cannot write book's cover into disk. %s", bookInfo.toString()), e);
             } catch (DropboxException e) {
-                e.printStackTrace();
+                LOGGER.error("Cannot upload cover", e);
+            } catch (NoAccountDropboxException e) {
+                LOGGER.debug("Cannot upload cover. {}.", e.getMessage());
             }
         }
     }

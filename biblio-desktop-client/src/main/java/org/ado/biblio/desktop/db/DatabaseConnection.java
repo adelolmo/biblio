@@ -1,6 +1,8 @@
 package org.ado.biblio.desktop.db;
 
-import org.ado.biblio.desktop.AppConfiguration;
+import org.ado.biblio.desktop.dropbox.DropboxException;
+import org.ado.biblio.desktop.dropbox.DropboxManager;
+import org.ado.biblio.desktop.dropbox.NoAccountDropboxException;
 import org.ado.biblio.desktop.model.Book;
 import org.ado.biblio.desktop.model.LendBook;
 import org.ado.biblio.desktop.util.DateUtils;
@@ -10,11 +12,13 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import java.io.File;
+import javax.inject.Inject;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import static org.ado.biblio.desktop.AppConfiguration.DATABASE_FILE;
 
 /*
  * The MIT License (MIT)
@@ -48,14 +52,19 @@ import java.util.List;
  */
 public class DatabaseConnection {
 
-    private static final File DATABASE_FILE = new File(AppConfiguration.APP_CONFIG_DIRECTORY, "biblio.db");
+    private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseConnection.class);
     private static final int DATABASE_VERSION = 1;
-    private final Logger LOGGER = LoggerFactory.getLogger(DatabaseConnection.class);
+
+    @Inject
+    private DropboxManager dropboxManager;
+
     private Connection connection;
     private DatabaseInitialize databaseInitialize;
 
     @PostConstruct
     private void init() {
+        downloadDatabase();
+
         try {
             Class.forName("org.sqlite.JDBC");
             if (!DATABASE_FILE.exists()) {
@@ -77,11 +86,12 @@ public class DatabaseConnection {
     @PreDestroy
     private void destroy() {
         try {
+            LOGGER.info("close db connection.");
             if (connection != null) {
                 connection.close();
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.error("Cannot close connection to DB", e);
         }
     }
 
@@ -142,7 +152,7 @@ public class DatabaseConnection {
     public List<LendBook> getLentBookList() throws SQLException {
         String query = "SELECT Book.id, Book.title, Book.author, Book.ctime, Book.isbn, Book.tags," +
                 "(SELECT Lend.person FROM Lend WHERE Book.id = Lend.bookId AND Lend.rtime IS NULL GROUP BY Lend.id LIMIT 1) AS person FROM Book " +
-                "where person is not null";
+                "WHERE person IS NOT NULL";
         final List<LendBook> lendBookList = new ArrayList<>();
 
         final PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -215,5 +225,15 @@ public class DatabaseConnection {
 
     private boolean isBookLent(int lent) {
         return lent > 0;
+    }
+
+    private void downloadDatabase() {
+        try {
+            dropboxManager.downloadSync(DATABASE_FILE.getName(), DATABASE_FILE);
+        } catch (DropboxException e) {
+            throw new IllegalStateException("Unable to download database", e);
+        } catch (NoAccountDropboxException e) {
+            LOGGER.debug("Can't download database. {}", e.getMessage());
+        }
     }
 }
