@@ -2,6 +2,8 @@
 
 Solution to organize your personal physical library
 
+<img src="images/biblio-desktop.png" width="50%"/>
+
 ## Install
 
 ### Desktop Application
