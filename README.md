@@ -2,7 +2,7 @@
 
 Solution to organize your personal physical library
 
-<img src="images/biblio-desktop.png" width="50%"/>
+<img src="images/biblio-desktop.png" width="100%"/>
 
 ## Install
 
