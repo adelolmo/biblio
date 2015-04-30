@@ -2,7 +2,7 @@
 
 Solution to organize your personal physical library
 
-<img src="images/biblio-desktop.png" width="100%"/>
+<img src="https://raw.githubusercontent.com/adelolmo/biblio/gh-pages/images/biblio-desktop.png" width="100%"/>
 
 ## Install
 
