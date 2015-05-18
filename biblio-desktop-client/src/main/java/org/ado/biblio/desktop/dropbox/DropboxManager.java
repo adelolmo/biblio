@@ -102,6 +102,10 @@ public class DropboxManager {
         }
     }
 
+    public File downloadSync(String remotePath) throws NoAccountDropboxException, DropboxException {
+        return downloadSync(remotePath, new File(FileUtils.getTempDirectory(), "temp-bilbio.db"));
+    }
+
     public File downloadSync(String remotePath, File localFile) throws DropboxException, NoAccountDropboxException {
         if (isAccountLinked()) {
             try {

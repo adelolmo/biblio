@@ -7,11 +7,13 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
+import org.ado.biblio.desktop.db.DatabaseMerge;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 /*
@@ -66,7 +68,11 @@ public class DropboxPresenter implements Initializable {
     @Inject
     private DropboxManager dropboxManager;
 
+    @Inject
+    private DatabaseMerge databaseMerge;
+
     private Stage stage;
+    private DropboxLinkedListener dropboxLinkedListener;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -94,6 +100,7 @@ public class DropboxPresenter implements Initializable {
             buttonLink.setDisable(true);
             buttonUnlink.setDisable(false);
             populateAccountInfoFields(accountInfo);
+            new MergeDatabases().start();
         });
     }
 
@@ -114,6 +121,15 @@ public class DropboxPresenter implements Initializable {
         labelCountry.setText(accountInfo.getCountry());
     }
 
+    public void init(Stage stage, DropboxLinkedListener dropboxLinkedListener) {
+        this.stage = stage;
+        this.dropboxLinkedListener = dropboxLinkedListener;
+    }
+
+    public interface DropboxLinkedListener {
+        void accountLinked();
+    }
+
     class LoadAccountInfo extends Service<AccountInfo> {
         @Override
         protected Task<AccountInfo> createTask() {
@@ -122,6 +138,24 @@ public class DropboxPresenter implements Initializable {
                 protected AccountInfo call() throws Exception {
                     if (dropboxManager.isAccountLinked()) {
                         return dropboxManager.getAccountInfo();
+                    }
+                    return null;
+                }
+            };
+        }
+    }
+
+    class MergeDatabases extends Service<Void> {
+        @Override
+        protected Task<Void> createTask() {
+            return new Task<Void>() {
+                @Override
+                protected Void call() throws Exception {
+                    try {
+                        databaseMerge.mergeBooks();
+                        dropboxLinkedListener.accountLinked();
+                    } catch (SQLException e) {
+                        LOGGER.error("Cannot merge remote database", e);
                     }
                     return null;
                 }

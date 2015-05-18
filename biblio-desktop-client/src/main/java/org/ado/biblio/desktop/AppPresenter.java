@@ -16,7 +16,10 @@ import javafx.util.Callback;
 import org.ado.biblio.desktop.about.AboutPresenter;
 import org.ado.biblio.desktop.about.AboutView;
 import org.ado.biblio.desktop.android.AndroidView;
-import org.ado.biblio.desktop.db.DatabaseConnection;
+import org.ado.biblio.desktop.db.DatabaseContext;
+import org.ado.biblio.desktop.db.DatabaseFactory;
+import org.ado.biblio.desktop.db.DatabaseManager;
+import org.ado.biblio.desktop.db.DatabaseMerge;
 import org.ado.biblio.desktop.dropbox.*;
 import org.ado.biblio.desktop.lend.LendPresenter;
 import org.ado.biblio.desktop.lend.LendView;
@@ -86,7 +89,7 @@ import java.util.stream.Collectors;
  * @author andoni
  * @since 25.10.2014
  */
-public class AppPresenter implements Initializable, LendPresenter.LendBookListener, ReturnBookPresenter.ReturnBookListener {
+public class AppPresenter implements Initializable, LendPresenter.LendBookListener, ReturnBookPresenter.ReturnBookListener, DropboxPresenter.DropboxLinkedListener {
 
     private final Logger LOGGER = LoggerFactory.getLogger(AppPresenter.class);
     private final ObservableList<Book> bookData = FXCollections.observableArrayList();
@@ -165,7 +168,7 @@ public class AppPresenter implements Initializable, LendPresenter.LendBookListen
     private UpdateService updateService;
 
     @Inject
-    private DatabaseConnection databaseConnection;
+    private DatabaseFactory databaseFactory;
 
     @Inject
     private DropboxManager dropboxManager;
@@ -173,13 +176,19 @@ public class AppPresenter implements Initializable, LendPresenter.LendBookListen
     @Inject
     private UpdateManager updateManager;
 
+    @Inject
+    private DatabaseMerge databaseMerge;
+
     private Stage stage;
     private Integer bookId;
     private int bookFocusedIndex;
+    private DatabaseManager databaseManager;
 
     @PostConstruct
     public void init() throws Exception {
         LOGGER.info("PostConstruct...");
+        databaseManager = databaseFactory.create(AppConfiguration.DATABASE_FILE, true);
+        DatabaseContext.setDatabaseManager(databaseManager);
         serverPullingService.setClientId(AppConfiguration.getAppId());
         reloadBooksTable();
         reloadLentTable();
@@ -277,7 +286,7 @@ public class AppPresenter implements Initializable, LendPresenter.LendBookListen
         Stage stage = new Stage();
         DropboxView dropboxView = new DropboxView();
         final DropboxPresenter dropboxPresenter = (DropboxPresenter) dropboxView.getPresenter();
-        dropboxPresenter.setStage(stage);
+        dropboxPresenter.init(stage, this);
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.setScene(new Scene(dropboxView.getView()));
         stage.setTitle("Dropbox");
@@ -312,8 +321,8 @@ public class AppPresenter implements Initializable, LendPresenter.LendBookListen
         stage.show();
     }
 
-    public void update() {
-
+    public void update() throws SQLException {
+        databaseMerge.mergeBooks();
     }
 
     public void search(Event event) throws SQLException {
@@ -347,10 +356,10 @@ public class AppPresenter implements Initializable, LendPresenter.LendBookListen
         Collections.addAll(new ArrayList<>(), textFieldTags.getText().split(","));
         if (bookId != null) {
             final Book book = new Book(bookId, textFieldTitle.getText(), textFieldAuthor.getText(), textFieldIsbn.getText(), new Date(), textFieldTags.getText());
-            databaseConnection.updateBook(book);
+            DatabaseContext.getDatabaseManager().updateBook(book);
             bookData.set(bookFocusedIndex, book);
         } else {
-            final Book book = databaseConnection
+            final Book book = DatabaseContext.getDatabaseManager()
                     .insertBook(new Book(textFieldTitle.getText(), textFieldAuthor.getText(), textFieldIsbn.getText(), new Date(), textFieldTags.getText()));
             bookData.add(book);
         }
@@ -372,7 +381,7 @@ public class AppPresenter implements Initializable, LendPresenter.LendBookListen
                 .showConfirm();
 
         if (response == org.controlsfx.dialog.Dialog.ACTION_YES) {
-            databaseConnection.deleteBook(bookId);
+            DatabaseContext.getDatabaseManager().deleteBook(bookId);
             bookData.remove(bookFocusedIndex);
             ImageUtils.deleteCover(textFieldIsbn.getText());
             try {
@@ -435,14 +444,23 @@ public class AppPresenter implements Initializable, LendPresenter.LendBookListen
         }
     }
 
+    @Override
+    public void accountLinked() {
+        try {
+            reloadBooksTable();
+        } catch (SQLException e) {
+            LOGGER.error("Cannot reload books table", e);
+        }
+    }
+
     private void reloadBooksTable() throws SQLException {
         bookData.clear();
-        bookData.addAll(databaseConnection.getBookList().stream().collect(Collectors.toList()));
+        bookData.addAll(DatabaseContext.getDatabaseManager().getBookList().stream().collect(Collectors.toList()));
     }
 
     private void reloadLentTable() throws SQLException {
         lendBookData.clear();
-        lendBookData.addAll(databaseConnection.getLentBookList().stream().collect(Collectors.toList()));
+        lendBookData.addAll(DatabaseContext.getDatabaseManager().getLentBookList().stream().collect(Collectors.toList()));
     }
 
     private void loadBookDetails(MouseEvent event) {
@@ -472,7 +490,7 @@ public class AppPresenter implements Initializable, LendPresenter.LendBookListen
     private void addBook(BookInfo bookInfo) {
         LOGGER.info(bookInfo.toString());
         try {
-            final Book book = databaseConnection.insertBook(new Book(bookInfo.getTitle(), bookInfo.getAuthor(), bookInfo.getIsbn(), new Date(), ""));
+            final Book book = DatabaseContext.getDatabaseManager().insertBook(new Book(bookInfo.getTitle(), bookInfo.getAuthor(), bookInfo.getIsbn(), new Date(), ""));
             bookData.add(book);
         } catch (SQLException e) {
             LOGGER.error(String.format("Cannot insert book into database. %s", bookInfo.toString()), e);

@@ -1,13 +1,4 @@
-package org.ado.biblio.desktop.db;
-
-import org.apache.commons.io.FileUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.File;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+package org.ado.biblio.desktop;
 
 /*
  * The MIT License (MIT)
@@ -33,23 +24,17 @@ import java.sql.SQLException;
  * SOFTWARE.
  */
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 /**
  * @author Andoni del Olmo
- * @since 27.04.15
+ * @since 30.04.15
  */
-public class DatabaseConnection {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseConnection.class);
-
-    public static Connection getConnection(File databaseFile) throws SQLException {
-        try {
-            Class.forName("org.sqlite.JDBC");
-            if (!databaseFile.exists()) {
-                FileUtils.touch(databaseFile);
-            }
-            return DriverManager.getConnection(String.format("jdbc:sqlite:%s", databaseFile.getAbsolutePath()));
-        } catch (Exception e) {
-            throw new SQLException(String.format("Unable to establish connection to database \"%s\".", databaseFile), e);
-        }
-    }
+@Target(ElementType.FIELD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface InjectMock {
+    String value() default "";
 }

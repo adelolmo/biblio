@@ -1,14 +1,13 @@
 package org.ado.biblio.desktop.db;
 
-import org.ado.biblio.desktop.AppConfiguration;
 import org.ado.biblio.desktop.InjectTestCase;
 import org.ado.biblio.desktop.model.Book;
 import org.ado.biblio.desktop.model.LendBook;
-import org.apache.commons.io.FileUtils;
-import org.junit.After;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
-import java.io.File;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Locale;
@@ -40,28 +39,20 @@ import static org.junit.Assert.assertEquals;
  * SOFTWARE.
  */
 
-public class DatabaseConnectionTest extends InjectTestCase<DatabaseConnection> {
+public class DatabaseManagerTest extends InjectTestCase<DatabaseManager> {
 
-    private static final File DATABASE_FILE = new File(AppConfiguration.APP_CONFIG_DIRECTORY, "biblio.db");
-    private static final File DATABASE_FILE_TMP = new File(FileUtils.getTempDirectory(), "biblio.db");
     private static final Book BOOK_ONE = new Book(1, "The Book One", "Andoni", "1234", parseSqlite("2015-02-01 08:00:00"), "tag1, tag2");
     private static final Book BOOK_TWO = new Book(2, "Apocalipsis Maya", "Steven Alter", "1111", parseSqlite("2015-02-02 08:00:00"), "");
     private static final Book BOOK_THREE = new Book(3, "Summer of Night", "Dan Simmons", "2222", parseSqlite("2015-02-03 08:00:00"), "horror");
 
-    public void setUp() throws Exception {
-        FileUtils.deleteQuietly(DATABASE_FILE_TMP);
-        if (DATABASE_FILE.exists()) {
-            FileUtils.moveFile(DATABASE_FILE, DATABASE_FILE_TMP);
-        }
-        Locale.setDefault(Locale.ENGLISH);
-    }
+    @Rule
+    public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
-    @After
-    public void tearDown() throws Exception {
-        FileUtils.deleteQuietly(DATABASE_FILE);
-        if (DATABASE_FILE_TMP.exists()) {
-            FileUtils.moveFile(DATABASE_FILE_TMP, DATABASE_FILE);
-        }
+    public void setUp() throws Exception {
+        Locale.setDefault(Locale.ENGLISH);
+        final Connection connection = DatabaseConnection.getConnection(temporaryFolder.newFile("biblio.db"));
+        unitUnderTest.setConnection(connection);
+        unitUnderTest.upgradeDatabase();
     }
 
     @Test

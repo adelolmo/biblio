@@ -4,7 +4,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import org.ado.biblio.desktop.db.DatabaseConnection;
+import org.ado.biblio.desktop.db.DatabaseManager;
 import org.ado.biblio.desktop.model.Book;
 import org.ado.biblio.desktop.util.DateUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -58,7 +58,7 @@ public class LendPresenter implements Initializable {
     private TextField textFieldDate;
 
     @Inject
-    private DatabaseConnection databaseConnection;
+    private DatabaseManager databaseManager;
 
     private Stage stage;
     private int bookId;
@@ -88,7 +88,7 @@ public class LendPresenter implements Initializable {
         } else {
             try {
                 Date ctime = DateUtils.parse(textFieldDate.getText(), DateUtils.DateTypeEnum.DATE);
-                final Book book = databaseConnection.lendBook(bookId, person, ctime);
+                final Book book = databaseManager.lendBook(bookId, person, ctime);
                 lendBookListener.lentBook(book);
 
                 stage.close();

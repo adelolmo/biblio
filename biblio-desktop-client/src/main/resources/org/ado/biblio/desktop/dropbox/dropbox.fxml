@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
+
 <!--
   ~ The MIT License (MIT)
   ~
@@ -29,8 +32,8 @@
   ~ SOFTWARE.
   -->
 
-<Pane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
-      minWidth="-Infinity" prefHeight="128.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8"
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="128.0"
+      prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="org.ado.biblio.desktop.dropbox.DropboxPresenter">
     <children>
         <HBox layoutX="150.0" layoutY="20.0" spacing="10.0">
@@ -40,7 +43,7 @@
                         <Insets/>
                     </HBox.margin>
                 </Label>
-                <Label fx:id="labelDropboxLinkedTo" layoutX="119.0" layoutY="38.0" text="not linked">
+                <Label layoutX="119.0" layoutY="38.0" fx:id="labelDropboxLinkedTo">
                     <HBox.margin>
                         <Insets/>
                     </HBox.margin>
@@ -54,7 +57,7 @@
                         <Insets/>
                     </HBox.margin>
                 </Label>
-                <Label fx:id="labelUserId" layoutX="70.0" layoutY="38.0" text="user id">
+                <Label layoutX="70.0" layoutY="38.0" fx:id="labelUserId">
                     <HBox.margin>
                         <Insets/>
                     </HBox.margin>
@@ -68,7 +71,7 @@
                         <Insets/>
                     </HBox.margin>
                 </Label>
-                <Label fx:id="labelCountry" layoutX="70.0" layoutY="57.0">
+                <Label layoutX="70.0" layoutY="57.0" fx:id="labelCountry">
                     <HBox.margin>
                         <Insets/>
                     </HBox.margin>
@@ -77,10 +80,10 @@
         </HBox>
         <HBox layoutX="408.0" layoutY="89.0" spacing="10.0">
             <children>
-                <Button fx:id="buttonLink" disable="true" layoutX="393.0" layoutY="146.0" mnemonicParsing="false"
-                        onAction="#link" text="Link"/>
-                <Button fx:id="buttonUnlink" disable="true" layoutX="452.0" layoutY="146.0" mnemonicParsing="false"
-                        onAction="#unlink" text="Unlink"/>
+                <Button disable="true" layoutX="393.0" layoutY="146.0" mnemonicParsing="false" onAction="#link"
+                        text="Link" fx:id="buttonLink"/>
+                <Button disable="true" layoutX="452.0" layoutY="146.0" mnemonicParsing="false" onAction="#unlink"
+                        text="Unlink" fx:id="buttonUnlink"/>
                 <Button cancelButton="true" layoutX="524.0" layoutY="146.0" mnemonicParsing="false" onAction="#close"
                         text="Close"/>
             </children>

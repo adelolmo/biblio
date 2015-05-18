@@ -24,6 +24,8 @@ package org.ado.biblio.desktop;
  * SOFTWARE.
  */
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.mockito.MockitoAnnotations;
@@ -31,12 +33,11 @@ import org.mockito.MockitoAnnotations;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
+import java.lang.reflect.*;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+
+import static org.mockito.Mockito.mock;
 
 /**
  * @author Andoni del Olmo
@@ -51,11 +52,12 @@ public abstract class InjectTestCase<T> {
     @Before
     public void setUpInjectedTestCase() throws Exception {
         MockitoAnnotations.initMocks(this);
-        setUp();
         try {
             Class<?> aClass = Class.forName(getClassCanonicalName());
             Object o = aClass.newInstance();
             unitUnderTest = (T) o;
+            injectMocks();
+            setUp();
             initialize(unitUnderTest);
         } catch (Exception e) {
             // ignore
@@ -65,6 +67,37 @@ public abstract class InjectTestCase<T> {
     @After
     public void tearDownInjectedTestCase() {
         destroy(unitUnderTest);
+    }
+
+    private void injectMocks() throws IllegalAccessException {
+        for (Field unitUnderTestField : super.getClass().getDeclaredFields()) {
+            InjectMock injectMock = unitUnderTestField.getAnnotation(InjectMock.class);
+            if (injectMock != null) {
+                Object mock = mock(unitUnderTestField.getType());
+                injectMockInUnitTestField(unitUnderTestField, mock);
+                injectMockInUnitTest(injectMock, unitUnderTestField, mock);
+            }
+        }
+    }
+
+
+    private void injectMockInUnitTestField(Field unitUnderTestField, Object mock) throws IllegalAccessException {
+        FieldUtils.writeField(unitUnderTestField, this, mock, true);
+    }
+
+    private void injectMockInUnitTest(InjectMock injectMock, Field unitUnderTestField, Object mock) {
+        try {
+            if (StringUtils.isNotBlank(injectMock.value())) {
+                FieldUtils.writeField(unitUnderTestField, this, mock, true);
+            } else {
+                final Field field = ReflectionUtils.findField(unitUnderTest.getClass(), null, unitUnderTestField.getType());
+                ReflectionUtils.setField(unitUnderTest, field.getName(), mock);
+
+            }
+        } catch (IllegalAccessException e) {
+            throw new IllegalStateException(String.format("Mocking InjectMock field \"%s\" failed. Field not found in %s.",
+                    injectMock.value(), unitUnderTest.getClass()));
+        }
     }
 
     void initialize(Object instance) {

@@ -4,7 +4,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import org.ado.biblio.desktop.db.DatabaseConnection;
+import org.ado.biblio.desktop.db.DatabaseManager;
 import org.ado.biblio.desktop.model.Book;
 import org.ado.biblio.desktop.util.DateUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -55,7 +55,7 @@ public class ReturnBookPresenter implements Initializable {
     private TextField textFieldDate;
 
     @Inject
-    private DatabaseConnection databaseConnection;
+    private DatabaseManager databaseManager;
 
     private Stage stage;
     private ReturnBookListener returnBookListener;
@@ -91,7 +91,7 @@ public class ReturnBookPresenter implements Initializable {
                         .showError();
             }
             if (returnDate != null) {
-                final Book book = databaseConnection.returnBook(bookId, returnDate);
+                final Book book = databaseManager.returnBook(bookId, returnDate);
                 returnBookListener.returnBook(book);
                 stage.close();
             }

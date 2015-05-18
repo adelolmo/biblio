@@ -106,8 +106,8 @@ public class DropboxLinkDialog {
 
                     final String displayName = client.getAccountInfo().displayName;
                     LOGGER.info("Linked account [{}]", displayName);
-                    dropboxAccountLinkListener.accountLinked(AccountInfoFactory.getAccountInfo(client.getAccountInfo()));
                     stage.close();
+                    dropboxAccountLinkListener.accountLinked(AccountInfoFactory.getAccountInfo(client.getAccountInfo()));
                 } catch (Exception e) {
                     // ignore
                 }
