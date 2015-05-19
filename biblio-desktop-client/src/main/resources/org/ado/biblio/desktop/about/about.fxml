@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.geometry.Rectangle2D?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
+
 <!--
   ~ The MIT License (MIT)
   ~
@@ -30,8 +35,8 @@
   ~ SOFTWARE.
   -->
 
-<Pane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
-      minWidth="-Infinity" prefHeight="141.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8"
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="366.0"
+      prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="org.ado.biblio.desktop.about.AboutPresenter">
     <children>
         <ImageView fitHeight="100.0" fitWidth="100.0" layoutX="23.0" layoutY="18.0" pickOnBounds="true"
@@ -43,14 +48,16 @@
                 <Rectangle2D height="150.0" width="150.0"/>
             </viewport>
         </ImageView>
-        <Button layoutX="532.0" layoutY="106.0" mnemonicParsing="false" onAction="#close" text="Close"/>
+        <Button layoutX="717.0" layoutY="327.0" mnemonicParsing="false" onAction="#close" text="Close"/>
         <HBox layoutX="150.0" layoutY="80.0" spacing="10.0">
             <children>
                 <Label layoutX="150.0" layoutY="60.0" text="Version:"/>
-                <Label fx:id="labelApplicationVersion" layoutX="233.0" layoutY="58.0" text="Label"/>
+                <Label layoutX="233.0" layoutY="58.0" text="Label" fx:id="labelApplicationVersion"/>
             </children>
         </HBox>
         <Label layoutX="150.0" layoutY="20.0" text="Biblio"/>
         <Label layoutX="150.0" layoutY="40.0" text="Solution to organize your personal physical library."/>
+        <TextArea editable="false" layoutX="150.0" layoutY="118.0" prefHeight="200.0" prefWidth="621.0"
+                  text="The MIT License (MIT)&#10;&#10;Copyright (c) 2015 Andoni del Olmo&#10;&#10;Permission is hereby granted, free of charge, to any person obtaining a copy&#10;of this software and associated documentation files (the &quot;Software&quot;), to deal&#10;in the Software without restriction, including without limitation the rights&#10;to use, copy, modify, merge, publish, distribute, sublicense, and/or sell&#10;copies of the Software, and to permit persons to whom the Software is&#10;furnished to do so, subject to the following conditions:&#10;&#10;The above copyright notice and this permission notice shall be included in all&#10;copies or substantial portions of the Software.&#10;&#10;THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR&#10;IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,&#10;FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE&#10;AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER&#10;LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,&#10;OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE&#10;SOFTWARE.&#10;"/>
     </children>
 </Pane>
