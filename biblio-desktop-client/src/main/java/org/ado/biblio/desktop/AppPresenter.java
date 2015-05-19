@@ -18,8 +18,6 @@ import org.ado.biblio.desktop.about.AboutView;
 import org.ado.biblio.desktop.android.AndroidView;
 import org.ado.biblio.desktop.db.DatabaseContext;
 import org.ado.biblio.desktop.db.DatabaseFactory;
-import org.ado.biblio.desktop.db.DatabaseManager;
-import org.ado.biblio.desktop.db.DatabaseMerge;
 import org.ado.biblio.desktop.dropbox.*;
 import org.ado.biblio.desktop.lend.LendPresenter;
 import org.ado.biblio.desktop.lend.LendView;
@@ -176,19 +174,14 @@ public class AppPresenter implements Initializable, LendPresenter.LendBookListen
     @Inject
     private UpdateManager updateManager;
 
-    @Inject
-    private DatabaseMerge databaseMerge;
-
     private Stage stage;
     private Integer bookId;
     private int bookFocusedIndex;
-    private DatabaseManager databaseManager;
 
     @PostConstruct
     public void init() throws Exception {
         LOGGER.info("PostConstruct...");
-        databaseManager = databaseFactory.create(AppConfiguration.DATABASE_FILE, true);
-        DatabaseContext.setDatabaseManager(databaseManager);
+        DatabaseContext.setDatabaseManager(databaseFactory.create(AppConfiguration.DATABASE_FILE, true));
         serverPullingService.setClientId(AppConfiguration.getAppId());
         reloadBooksTable();
         reloadLentTable();
@@ -322,7 +315,7 @@ public class AppPresenter implements Initializable, LendPresenter.LendBookListen
     }
 
     public void update() throws SQLException {
-        databaseMerge.mergeBooks();
+
     }
 
     public void search(Event event) throws SQLException {
