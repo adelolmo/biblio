@@ -1,6 +1,7 @@
 package org.ado.biblio.desktop.server;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import org.ado.biblio.desktop.AppConfiguration;
@@ -47,7 +48,13 @@ public class ServerPullingService extends Service<BookMessageDTO[]> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ServerPullingService.class);
     private static final String SERVER_PULL_URL = "%s/books/%s";
+
+    private Gson gson;
     private String clientId;
+
+    public ServerPullingService() {
+        gson = new GsonBuilder().create();
+    }
 
     public void setClientId(String clientId) {
         this.clientId = clientId;
@@ -61,20 +68,27 @@ public class ServerPullingService extends Service<BookMessageDTO[]> {
             protected BookMessageDTO[] call() throws Exception {
 
                 final String requestUrl = String.format(SERVER_PULL_URL, AppConfiguration.getConfigurationProperty("server.url"), clientId);
+                String responseContent = null;
+                HttpResponse response = null;
 
                 try {
                     HttpClient client = HttpClientBuilder.create().build();
                     HttpGet request = new HttpGet(requestUrl);
-                    HttpResponse response = client.execute(request);
-
+                    response = client.execute(request);
                     LOGGER.info("Response code [{}]", response.getStatusLine().getStatusCode());
-
-                    String responseContent = IOUtils.toString(response.getEntity().getContent());
-                    final BookMessageDTO[] bookMessageDTOs = new Gson().fromJson(responseContent, BookMessageDTO[].class);
-                    return bookMessageDTOs;
 
                 } catch (Exception e) {
                     LOGGER.error(String.format("Unable to pull server %s", requestUrl), e);
+                    pause(15);
+                    throw e;
+                }
+
+                try {
+                    responseContent = IOUtils.toString(response.getEntity().getContent());
+                    final BookMessageDTO[] bookMessageDTOs = gson.fromJson(responseContent, BookMessageDTO[].class);
+                    return bookMessageDTOs;
+                } catch (Exception e) {
+                    LOGGER.error(String.format("Cannot parse response \"%s\"", responseContent), e);
                     pause(15);
                     throw e;
                 }
