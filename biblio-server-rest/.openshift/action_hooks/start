@@ -1,6 +1,3 @@
-sed -i 's/@OPENSHIFT_DIY_IP@/'"$OPENSHIFT_DIY_IP"'/g' .openshift/biblio.openshift.yml
-sed -i 's/@OPENSHIFT_DIY_PORT@/'"$OPENSHIFT_DIY_PORT"'/g' .openshift/biblio.openshift.yml
-
 #nohup java -jar biblio-server-rest.jar server .openshift/biblio.openshift.yml > ${OPENSHIFT_DIY_LOG_DIR}/biblio.log 2>&1 &
 java -jar biblio-server-rest.jar server .openshift/biblio.openshift.yml
 # nohup $JAVA_HOME/bin/java -jar target/commafeed.jar server .openshift/config.mysql.yml > ${OPENSHIFT_DIY_LOG_DIR}/commafeed.log 2>&1 &
