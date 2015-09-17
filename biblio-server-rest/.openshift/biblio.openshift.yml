@@ -1,0 +1,11 @@
+server:
+  applicationConnectors:
+    - type: http
+      port: @OPENSHIFT_DIY_PORT@
+      bindHost: @OPENSHIFT_DIY_IP@
+  adminConnectors:
+    - type: http
+      port: 15000
+      bindHost: @OPENSHIFT_DIY_IP@
+
+template: Hello, %s!

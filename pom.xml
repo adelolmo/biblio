@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
@@ -27,6 +27,7 @@
         <module>googleapis-books</module>
         <module>biblio-update</module>
         <module>biblio-install</module>
+        <module>biblio-server-rest</module>
     </modules>
 
     <properties>
@@ -34,6 +35,7 @@
         <maven.compiler.source>1.6</maven.compiler.source>
 
         <javafx.version>2.2</javafx.version>
+        <jakson.version>2.5.1</jakson.version>
         <version.plugin.compiler>2.5.1</version.plugin.compiler>
     </properties>
 
@@ -67,12 +69,12 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-core</artifactId>
-                <version>2.3.4</version>
+                <version>${jakson.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
-                <version>2.3.4</version>
+                <version>${jakson.version}</version>
             </dependency>
 
             <dependency>
