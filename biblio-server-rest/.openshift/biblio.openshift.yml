@@ -1,11 +1,26 @@
 server:
-  applicationConnectors:
-    - type: http
-      port: @OPENSHIFT_DIY_PORT@
-      bindHost: @OPENSHIFT_DIY_IP@
-  adminConnectors:
-    - type: http
-      port: 15000
-      bindHost: @OPENSHIFT_DIY_IP@
+  type: simple
+  applicationContextPath: /
+  adminContextPath: /admin
+  connector:
+    type: http
+    port: @OPENSHIFT_DIY_PORT@
+    bindHost: @OPENSHIFT_DIY_IP@
 
 template: Hello, %s!
+
+logging:
+  level: WARN
+  loggers:
+    org.ado.biblio: INFO
+    liquibase: INFO
+    io.dropwizard.server.ServerFactory: INFO
+  appenders:
+    - type: console
+    - type: file
+      currentLogFilename: log/biblio.log
+      threshold: ALL
+      archive: true
+      archivedLogFilenamePattern: log/biblio-%d.log
+      archivedFileCount: 5
+      timeZone: UTC
