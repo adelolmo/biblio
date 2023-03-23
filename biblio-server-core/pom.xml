@@ -16,7 +16,7 @@
     <name>Biblio Server Core</name>
 
     <properties>
-        <springframework.version>6.0.0</springframework.version>
+        <springframework.version>6.0.7</springframework.version>
     </properties>
 
     <dependencies>
